@@ -4,6 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import UserLayout from "./layouts/UserLayout";
 import DashboardPage from "./pages/DashboardPage";
 import UploadPage from "./pages/UploadPage";
+import AuthPage from "./pages/AuthPage";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <LandingPage />,
       },
+      {
+        path: "/auth",
+        element: <AuthPage />,
+      },      
     ],
   },
   {

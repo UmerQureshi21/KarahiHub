@@ -4,6 +4,7 @@ import TopFoodCarousel from "../components/TopFoodCarousel";
 import TopFoodDisplay from "../components/TopFoodDisplay";
 import type { Recipe } from "../types";
 import About from "../components/About";
+import { NavLink } from "react-router-dom";
 
 export default function LandingPage() {
   let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
@@ -57,14 +58,16 @@ export default function LandingPage() {
       <div className="w-full px-[20px] md:px-[60px] lg:px-[120px] py-[80px] md:py-[120px]">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="fred-bold text-[36px] md:text-[48px] lg:text-[56px] text-center text-[var(--primary)] mb-[20px]">
-            Join Our Thriving <span className="text-[var(--secondary)]">Community</span>
+            Join Our Thriving{" "}
+            <span className="text-[var(--secondary)]">Community</span>
           </h2>
           <p className="fred-light text-[18px] md:text-[20px] text-center text-gray-600 mb-[60px] max-w-[700px] mx-auto">
-            Thousands of home cooks sharing authentic Pakistani recipes every day
+            Thousands of home cooks sharing authentic Pakistani recipes every
+            day
           </p>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-[20px] md:gap-[30px] mb-[60px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] md:gap-[30px] mb-[60px]">
             {/* Stat 1 */}
             <div className="bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
@@ -114,12 +117,17 @@ export default function LandingPage() {
                   A
                 </div>
                 <div>
-                  <h4 className="fred-bold text-[18px] text-[var(--primary)]">Ayesha Khan</h4>
-                  <p className="fred-light text-[14px] text-gray-500">Home Chef</p>
+                  <h4 className="fred-bold text-[18px] text-[var(--primary)]">
+                    Ayesha Khan
+                  </h4>
+                  <p className="fred-light text-[14px] text-gray-500">
+                    Home Chef
+                  </p>
                 </div>
               </div>
               <p className="fred-light text-[16px] text-gray-700 italic">
-                "Finally found a platform where I can share my grandmother's Nihari recipe! The community feedback has been incredible."
+                "Finally found a platform where I can share my grandmother's
+                Nihari recipe! The community feedback has been incredible."
               </p>
             </div>
 
@@ -129,24 +137,117 @@ export default function LandingPage() {
                   Z
                 </div>
                 <div>
-                  <h4 className="fred-bold text-[18px] text-[var(--primary)]">Zain Ahmed</h4>
-                  <p className="fred-light text-[14px] text-gray-500">Food Enthusiast</p>
+                  <h4 className="fred-bold text-[18px] text-[var(--primary)]">
+                    Zain Ahmed
+                  </h4>
+                  <p className="fred-light text-[14px] text-gray-500">
+                    Food Enthusiast
+                  </p>
                 </div>
               </div>
               <p className="fred-light text-[16px] text-gray-700 italic">
-                "I've tried over 50 recipes from Karahi Hub. Every single dish turned out authentic and delicious!"
+                "I've tried over 50 recipes from Karahi Hub. Every single dish
+                turned out authentic and delicious!"
               </p>
             </div>
           </div>
 
           {/* CTA Button */}
-          <div className="flex justify-center mt-[50px]">
+          <NavLink to="/auth" className="flex justify-center mt-[50px]">
             <button className="bg-[var(--primary)] text-white px-[32px] py-[14px] rounded-[12px] fred-bold text-[18px] hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 hover:scale-105 shadow-lg">
               Join the Community →
             </button>
-          </div>
+          </NavLink>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-[var(--primary)] text-white py-[40px] px-[20px] md:px-[60px]">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[30px] md:gap-[40px]">
+            <div>
+              <div className="flex items-center gap-[8px] mb-[15px]">
+                <img
+                  src="/logo.png"
+                  alt="Karahi Hub Logo"
+                  className="w-[40px]"
+                />
+                <h3 className="fred-bold text-[24px]">Karahi Hub</h3>
+              </div>
+              <p className="fred-light text-[14px] text-gray-200">
+                Preserving Pakistani flavors, one recipe at a time.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="fred-bold text-[18px] mb-[15px]">Quick Links</h4>
+              <ul className="space-y-[10px] fred-light text-[14px]">
+                <li>
+                  <a
+                    href="/"
+                    className="hover:text-[var(--secondary)] transition-colors duration-200"
+                  >
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/recipes"
+                    className="hover:text-[var(--secondary)] transition-colors duration-200"
+                  >
+                    Recipes
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/about"
+                    className="hover:text-[var(--secondary)] transition-colors duration-200"
+                  >
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/contact"
+                    className="hover:text-[var(--secondary)] transition-colors duration-200"
+                  >
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="fred-bold text-[18px] mb-[15px]">
+                Connect With Us
+              </h4>
+              <p className="fred-light text-[14px] text-gray-200 mb-[15px]">
+                Join our community and share your love for Pakistani cuisine.
+              </p>
+              <div className="flex gap-[15px]">
+                <a
+                  href="#"
+                  className="w-[35px] h-[35px] bg-white/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
+                >
+                  <span className="text-[18px]">📧</span>
+                </a>
+                <a
+                  href="#"
+                  className="w-[35px] h-[35px] bg-white/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
+                >
+                  <span className="text-[18px]">🌐</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-white/20 mt-[30px] pt-[20px] text-center">
+            <p className="fred-light text-[14px] text-gray-200">
+              © {new Date().getFullYear()} Karahi Hub. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
