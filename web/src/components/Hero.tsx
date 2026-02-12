@@ -31,7 +31,7 @@ export default function Hero() {
         <img
           src="/paki-food.png"
           alt=""
-          className="w-[80%] md:w-[45%] lg:w-[40%] drop-shadow-[0_20px_35px_rgba(0,0,0,1)]"
+          className="w-[80%] md:w-[45%] lg:w-[40%] drop-shadow-[0_20px_35px_rgba(0,0,0,1)] rotate-infinite"
         />
       </div>
     </div>
