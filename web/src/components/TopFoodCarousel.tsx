@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import type { Recipe } from "../types";
+import TopRecipe from "./TopRecipe";
 
 type CarouselProps = {
-  images: string[];
+  recipes: Recipe[];
   flowSpeed: number; // px per second
   carouselHeight: number;
   height: number;
@@ -11,7 +13,7 @@ type CarouselProps = {
 };
 
 export default function TopFoodCarousel({
-  images,
+  recipes,
   flowSpeed,
   height,
   carouselHeight,
@@ -26,7 +28,7 @@ export default function TopFoodCarousel({
   const lastTime = useRef<number>(0);
   const [speed, setSpeed] = useState(flowSpeed);
   const [isPaused, setIsPaused] = useState(false);
-  let images2: string[] = images; // images2 is the array that gets updated when you press left or right
+  let recipes2: Recipe[] = recipes; // recipes2 is the array that gets updated when you press left or right
 
   // Adjust speed for first render of text carousel
   setTimeout(() => {
@@ -79,7 +81,7 @@ export default function TopFoodCarousel({
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, [speed, images2, isPaused]);
+  }, [speed, recipes2, isPaused]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -115,7 +117,7 @@ export default function TopFoodCarousel({
           "
         style={{ height: `${carouselHeight}px` }}
       >
-        {images2.map((src, idx) => (
+        {recipes2.map((recipe, idx) => (
           <div
             key={idx}
             ref={(el) => {
@@ -133,14 +135,7 @@ export default function TopFoodCarousel({
               // i have to make it so that for each time you preess left or rihgt, the array gets updated so that the new one is the first element
             }}
           >
-            <img
-              src={src}
-              alt={text[idx]}
-              className="
-                  w-full rounded-[30px] h-full object-cover hover:transform hover:scale-[1.02] transition duration-300 ease mt-[20px]
-                  "
-              draggable={false}
-            />
+            <TopRecipe key={idx} recipe={recipe} />
           </div>
         ))}
       </div>
