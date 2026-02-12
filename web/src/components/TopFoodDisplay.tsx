@@ -51,7 +51,7 @@ export default function TopFoodDisplay({ recipes }: Props) {
 
   useEffect(() => {
     if (windowWidth < 650) {
-      setImageDimension(150);
+      setImageDimension(250);
     } else {
       setImageDimension(250);
     }
@@ -68,7 +68,7 @@ export default function TopFoodDisplay({ recipes }: Props) {
   }, [partnersWidth, windowWidth]);
 
   return (
-    <div id="big-container" className="relative">
+    <div id="big-container" className="relative pt-[100px]">
       <style>{`
         #big-container::before {
           position: absolute;
@@ -83,7 +83,7 @@ export default function TopFoodDisplay({ recipes }: Props) {
           top: 0;
           height: ${windowWidth >= 650 ? imageDimension : 360}px;
           width: 100%;
-          background-color: ${windowWidth >= 650 ? "transparent" : "white"};
+          background-color: ${windowWidth >= 650 ? "transparent" : "transparent"};
           z-index: 52;
         }
       `}</style>
@@ -101,7 +101,7 @@ export default function TopFoodDisplay({ recipes }: Props) {
           top: 0;
           height: ${windowWidth >= 650 ? imageDimension : 360}px;
           width: 100%;
-          background-color: ${windowWidth >= 650 ? "transparent" : "white"};
+          background-color: ${windowWidth >= 650 ? "transparent" : "transparent"};
           z-index: 52;
         }
       `}</style>
