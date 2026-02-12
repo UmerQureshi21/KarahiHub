@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
+import TopRecipe from "./TopRecipe";
+import type { Recipe } from "../types";
 
-export default function TopFoodDisplay() {
+interface Props {
+  recipes: Recipe[];
+}
+
+export default function TopFoodDisplay({ recipes }: Props) {
   // STILL NEED TO ADD LINKS SO CLICKING ON EACH IMAGE WILL SEDN TO WEBSTIE
 
   const IMAGE_GAP = 20;
   const [resizePush, setResizePush] = useState<number>(1000);
   let [leftPartners, setLeftPartners] = useState<number[]>([1]); // should be descending, like 3,2,1
   let [rightPartners, setRightPartners] = useState<number[]>([1]); // should be ascending, like 1,2,3
-  let [imageDimension, setImageDimension] = useState<number>(450);
-  const partners = ["/paki-food.png"];
+  let [imageDimension, setImageDimension] = useState<number>(250);
+  const partners: Recipe[] = recipes;
   let partnerLinks: any = [];
   let [partnersWidth, setPartnersWidth] = useState<number>(
     imageDimension * partners.length + IMAGE_GAP * (partners.length - 1),
@@ -45,9 +51,9 @@ export default function TopFoodDisplay() {
 
   useEffect(() => {
     if (windowWidth < 650) {
-      setImageDimension(360);
+      setImageDimension(150);
     } else {
-      setImageDimension(450);
+      setImageDimension(250);
     }
   }, [windowWidth]);
 
@@ -123,22 +129,18 @@ export default function TopFoodDisplay() {
                 gap: `${IMAGE_GAP}px`,
               }}
             >
-              {partners.map((imageUrl, index) => (
+              {partners.map((recipe, index) => (
                 <div
                   key={`image small left ${index}`}
                   onClick={() => {
                     window.location.href = partnerLinks[index];
                   }}
+                  style={{
+                    height: `${imageDimension}px`,
+                    width: `${imageDimension}px`,
+                  }}
                 >
-                  <img
-                    src={imageUrl}
-                    alt=""
-                    className="rounded-[30px]"
-                    style={{
-                      height: `${imageDimension}px`,
-                      width: `${imageDimension}px`,
-                    }}
-                  />
+                  <TopRecipe recipe={recipe} />
                 </div>
               ))}
             </div>
@@ -151,22 +153,18 @@ export default function TopFoodDisplay() {
               left: `${0 - resizePush}px`,
             }}
           >
-            {partners.map((imageUrl, index) => (
+            {partners.map((recipe, index) => (
               <div
                 key={`image small ${index}`}
                 onClick={() => {
                   window.location.href = partnerLinks[index];
                 }}
+                style={{
+                  height: `${imageDimension}px`,
+                  width: `${imageDimension}px`,
+                }}
               >
-                <img
-                  src={imageUrl}
-                  alt=""
-                  className="rounded-[30px]"
-                  style={{
-                    height: `${imageDimension}px`,
-                    width: `${imageDimension}px`,
-                  }}
-                />
+                <TopRecipe recipe={recipe} />
               </div>
             ))}
           </div>
@@ -182,22 +180,18 @@ export default function TopFoodDisplay() {
                 gap: `${IMAGE_GAP}px`,
               }}
             >
-              {partners.map((imageUrl, index) => (
+              {partners.map((recipe, index) => (
                 <div
                   key={`image small right ${index}`}
                   onClick={() => {
                     window.location.href = partnerLinks[index];
                   }}
+                  style={{
+                    height: `${imageDimension}px`,
+                    width: `${imageDimension}px`,
+                  }}
                 >
-                  <img
-                    src={imageUrl}
-                    alt=""
-                    className="rounded-[30px]"
-                    style={{
-                      height: `${imageDimension}px`,
-                      width: `${imageDimension}px`,
-                    }}
-                  />
+                  <TopRecipe recipe={recipe} />
                 </div>
               ))}
             </div>

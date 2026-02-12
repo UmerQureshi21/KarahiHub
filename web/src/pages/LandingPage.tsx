@@ -5,6 +5,17 @@ import TopFoodDisplay from "../components/TopFoodDisplay";
 
 export default function LandingPage() {
   let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const carouselHeight = 300;
+
+  const recipes: Recipe[] = [
+    { name: "Biryani", imageUrl: "/test-1", rating: 5.0 },
+    { name: "Nihari", imageUrl: "/test-2", rating: 4.9 },
+    { name: "Biryani", imageUrl: "/test-1", rating: 4.8 },
+    { name: "Nihari", imageUrl: "/test-2", rating: 4.7 },
+    { name: "Biryani", imageUrl: "/test-1", rating: 4.6 },
+    { name: "Nihari", imageUrl: "/test-2", rating: 4.5 },
+    { name: "Biryani", imageUrl: "/test-1", rating: 4.4 },
+  ];
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -17,27 +28,16 @@ export default function LandingPage() {
       <Hero />
       {windowWidth >= 800 ? (
         <TopFoodCarousel
-          recipes={[
-            { name: "Biryani", imageUrl: "/test-1", rating: 4.5 },
-            { name: "Nihari", imageUrl: "/test-2", rating: 4.7 },
-            { name: "Kebabs", imageUrl: "/paki-food.png", rating: 4.6 },
-            { name: "Biryani", imageUrl: "/paki-food.png", rating: 4.5 },
-            { name: "Nihari", imageUrl: "/paki-food.png", rating: 4.7 },
-            { name: "Kebabs", imageUrl: "/paki-food.png", rating: 4.6 },
-            { name: "Biryani", imageUrl: "/paki-food.png", rating: 4.5 },
-            { name: "Nihari", imageUrl: "/paki-food.png", rating: 4.7 },
-            { name: "Kebabs", imageUrl: "/paki-food.png", rating: 4.6 },
-            { name: "Biryani", imageUrl: "/paki-food.png", rating: 4.5 },
-          ]}
+          recipes={recipes}
           flowSpeed={60}
-          carouselHeight={300}
-          width={"250px"}
-          height={250}
+          carouselHeight={carouselHeight}
+          width={`${carouselHeight - 50}px`}
+          height={carouselHeight - 50}
           text={[]}
           isImages={true}
         />
       ) : (
-        <TopFoodDisplay />
+        <TopFoodDisplay recipes={recipes} />
       )}
       <div>
         <img src="/paki-graphic.png" alt="" />
