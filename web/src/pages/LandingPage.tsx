@@ -27,7 +27,8 @@ export default function LandingPage() {
   return (
     <div>
       <Hero />
-      <div className="pt-[200px]">
+      
+      <div id="top-recipes" className="pt-[200px]">
         <h1 className="fred-bold text-[50px] text-center text-[var(--primary)]">
           View the <span className="text-[var(--secondary)]">Top</span> Recipes
         </h1>

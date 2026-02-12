@@ -19,6 +19,14 @@ export default function Hero() {
           <h1 className="text-[18px] md:text-[22px] lg:text-[30px]">
             Cook Authentic recipes with confidence{" "}
           </h1>
+          <button
+            onClick={() => {
+              document.getElementById('top-recipes')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="mt-[20px] bg-[var(--primary)] text-white px-[24px] py-[12px] rounded-full fred-medium text-[16px] md:text-[18px] hover:bg-[var(--secondary)] hover:text-white transition-all duration-300 hover:scale-105"
+          >
+            View the Top Recipes ↓
+          </button>
         </div>
         <img
           src="/paki-food.png"
