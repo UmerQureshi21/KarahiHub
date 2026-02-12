@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+'use client';
+
+import { useEffect, useState, useRef } from "react";
 import Hero from "../components/Hero";
 import TopFoodCarousel from "../components/TopFoodCarousel";
 import TopFoodDisplay from "../components/TopFoodDisplay";
@@ -8,6 +10,10 @@ import { NavLink } from "react-router-dom";
 
 export default function LandingPage() {
   let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const [visibleStats, setVisibleStats] = useState<boolean[]>([false, false, false]);
+  const [visibleTestimonials, setVisibleTestimonials] = useState<boolean[]>([false, false]);
+  const statsRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
+  const testimonialRefs = useRef<(HTMLDivElement | null)[]>([null, null]);
   const carouselHeight = 500;
 
   const recipes: Recipe[] = [
@@ -24,6 +30,53 @@ export default function LandingPage() {
     window.addEventListener("resize", () => {
       setWindowWidth(window.innerWidth);
     });
+
+    const statsObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = statsRefs.current.indexOf(entry.target as HTMLDivElement);
+          if (index !== -1 && entry.isIntersecting) {
+            setVisibleStats((prev) => {
+              const newVisible = [...prev];
+              newVisible[index] = true;
+              return newVisible;
+            });
+            statsObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const testimonialObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = testimonialRefs.current.indexOf(entry.target as HTMLDivElement);
+          if (index !== -1 && entry.isIntersecting) {
+            setVisibleTestimonials((prev) => {
+              const newVisible = [...prev];
+              newVisible[index] = true;
+              return newVisible;
+            });
+            testimonialObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    statsRefs.current.forEach((ref) => {
+      if (ref) statsObserver.observe(ref);
+    });
+
+    testimonialRefs.current.forEach((ref) => {
+      if (ref) testimonialObserver.observe(ref);
+    });
+
+    return () => {
+      statsObserver.disconnect();
+      testimonialObserver.disconnect();
+    };
   }, []);
 
   return (
@@ -69,7 +122,15 @@ export default function LandingPage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] md:gap-[30px] mb-[60px]">
             {/* Stat 1 */}
-            <div className="bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <div
+              ref={(el) => {
+                statsRefs.current[0] = el;
+              }}
+              className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+                visibleStats[0] ? 'bounce-card' : ''
+              }`}
+              style={{ animationDelay: '0s' }}
+            >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
                 100+
               </div>
@@ -79,7 +140,15 @@ export default function LandingPage() {
             </div>
 
             {/* Stat 2 */}
-            <div className="bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <div
+              ref={(el) => {
+                statsRefs.current[1] = el;
+              }}
+              className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+                visibleStats[1] ? 'bounce-card' : ''
+              }`}
+              style={{ animationDelay: '0.1s' }}
+            >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--secondary)] mb-[8px]">
                 50+
               </div>
@@ -89,7 +158,15 @@ export default function LandingPage() {
             </div>
 
             {/* Stat 3 */}
-            <div className="bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            <div
+              ref={(el) => {
+                statsRefs.current[2] = el;
+              }}
+              className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+                visibleStats[2] ? 'bounce-card' : ''
+              }`}
+              style={{ animationDelay: '0.2s' }}
+            >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
                 150+
               </div>
@@ -111,7 +188,15 @@ export default function LandingPage() {
 
           {/* Testimonials */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-[30px]">
-            <div className="bg-white rounded-[20px] p-[30px] shadow-lg">
+            <div
+              ref={(el) => {
+                testimonialRefs.current[0] = el;
+              }}
+              className={`bg-white rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
+                visibleTestimonials[0] ? 'bounce-card' : ''
+              }`}
+              style={{ animationDelay: '0s' }}
+            >
               <div className="flex items-center gap-[12px] mb-[15px]">
                 <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--primary)]">
                   A
@@ -131,7 +216,15 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-[20px] p-[30px] shadow-lg">
+            <div
+              ref={(el) => {
+                testimonialRefs.current[1] = el;
+              }}
+              className={`bg-white rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
+                visibleTestimonials[1] ? 'bounce-card' : ''
+              }`}
+              style={{ animationDelay: '0.1s' }}
+            >
               <div className="flex items-center gap-[12px] mb-[15px]">
                 <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--primary)]">
                   Z

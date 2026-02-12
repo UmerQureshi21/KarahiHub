@@ -1,4 +1,36 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
 export default function About() {
+  const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false]);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = cardRefs.current.indexOf(entry.target as HTMLDivElement);
+          if (index !== -1 && entry.isIntersecting) {
+            setVisibleCards((prev) => {
+              const newVisible = [...prev];
+              newVisible[index] = true;
+              return newVisible;
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="w-full px-[20px] md:px-[60px] lg:px-[120px] py-[80px] md:py-[120px]">
       <div className="max-w-[1200px] mx-auto">
@@ -15,7 +47,15 @@ export default function About() {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[30px] md:gap-[40px]">
-          <div className="bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div
+            ref={(el) => {
+              cardRefs.current[0] = el;
+            }}
+            className={`bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+              visibleCards[0] ? 'bounce-card' : ''
+            }`}
+            style={{ animationDelay: '0s' }}
+          >
             <div className="w-[48px] h-[48px] mb-[15px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +74,15 @@ export default function About() {
             </p>
           </div>
 
-          <div className="bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div
+            ref={(el) => {
+              cardRefs.current[1] = el;
+            }}
+            className={`bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+              visibleCards[1] ? 'bounce-card' : ''
+            }`}
+            style={{ animationDelay: '0.1s' }}
+          >
             <div className="w-[48px] h-[48px] mb-[15px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +101,15 @@ export default function About() {
             </p>
           </div>
 
-          <div className="bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div
+            ref={(el) => {
+              cardRefs.current[2] = el;
+            }}
+            className={`bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+              visibleCards[2] ? 'bounce-card' : ''
+            }`}
+            style={{ animationDelay: '0.2s' }}
+          >
             <div className="w-[48px] h-[48px] mb-[15px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
