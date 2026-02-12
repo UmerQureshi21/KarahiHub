@@ -1,3 +1,5 @@
+import SignUpButton from "./SignUpButton";
+
 export default function Hero() {
   return (
     <div className="fred-light w-full">
@@ -6,9 +8,7 @@ export default function Hero() {
           <img src="/logo.png" alt="" className="w-[40px] md:w-[50px] lg:w-[60px]" />
           <h1 className="text-[20px] md:text-[24px] lg:text-[30px] text-[var(--primary)]">Karahi Hub</h1>
         </div>
-        <button className="bg-[var(--secondary)] text-white rounded-[70px] fred-normal h-[40px] px-6 md:h-[45px] md:px-8 lg:w-[10%] lg:h-[50px]">
-          Sign up
-        </button>
+        <SignUpButton />
       </div>
       <div className="w-full flex flex-col md:flex-row items-center justify-center gap-[40px] md:gap-[50px] lg:gap-[80px] px-[20px] mt-[40px] md:mt-[20px] lg:mt-0">
         <div className="flex flex-col w-full md:w-[45%] lg:w-[30%]">
