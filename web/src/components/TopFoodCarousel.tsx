@@ -101,7 +101,10 @@ export default function TopFoodCarousel({
   }, []);
 
   return (
-    <div className="relative">
+    <div
+      className="relative bg-cover bg-center bg-no-repeat py-[150px]"
+      style={{ backgroundImage: "url('/paki-graphic.png')" }}
+    >
       <div
         ref={ourPartnersRef}
         style={{ height: `${height + 10}px` }}

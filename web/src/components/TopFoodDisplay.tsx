@@ -68,7 +68,11 @@ export default function TopFoodDisplay({ recipes }: Props) {
   }, [partnersWidth, windowWidth]);
 
   return (
-    <div id="big-container" className="relative pt-[100px]">
+    <div
+      id="big-container"
+      className="relative pt-[100px] relative bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/paki-graphic.png')" }}
+    >
       <style>{`
         #big-container::before {
           position: absolute;
@@ -77,11 +81,11 @@ export default function TopFoodDisplay({ recipes }: Props) {
             (windowWidth >= 650
               ? windowWidth -
                 (windowWidth - (imageDimension + 2 * IMAGE_GAP)) / 2
-              : windowWidth - (windowWidth - (360 + 2 * IMAGE_GAP)) / 2) -
+              : windowWidth - (windowWidth - (250 + 2 * IMAGE_GAP)) / 2) -
             IMAGE_GAP
           }px;
           top: 0;
-          height: ${windowWidth >= 650 ? imageDimension : 360}px;
+          height: ${windowWidth >= 650 ? imageDimension : 250}px;
           width: 100%;
           background-color: ${windowWidth >= 650 ? "transparent" : "transparent"};
           z-index: 52;
@@ -95,11 +99,11 @@ export default function TopFoodDisplay({ recipes }: Props) {
             (windowWidth >= 650
               ? windowWidth -
                 (windowWidth - (imageDimension + 2 * IMAGE_GAP)) / 2
-              : windowWidth - (windowWidth - (360 + 2 * IMAGE_GAP)) / 2) -
+              : windowWidth - (windowWidth - (250 + 2 * IMAGE_GAP)) / 2) -
             IMAGE_GAP
           }px;
           top: 0;
-          height: ${windowWidth >= 650 ? imageDimension : 360}px;
+          height: ${windowWidth >= 650 ? imageDimension : 250}px;
           width: 100%;
           background-color: ${windowWidth >= 650 ? "transparent" : "transparent"};
           z-index: 52;
