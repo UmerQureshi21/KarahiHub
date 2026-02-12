@@ -24,3 +24,9 @@
   font-style: normal;
   font-variation-settings: "wdth" 100;
 }
+
+:root {
+  --primary: #2c2c2c;
+  --secondary: #01411c;
+  --accent: #fff6e0;
+}
