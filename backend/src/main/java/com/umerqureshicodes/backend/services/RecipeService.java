@@ -2,6 +2,7 @@ package com.umerqureshicodes.backend.services;
 
 import com.umerqureshicodes.backend.dto.IngredientRequest;
 import com.umerqureshicodes.backend.dto.RecipeRequest;
+import com.umerqureshicodes.backend.dto.RecipeResponse;
 import com.umerqureshicodes.backend.entities.Ingredient;
 import com.umerqureshicodes.backend.entities.Recipe;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class RecipeService {
@@ -17,7 +19,7 @@ public class RecipeService {
 
     public RecipeService(RecipeRepository recipeRepository) {this.recipeRepository = recipeRepository;}
 
-    public RecipeRequest saveRecipe(RecipeRequest request) {
+    public RecipeResponse saveRecipe(RecipeRequest request) {
         Recipe recipe = new Recipe();
         recipe.setUserId(1L);
         recipe.setTitle(request.title());
@@ -37,21 +39,26 @@ public class RecipeService {
         recipe.setIngredients(ingredients);
 
         recipeRepository.save(recipe);
-        return request;
+        return convertToDto(recipe);
     }
 
-    public List<RecipeRequest> getAllRecipes() {
+    public List<RecipeResponse> getAllRecipes() {
         return recipeRepository.findAll().stream()
                 .map(this::convertToDto)
                 .toList();
     }
 
-    public RecipeRequest convertToDto(Recipe recipe) {
+    public RecipeResponse getById(Long id) {
+        return convertToDto(Objects.requireNonNull(recipeRepository.findById(id).orElse(null)));
+    }
+
+    public RecipeResponse convertToDto(Recipe recipe) {
         List<IngredientRequest> ingredients = recipe.getIngredients().stream()
                 .map(ing -> new IngredientRequest(ing.getName(), ing.getQuantity(), ing.getUnitOfMeasurement().orElse(null)))
                 .toList();
 
-        return new RecipeRequest(
+        return new RecipeResponse(
+                recipe.getId(),
                 recipe.getTitle(),
                 recipe.getDescription(),
                 ingredients,
