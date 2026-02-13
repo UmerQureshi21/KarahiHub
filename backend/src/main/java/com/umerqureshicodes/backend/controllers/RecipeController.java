@@ -1,6 +1,7 @@
 package com.umerqureshicodes.backend.controllers;
 
 import com.umerqureshicodes.backend.dto.RecipeRequest;
+import com.umerqureshicodes.backend.dto.RecipeResponse;
 import com.umerqureshicodes.backend.entities.Ingredient;
 import com.umerqureshicodes.backend.entities.Recipe;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
@@ -21,12 +22,17 @@ public class RecipeController {
     }
 
     @GetMapping
-    public List<RecipeRequest> getAll() {
+    public List<RecipeResponse> getAll() {
         return recipeService.getAllRecipes();
     }
 
+    @GetMapping("/{id}")
+    public RecipeResponse getById(@PathVariable Long id) {
+        return recipeService.getById(id);
+    }
+
     @PostMapping
-    public RecipeRequest createRecipe(@RequestBody RecipeRequest request) {
+    public RecipeResponse createRecipe(@RequestBody RecipeRequest request) {
         return recipeService.saveRecipe(request);
     }
 }

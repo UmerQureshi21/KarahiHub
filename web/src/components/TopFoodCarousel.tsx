@@ -102,7 +102,7 @@ export default function TopFoodCarousel({
 
   return (
     <div
-      className="relative bg-cover bg-center bg-no-repeat py-[150px]"
+      className="relative bg-cover bg-center bg-no-repeat py-[210px]"
       style={{ backgroundImage: "url('/paki-graphic.png')" }}
     >
       <div

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState, useRef } from "react";
 import Hero from "../components/Hero";
@@ -10,8 +10,15 @@ import { NavLink } from "react-router-dom";
 
 export default function LandingPage() {
   let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-  const [visibleStats, setVisibleStats] = useState<boolean[]>([false, false, false]);
-  const [visibleTestimonials, setVisibleTestimonials] = useState<boolean[]>([false, false]);
+  const [visibleStats, setVisibleStats] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
+  const [visibleTestimonials, setVisibleTestimonials] = useState<boolean[]>([
+    false,
+    false,
+  ]);
   const [statCounts, setStatCounts] = useState<number[]>([0, 0, 0]);
   const statsRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
   const testimonialRefs = useRef<(HTMLDivElement | null)[]>([null, null]);
@@ -20,13 +27,48 @@ export default function LandingPage() {
   const statTargets = [100, 50, 150];
 
   const recipes: Recipe[] = [
-    { name: "Fire Lassi", imageUrl: "/mango-lassi.jpg", rating: 5.0 },
-    { name: "Nihari Goated", imageUrl: "/nihari.jpg", rating: 4.9 },
-    { name: "Biryani", imageUrl: "/biryani.jpg", rating: 4.8 },
-    { name: "Raita", imageUrl: "/raita.jpg", rating: 4.7 },
-    { name: "Charga", imageUrl: "/charga.jpg", rating: 4.6 },
-    { name: "Jalebi", imageUrl: "/jalebi.jpg", rating: 4.5 },
-    { name: "Palak Gosht", imageUrl: "/palak-gosht.jpg", rating: 4.4 },
+    {
+      name: "Fire Lassi",
+      imageUrl: "/mango-lassi.jpg",
+      rating: 5.0,
+      username: "Ayesha Khan",
+    },
+    {
+      name: "Nihari Goated",
+      imageUrl: "/nihari.jpg",
+      rating: 4.9,
+      username: "Zain Ahmed",
+    },
+    {
+      name: "Biryani",
+      imageUrl: "/biryani.jpg",
+      rating: 4.8,
+      username: "Fatima Ali",
+    },
+    {
+      name: "Raita",
+      imageUrl: "/raita.jpg",
+      rating: 4.7,
+      username: "Omar Hassan",
+    },
+    {
+      name: "Charga",
+      imageUrl: "/charga.jpg",
+      rating: 4.6,
+      username: "Sara Malik",
+    },
+    {
+      name: "Jalebi",
+      imageUrl: "/jalebi.jpg",
+      rating: 4.5,
+      username: "Ahmed Raza",
+    },
+    {
+      name: "Palak Gosht",
+      imageUrl: "/palak-gosht.jpg",
+      rating: 4.4,
+      username: "Nadia Siddiqui",
+    },
   ];
 
   useEffect(() => {
@@ -37,7 +79,9 @@ export default function LandingPage() {
     const statsObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const index = statsRefs.current.indexOf(entry.target as HTMLDivElement);
+          const index = statsRefs.current.indexOf(
+            entry.target as HTMLDivElement,
+          );
           if (index !== -1 && entry.isIntersecting) {
             setVisibleStats((prev) => {
               const newVisible = [...prev];
@@ -48,13 +92,15 @@ export default function LandingPage() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const testimonialObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const index = testimonialRefs.current.indexOf(entry.target as HTMLDivElement);
+          const index = testimonialRefs.current.indexOf(
+            entry.target as HTMLDivElement,
+          );
           if (index !== -1 && entry.isIntersecting) {
             setVisibleTestimonials((prev) => {
               const newVisible = [...prev];
@@ -65,7 +111,7 @@ export default function LandingPage() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     statsRefs.current.forEach((ref) => {
@@ -89,7 +135,10 @@ export default function LandingPage() {
           setStatCounts((prev) => {
             const newCounts = [...prev];
             const increment = Math.ceil(statTargets[index] / 20);
-            newCounts[index] = Math.min(newCounts[index] + increment, statTargets[index]);
+            newCounts[index] = Math.min(
+              newCounts[index] + increment,
+              statTargets[index],
+            );
             return newCounts;
           });
         }, 60);
@@ -103,10 +152,10 @@ export default function LandingPage() {
     <div>
       <Hero />
       <About />
-      <div id="top-recipes" className="pt-[80px] md:pt-[120px]">
-        <h1 className="fred-bold text-[50px] text-center text-[var(--primary)]">
-          View the <span className="text-[var(--secondary)]">Top</span> Recipes
-        </h1>
+      <h1 className="fred-bold text-[80px] text-center text-[var(--primary)] mb-[100px]">
+        View the <span className="text-[var(--secondary)]">Top</span> Recipes
+      </h1>
+      <div id="top-recipes">
         {windowWidth >= 800 ? (
           <TopFoodCarousel
             recipes={recipes}
@@ -147,9 +196,9 @@ export default function LandingPage() {
                 statsRefs.current[0] = el;
               }}
               className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
-                visibleStats[0] ? 'bounce-card' : ''
+                visibleStats[0] ? "bounce-card" : ""
               }`}
-              style={{ animationDelay: '0s' }}
+              style={{ animationDelay: "0s" }}
             >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
                 {statCounts[0]}+
@@ -165,9 +214,9 @@ export default function LandingPage() {
                 statsRefs.current[1] = el;
               }}
               className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
-                visibleStats[1] ? 'bounce-card' : ''
+                visibleStats[1] ? "bounce-card" : ""
               }`}
-              style={{ animationDelay: '0.1s' }}
+              style={{ animationDelay: "0.1s" }}
             >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--secondary)] mb-[8px]">
                 {statCounts[1]}+
@@ -183,9 +232,9 @@ export default function LandingPage() {
                 statsRefs.current[2] = el;
               }}
               className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
-                visibleStats[2] ? 'bounce-card' : ''
+                visibleStats[2] ? "bounce-card" : ""
               }`}
-              style={{ animationDelay: '0.2s' }}
+              style={{ animationDelay: "0.2s" }}
             >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
                 {statCounts[2]}+
@@ -213,9 +262,9 @@ export default function LandingPage() {
                 testimonialRefs.current[0] = el;
               }}
               className={`bg-white rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
-                visibleTestimonials[0] ? 'bounce-card' : ''
+                visibleTestimonials[0] ? "bounce-card" : ""
               }`}
-              style={{ animationDelay: '0s' }}
+              style={{ animationDelay: "0s" }}
             >
               <div className="flex items-center gap-[12px] mb-[15px]">
                 <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--primary)]">
@@ -241,9 +290,9 @@ export default function LandingPage() {
                 testimonialRefs.current[1] = el;
               }}
               className={`bg-white rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
-                visibleTestimonials[1] ? 'bounce-card' : ''
+                visibleTestimonials[1] ? "bounce-card" : ""
               }`}
-              style={{ animationDelay: '0.1s' }}
+              style={{ animationDelay: "0.1s" }}
             >
               <div className="flex items-center gap-[12px] mb-[15px]">
                 <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--primary)]">
