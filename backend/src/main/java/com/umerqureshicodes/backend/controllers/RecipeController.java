@@ -1,25 +1,32 @@
 package com.umerqureshicodes.backend.controllers;
 
+import com.umerqureshicodes.backend.dto.RecipeRequest;
+import com.umerqureshicodes.backend.entities.Ingredient;
 import com.umerqureshicodes.backend.entities.Recipe;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.umerqureshicodes.backend.services.RecipeService;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private final RecipeRepository recipeRepository;
+    private final RecipeService recipeService;
 
-    public RecipeController(RecipeRepository recipeRepository) {
-        this.recipeRepository = recipeRepository;
+    public RecipeController(RecipeService recipeService) {
+        this.recipeService = recipeService;
     }
 
     @GetMapping
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
+    public List<RecipeRequest> getAll() {
+        return recipeService.getAllRecipes();
+    }
+
+    @PostMapping
+    public RecipeRequest createRecipe(@RequestBody RecipeRequest request) {
+        return recipeService.saveRecipe(request);
     }
 }
