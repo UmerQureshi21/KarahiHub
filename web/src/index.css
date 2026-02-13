@@ -65,3 +65,19 @@
 .bounce-card {
   animation: bounce-drop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
+
+@keyframes text-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text-reveal {
+  animation: text-slide-up 0.6s ease-out forwards;
+  opacity: 0;
+}

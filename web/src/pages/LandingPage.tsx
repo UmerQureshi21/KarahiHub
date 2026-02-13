@@ -12,9 +12,12 @@ export default function LandingPage() {
   let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [visibleStats, setVisibleStats] = useState<boolean[]>([false, false, false]);
   const [visibleTestimonials, setVisibleTestimonials] = useState<boolean[]>([false, false]);
+  const [statCounts, setStatCounts] = useState<number[]>([0, 0, 0]);
   const statsRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
   const testimonialRefs = useRef<(HTMLDivElement | null)[]>([null, null]);
   const carouselHeight = 500;
+
+  const statTargets = [100, 50, 150];
 
   const recipes: Recipe[] = [
     { name: "Fire Lassi", imageUrl: "/mango-lassi.jpg", rating: 5.0 },
@@ -79,6 +82,23 @@ export default function LandingPage() {
     };
   }, []);
 
+  useEffect(() => {
+    visibleStats.forEach((isVisible, index) => {
+      if (isVisible && statCounts[index] < statTargets[index]) {
+        const interval = setInterval(() => {
+          setStatCounts((prev) => {
+            const newCounts = [...prev];
+            const increment = Math.ceil(statTargets[index] / 20);
+            newCounts[index] = Math.min(newCounts[index] + increment, statTargets[index]);
+            return newCounts;
+          });
+        }, 60);
+
+        return () => clearInterval(interval);
+      }
+    });
+  }, [visibleStats]);
+
   return (
     <div>
       <Hero />
@@ -132,7 +152,7 @@ export default function LandingPage() {
               style={{ animationDelay: '0s' }}
             >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
-                100+
+                {statCounts[0]}+
               </div>
               <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
                 Recipes Shared
@@ -150,7 +170,7 @@ export default function LandingPage() {
               style={{ animationDelay: '0.1s' }}
             >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--secondary)] mb-[8px]">
-                50+
+                {statCounts[1]}+
               </div>
               <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
                 Active Food Enthusiasts
@@ -168,7 +188,7 @@ export default function LandingPage() {
               style={{ animationDelay: '0.2s' }}
             >
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
-                150+
+                {statCounts[2]}+
               </div>
               <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
                 Ratings Given

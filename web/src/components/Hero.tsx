@@ -1,6 +1,8 @@
 import SignUpButton from "./SignUpButton";
 
 export default function Hero() {
+  const words = ['Preserving', 'Pakistani', 'Flavours'];
+
   return (
     <div className="fred-light w-full">
       <div className="w-full flex justify-between items-center px-[20px] pt-[20px]">
@@ -13,8 +15,19 @@ export default function Hero() {
       <div className="w-full flex flex-col md:flex-row items-center justify-center gap-[40px] md:gap-[50px] lg:gap-[80px] px-[20px] mt-[40px] md:mt-[20px] lg:mt-0">
         <div className="flex flex-col w-full md:w-[45%] lg:w-[30%]">
           <h1 className="text-[40px] md:text-[56px] lg:text-[80px] fred-bold text-[var(--primary)] leading-tight md:leading-[60px] lg:leading-[75px]">
-            Preserving{" "}
-            <span className="text-[var(--secondary)]">Pakistani</span> Flavours
+            {words.map((word, index) => (
+              <span
+                key={index}
+                className="text-reveal inline-block mr-[10px]"
+                style={{ animationDelay: `${index * 0.15}s` }}
+              >
+                {word === 'Pakistani' ? (
+                  <span className="text-[var(--secondary)]">{word}</span>
+                ) : (
+                  word
+                )}
+              </span>
+            ))}
           </h1>
           <h1 className="text-[18px] md:text-[22px] lg:text-[30px]">
             Cook Authentic recipes with confidence{" "}
