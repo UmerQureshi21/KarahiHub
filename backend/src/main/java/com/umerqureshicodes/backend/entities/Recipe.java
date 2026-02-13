@@ -1,15 +1,20 @@
 package com.umerqureshicodes.backend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class, // don't geneartea random id, use actualy id propery tha's here
+        property = "id" // uses id field as a unique identifier for each object
+)
+//  It tells Jackson: "track objects by their id. First encounter = serialize fully. Every encounter after that = just output the id
+//  number."
 public class Recipe {
 
     @Id
@@ -19,12 +24,14 @@ public class Recipe {
     private Long userId;
     private String title;
     private String description;
-    private List<FullIngredient> ingredients = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<Ingredient> ingredients = new ArrayList<>();
     private List<String> instructions = new ArrayList<>();
     private int prepTime;
     private int cookTime;
     private int servingCount;
-    private RecipeCategory category;
+    private List<RecipeCategory> categories = new ArrayList<>();
     private Date createdAt;
     private Date updatedAt;
     private double rating;
@@ -32,9 +39,9 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(Long userId, String title, String description, List<FullIngredient> ingredients,
+    public Recipe(Long userId, String title, String description, List<Ingredient> ingredients,
                   List<String> instructions, int prepTime, int cookTime, int servingCount,
-                  RecipeCategory category, Date createdAt, Date updatedAt, double rating) {
+                  List<RecipeCategory> categories, Date createdAt, Date updatedAt, double rating) {
         this.userId = userId;
         this.title = title;
         this.description = description;
@@ -43,7 +50,7 @@ public class Recipe {
         this.prepTime = prepTime;
         this.cookTime = cookTime;
         this.servingCount = servingCount;
-        this.category = category;
+        this.categories = categories;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.rating = rating;
@@ -81,11 +88,11 @@ public class Recipe {
         this.description = description;
     }
 
-    public List<FullIngredient> getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<FullIngredient> ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -121,12 +128,12 @@ public class Recipe {
         this.servingCount = servingCount;
     }
 
-    public RecipeCategory getCategory() {
-        return category;
+    public List<RecipeCategory> getCategories() {
+        return categories;
     }
 
-    public void setCategory(RecipeCategory category) {
-        this.category = category;
+    public void setCategories(List<RecipeCategory> categories) {
+        this.categories = categories;
     }
 
     public Date getCreatedAt() {

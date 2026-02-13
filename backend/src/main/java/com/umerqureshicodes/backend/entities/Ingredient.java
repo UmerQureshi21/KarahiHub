@@ -1,20 +1,50 @@
 package com.umerqureshicodes.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
+
 import java.util.Optional;
 
+@Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Ingredient {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String quantity;
     private String unitOfMeasurement;
 
+    @ManyToOne
+    @JoinColumn(name = "recipe_id") // since this has a FK, then this owns the relationship
+    private Recipe recipe;
+
     public Ingredient() {
     }
 
-    public Ingredient(String name, String quantity, String unitOfMeasurement) {
+    public Ingredient(String name, String quantity, String unitOfMeasurement, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
         this.unitOfMeasurement = unitOfMeasurement;
+        this.recipe = recipe;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     public String getName() {
