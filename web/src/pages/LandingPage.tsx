@@ -20,13 +20,13 @@ export default function LandingPage() {
   const statTargets = [100, 50, 150];
 
   const recipes: Recipe[] = [
-    { name: "Fire Lassi", imageUrl: "/mango-lassi.jpg", rating: 5.0 },
-    { name: "Nihari Goated", imageUrl: "/nihari.jpg", rating: 4.9 },
-    { name: "Biryani", imageUrl: "/biryani.jpg", rating: 4.8 },
-    { name: "Raita", imageUrl: "/raita.jpg", rating: 4.7 },
-    { name: "Charga", imageUrl: "/charga.jpg", rating: 4.6 },
-    { name: "Jalebi", imageUrl: "/jalebi.jpg", rating: 4.5 },
-    { name: "Palak Gosht", imageUrl: "/palak-gosht.jpg", rating: 4.4 },
+    { name: "Fire Lassi", imageUrl: "/mango-lassi.jpg", rating: 5.0, username: "Ayesha Khan" },
+    { name: "Nihari Goated", imageUrl: "/nihari.jpg", rating: 4.9, username: "Zain Ahmed" },
+    { name: "Biryani", imageUrl: "/biryani.jpg", rating: 4.8, username: "Fatima Ali" },
+    { name: "Raita", imageUrl: "/raita.jpg", rating: 4.7, username: "Omar Hassan" },
+    { name: "Charga", imageUrl: "/charga.jpg", rating: 4.6, username: "Sara Malik" },
+    { name: "Jalebi", imageUrl: "/jalebi.jpg", rating: 4.5, username: "Ahmed Raza" },
+    { name: "Palak Gosht", imageUrl: "/palak-gosht.jpg", rating: 4.4, username: "Nadia Siddiqui" },
   ];
 
   useEffect(() => {
