@@ -4,10 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.umerqureshicodes.backend.entities.AppUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -68,18 +67,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // This is the whole point of JWT — the token is self-contained proof of identity.
             if (jwtService.isTokenValid(token)) {
 
-                // Build a lightweight UserDetails from the token claims alone.
-                // No database round-trip needed.
-                UserDetails userDetails = new User(email, "", List.of());
+                // Build an AppUser from the token claims alone.
+                // No database round-trip needed. Only the email is set since
+                // that's all we have in the JWT. This is enough for
+                // @AuthenticationPrincipal AppUser to work in controllers.
+                AppUser user = new AppUser();
+                user.setEmail(email);
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,
+                                user,
                                 null,
-                                List.of()
+                                user.getAuthorities()
+                                // TODO: Ask what user.getAuthorities does
                         );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                // @AuthenticationPrincipal pulls the principal (the user object) back out of this authentication. So instead of manually
+                //  digging into the SecurityContext yourself, Spring gets user who made the request, for me
             }
 
             // TRADEOFF: if a user changes their password, gets deleted, or gets banned,

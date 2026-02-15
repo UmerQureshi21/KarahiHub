@@ -6,6 +6,7 @@ import java.util.List;
 
 public record RecipeResponse(
         Long id,
+        String uploadedBy,
         String title,
         String description,
         List<IngredientRequest> ingredients,
@@ -13,7 +14,8 @@ public record RecipeResponse(
         int prepTime,
         int cookTime,
         int servingCount,
-        List<RecipeCategory> categories
+        List<RecipeCategory> categories,
+        int favouriteCount
 ) {
 
 }

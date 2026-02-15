@@ -39,12 +39,13 @@ public class AuthService {
     // 2. Save the user to PostgreSQL
     // 3. Generate an access token and return it
     public AuthResponse register(RegisterRequest request) {
+        String email = request.email().toLowerCase();
         AppUser user = new AppUser(
-                request.email(),
+                email,
                 request.username(),
                 passwordEncoder.encode(request.password())
         );
-        if (appUserRepository.findByEmail(user.getEmail()).isPresent()) {
+        if (appUserRepository.findByEmail(email).isPresent()) {
             //throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
             throw new GeneralException("This user already exists!");
         }
@@ -61,11 +62,12 @@ public class AuthService {
     //    - If wrong password → throws BadCredentialsException → 401
     // 2. If we reach here, authentication passed. Load user and generate tokens.
     public AuthResponse login(LoginRequest request) {
+        String email = request.email().toLowerCase();
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+                new UsernamePasswordAuthenticationToken(email, request.password())
         );
 
-        AppUser user = appUserRepository.findByEmail(request.email()).orElseThrow();
+        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
 
         String accessToken = jwtService.generateAccessToken(user);
         return new AuthResponse(accessToken, user.getEmail(), user.getDisplayName());
@@ -74,7 +76,7 @@ public class AuthService {
     // Generate a refresh token for a given email. Called by the controller
     // to set the HTTP-only cookie.
     public String generateRefreshToken(String email) {
-        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
+        AppUser user = appUserRepository.findByEmail(email.toLowerCase()).orElseThrow();
         return jwtService.generateRefreshToken(user);
     }
 

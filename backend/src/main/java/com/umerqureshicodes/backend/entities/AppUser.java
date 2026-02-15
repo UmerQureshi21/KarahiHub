@@ -1,10 +1,10 @@
 package com.umerqureshicodes.backend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +19,20 @@ public class AppUser implements UserDetails {
     private String username;
     private String password;
 
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    private List<Recipe> recipes = new ArrayList<>();
+
+    // The owning side of the many-to-many. JPA creates a join table called "user_favourites"
+    // with two columns: user_email and recipe_id.
+    // When you add/remove a recipe from this list and save, JPA updates the join table.
+    @ManyToMany
+    @JoinTable(
+            name = "user_favourites",
+            joinColumns = @JoinColumn(name = "user_email"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private List<Recipe> favourites = new ArrayList<>();
+
     public AppUser() {
     }
 
@@ -26,6 +40,30 @@ public class AppUser implements UserDetails {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.recipes = new ArrayList<>();
+    }
+
+    public AppUser(String email, String username, String password, List<Recipe> recipes) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.recipes = recipes;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public List<Recipe> getFavourites() {
+        return favourites;
+    }
+
+    public void setFavourites(List<Recipe> favourites) {
+        this.favourites = favourites;
     }
 
     public String getEmail() {
