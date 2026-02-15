@@ -14,7 +14,8 @@ public record RecipeResponse(
         int prepTime,
         int cookTime,
         int servingCount,
-        List<RecipeCategory> categories
+        List<RecipeCategory> categories,
+        int favouriteCount
 ) {
 
 }

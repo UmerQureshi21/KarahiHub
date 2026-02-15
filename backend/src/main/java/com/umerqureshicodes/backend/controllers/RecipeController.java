@@ -37,4 +37,10 @@ public class RecipeController {
     public RecipeResponse createRecipe(@RequestBody RecipeRequest request, @AuthenticationPrincipal AppUser user) {
         return recipeService.saveRecipe(request, user);
     }
+
+    // POST /api/recipes/5/favourite — toggles favourite on/off for the authenticated user
+    @PostMapping("/{id}/favourite")
+    public RecipeResponse toggleFavourite(@PathVariable Long id, @AuthenticationPrincipal AppUser user) {
+        return recipeService.toggleFavourite(id, user.getEmail());
+    }
 }

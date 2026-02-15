@@ -39,6 +39,11 @@ public class Recipe {
     private Date updatedAt;
     private double rating;
 
+    // The non-owning side — just a read-only mirror of what's in the user_favourites join table.
+    // mappedBy = "favourites" points to the favourites field on AppUser.
+    @ManyToMany(mappedBy = "favourites")
+    private List<AppUser> favouritedBy = new ArrayList<>();
+
     public Recipe() {
     }
 
@@ -161,5 +166,13 @@ public class Recipe {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public List<AppUser> getFavouritedBy() {
+        return favouritedBy;
+    }
+
+    public void setFavouritedBy(List<AppUser> favouritedBy) {
+        this.favouritedBy = favouritedBy;
     }
 }

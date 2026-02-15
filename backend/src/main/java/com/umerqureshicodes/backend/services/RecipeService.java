@@ -9,6 +9,7 @@ import com.umerqureshicodes.backend.entities.Recipe;
 import com.umerqureshicodes.backend.repositories.AppUserRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -62,6 +63,29 @@ public class RecipeService {
         return convertToDto(Objects.requireNonNull(recipeRepository.findById(id).orElse(null)));
     }
 
+    // Toggles favourite: if already favourited, removes it. If not, adds it.
+    // @Transactional means JPA tracks all changes to entities within this method
+    // and auto-saves them when the method finishes — no manual save() needed.
+    // If anything throws, all changes roll back automatically.
+    @Transactional
+    public RecipeResponse toggleFavourite(Long recipeId, String email) {
+        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow();
+
+        // Must update BOTH sides in memory so the DTO reflects the current state.
+        // JPA only syncs the owning side (user.favourites) to the DB —
+        // it doesn't auto-update recipe.favouritedBy in memory.
+        if (user.getFavourites().contains(recipe)) {
+            user.getFavourites().remove(recipe);
+            recipe.getFavouritedBy().remove(user); // already updated in db, but i updated in memory object too so i can get accurate dto
+        } else {
+            user.getFavourites().add(recipe);
+            recipe.getFavouritedBy().add(user);
+        }
+
+        return convertToDto(recipe);
+    }
+
     public RecipeResponse convertToDto(Recipe recipe) {
         List<IngredientRequest> ingredients = recipe.getIngredients().stream()
                 .map(ing -> new IngredientRequest(ing.getName(), ing.getQuantity(), ing.getUnitOfMeasurement().orElse(null)))
@@ -77,7 +101,8 @@ public class RecipeService {
                 recipe.getPrepTime(),
                 recipe.getCookTime(),
                 recipe.getServingCount(),
-                recipe.getCategories()
+                recipe.getCategories(),
+                recipe.getFavouritedBy().size()
         );
     }
 }
