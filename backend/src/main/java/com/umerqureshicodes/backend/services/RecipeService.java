@@ -3,8 +3,10 @@ package com.umerqureshicodes.backend.services;
 import com.umerqureshicodes.backend.dto.IngredientRequest;
 import com.umerqureshicodes.backend.dto.RecipeRequest;
 import com.umerqureshicodes.backend.dto.RecipeResponse;
+import com.umerqureshicodes.backend.entities.AppUser;
 import com.umerqureshicodes.backend.entities.Ingredient;
 import com.umerqureshicodes.backend.entities.Recipe;
+import com.umerqureshicodes.backend.repositories.AppUserRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,20 @@ import java.util.Objects;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final AppUserRepository appUserRepository;
 
-    public RecipeService(RecipeRepository recipeRepository) {this.recipeRepository = recipeRepository;}
+    public RecipeService(RecipeRepository recipeRepository, AppUserRepository appUserRepository) {
+        this.recipeRepository = recipeRepository;
+        this.appUserRepository = appUserRepository;
+    }
 
-    public RecipeResponse saveRecipe(RecipeRequest request) {
+    public RecipeResponse saveRecipe(RecipeRequest request, AppUser appUser) {
+        // The appUser from @AuthenticationPrincipal only has email (from the JWT).
+        // Load the full user from the DB so JPA can properly set the foreign key.
+        AppUser fullUser = appUserRepository.findByEmail(appUser.getEmail()).orElseThrow();
+
         Recipe recipe = new Recipe();
-        recipe.setUserId(1L);
+        recipe.setAppUser(fullUser);
         recipe.setTitle(request.title());
         recipe.setDescription(request.description());
         recipe.setInstructions(request.instructions());
@@ -59,6 +69,7 @@ public class RecipeService {
 
         return new RecipeResponse(
                 recipe.getId(),
+                recipe.getAppUser().getDisplayName() ,
                 recipe.getTitle(),
                 recipe.getDescription(),
                 ingredients,

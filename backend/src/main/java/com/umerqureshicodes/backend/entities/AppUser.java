@@ -1,10 +1,13 @@
 package com.umerqureshicodes.backend.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +22,9 @@ public class AppUser implements UserDetails {
     private String username;
     private String password;
 
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    private List<Recipe> recipes = new ArrayList<>();
+
     public AppUser() {
     }
 
@@ -26,6 +32,22 @@ public class AppUser implements UserDetails {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.recipes = new ArrayList<>();
+    }
+
+    public AppUser(String email, String username, String password, List<Recipe> recipes) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.recipes = recipes;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 
     public String getEmail() {

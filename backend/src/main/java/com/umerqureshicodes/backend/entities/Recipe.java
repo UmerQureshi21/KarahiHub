@@ -21,7 +21,10 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.EAGER) // make it eager, so that the whole appuser loads and then ican access display name, whereas with lazy, it doenst sllow custom getters
+    @JoinColumn(name = "user_id")
+    private AppUser appUser;
+
     private String title;
     private String description;
 
@@ -39,10 +42,10 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(Long userId, String title, String description, List<Ingredient> ingredients,
+    public Recipe(AppUser appUser, String title, String description, List<Ingredient> ingredients,
                   List<String> instructions, int prepTime, int cookTime, int servingCount,
                   List<RecipeCategory> categories, Date createdAt, Date updatedAt, double rating) {
-        this.userId = userId;
+        this.appUser = appUser;
         this.title = title;
         this.description = description;
         this.ingredients = ingredients;
@@ -64,12 +67,12 @@ public class Recipe {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public AppUser getAppUser() {
+        return appUser;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
     public String getTitle() {

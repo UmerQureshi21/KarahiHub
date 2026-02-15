@@ -1,12 +1,16 @@
 package com.umerqureshicodes.backend.config;
 
+import com.umerqureshicodes.backend.entities.AppUser;
 import com.umerqureshicodes.backend.entities.Ingredient;
 import com.umerqureshicodes.backend.entities.Recipe;
 import com.umerqureshicodes.backend.entities.RecipeCategory;
+import com.umerqureshicodes.backend.repositories.AppUserRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,17 +18,25 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private final RecipeRepository recipeRepository;
+    private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(RecipeRepository recipeRepository) {
+    public DataSeeder(RecipeRepository recipeRepository, AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         this.recipeRepository = recipeRepository;
+        this.appUserRepository = appUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
 
+        // Create mock user
+        AppUser vishav = new AppUser("purewal@gmail.com", "Vishav", passwordEncoder.encode("mypassword"));
+        appUserRepository.save(vishav);
+
         // 1. Chicken Karahi
         Recipe karahi = new Recipe();
-        karahi.setUserId(1L);
+        karahi.setAppUser(vishav);
         karahi.setTitle("Chicken Karahi");
         karahi.setDescription("A fiery Pakistani wok curry with tomatoes, green chilies, and fresh ginger.");
         karahi.setInstructions(List.of(
@@ -56,7 +68,7 @@ public class DataSeeder implements CommandLineRunner {
 
         // 2. Nihari
         Recipe nihari = new Recipe();
-        nihari.setUserId(2L);
+        nihari.setAppUser(vishav);
         nihari.setTitle("Nihari");
         nihari.setDescription("A slow-cooked beef stew with rich spices, traditionally eaten for breakfast in Pakistan.");
         nihari.setInstructions(List.of(
@@ -92,7 +104,7 @@ public class DataSeeder implements CommandLineRunner {
 
         // 3. Dahi Bhalle
         Recipe dahiBhalle = new Recipe();
-        dahiBhalle.setUserId(1L);
+        dahiBhalle.setAppUser(vishav);
         dahiBhalle.setTitle("Dahi Bhalle");
         dahiBhalle.setDescription("Soft lentil dumplings soaked in creamy yogurt and topped with tangy chutneys.");
         dahiBhalle.setInstructions(List.of(
@@ -121,7 +133,7 @@ public class DataSeeder implements CommandLineRunner {
 
         // 4. Chapli Kebab
         Recipe chapliKebab = new Recipe();
-        chapliKebab.setUserId(3L);
+        chapliKebab.setAppUser(vishav);
         chapliKebab.setTitle("Chapli Kebab");
         chapliKebab.setDescription("Peshawari-style spiced beef patties loaded with tomatoes, onions, and fresh herbs.");
         chapliKebab.setInstructions(List.of(

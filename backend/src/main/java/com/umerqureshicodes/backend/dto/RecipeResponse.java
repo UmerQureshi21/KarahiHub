@@ -6,6 +6,7 @@ import java.util.List;
 
 public record RecipeResponse(
         Long id,
+        String uploadedBy,
         String title,
         String description,
         List<IngredientRequest> ingredients,
