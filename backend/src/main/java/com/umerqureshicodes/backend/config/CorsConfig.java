@@ -21,10 +21,14 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // allowCredentials(true) is required for the browser to send the refresh_token cookie.
+                // CORS spec forbids allowedOrigins("*") when credentials are enabled,
+                // so we specify the frontend origin explicitly.
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("*")
-                        .allowedHeaders("*");
+                        .allowedOrigins("http://localhost:5173")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
