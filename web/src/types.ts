@@ -36,3 +36,9 @@ export type IngredientRequest = {
     quantity: string;
     unitOfMeasurement: string | null;
 }
+
+export type AuthResponse = {
+    accessToken: string;
+    email: string;
+    username: string;
+}
