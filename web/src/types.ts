@@ -42,3 +42,9 @@ export type AuthResponse = {
     email: string;
     username: string;
 }
+
+// Matches the backend ErrorResponse record from GlobalExceptionHandler
+export type ErrorResponse = {
+    status: number;
+    message: string;
+}

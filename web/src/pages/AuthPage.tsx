@@ -1,3 +1,4 @@
+import { register } from "../services/userService";
 import { useState } from "react";
 
 export default function AuthPage() {
@@ -68,9 +69,29 @@ export default function AuthPage() {
     if (!Object.values(newErrors).some((error) => error)) {
       // Form is valid, proceed with authentication
       console.log("Form submitted:", formData);
-      alert(isSignUp ? "Sign up successful!" : "Sign in successful!");
+    
+      // TODO: Integrate with backend API for authentication (sign in/sign up)
+      if (isSignUp) {
+        handleSignUp();
+      } else {
+        handleSignIn();
+      }      
     }
   };
+
+  async function handleSignUp(){
+    const data = await register({
+      email: formData.email,
+      username: formData.username,
+      password: formData.password,
+    });
+    console.log("Registration response:", data);
+
+  }
+
+  function handleSignIn(){
+
+  }
 
   const handleOAuth = (provider: string) => {
     console.log(`OAuth with ${provider}`);
