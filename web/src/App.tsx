@@ -5,6 +5,8 @@ import UserLayout from "./layouts/UserLayout";
 import DashboardPage from "./pages/DashboardPage";
 import UploadPage from "./pages/UploadPage";
 import AuthPage from "./pages/AuthPage";
+import SearchPage from "./pages/SearchPage";
+import FavRecipesPage from "./pages/FavRecipesPage";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +20,7 @@ const router = createBrowserRouter([
       {
         path: "/auth",
         element: <AuthPage />,
-      },      
+      },
     ],
   },
   {
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
       {
         path: "upload",
         element: <UploadPage />,
+      },
+      {
+        path: "search",
+        element: <SearchPage />,
+      },
+      {
+        path: "favourites",
+        element: <FavRecipesPage />,
       },
     ],
   },

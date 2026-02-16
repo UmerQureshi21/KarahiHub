@@ -18,7 +18,6 @@ export default function TopFoodCarousel({
   height,
   carouselHeight,
   width,
-  text,
   isImages,
 }: CarouselProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
