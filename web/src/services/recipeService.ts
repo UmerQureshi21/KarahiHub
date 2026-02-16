@@ -42,3 +42,17 @@ export const getMyRecipes = async () => {
     throw new Error(getErrorMessage(error));
   }
 };
+
+export const postRecipe = async (recipe: RecipeRequest) => {
+    try{
+        const token = getAccessToken();
+        const response = await axios.post(`${API_BASE_URL}/recipes`, recipe, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(getErrorMessage(error));
+    }
+};

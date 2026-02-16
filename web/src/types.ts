@@ -43,6 +43,21 @@ export type AuthResponse = {
     username: string;
 }
 
+// Matches the backend RecipeResponse DTO returned from GET/POST endpoints
+export type RecipeResponse = {
+    id: number;
+    uploadedBy: string;
+    title: string;
+    description: string;
+    ingredients: IngredientRequest[];
+    instructions: string[];
+    prepTime: number;
+    cookTime: number;
+    servingCount: number;
+    categories: string[];
+    favouriteCount: number;
+}
+
 // Matches the backend ErrorResponse record from GlobalExceptionHandler
 export type ErrorResponse = {
     status: number;
