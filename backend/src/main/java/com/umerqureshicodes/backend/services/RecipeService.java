@@ -86,6 +86,12 @@ public class RecipeService {
         return convertToDto(recipe);
     }
 
+    public List<RecipeResponse> getAllByEmail(String email) {
+        return recipeRepository.findByAppUserEmail(email).stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
     public RecipeResponse convertToDto(Recipe recipe) {
         List<IngredientRequest> ingredients = recipe.getIngredients().stream()
                 .map(ing -> new IngredientRequest(ing.getName(), ing.getQuantity(), ing.getUnitOfMeasurement().orElse(null)))

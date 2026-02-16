@@ -46,25 +46,27 @@ export default function TopRecipe({ recipe }: TopRecipeProps) {
           {recipe.name}
         </h3>
 
-        {/* Mock Description */}
-        <p className="text-gray-600 fred-light text-sm mb-3 line-clamp-2 flex-1">
-          A delicious and authentic Pakistani recipe passed down through
-          generations. Perfect for family gatherings and special occasions.
-        </p>
+        {/* Categories */}
+        <div className="flex flex-wrap gap-1.5 mb-3 flex-1">
+          {recipe.categories.map((category, idx) => (
+            <span
+              key={idx}
+              className="text-xs bg-[var(--accent)] text-[var(--primary)] fred-medium px-2 py-1 rounded-full"
+            >
+              {category}
+            </span>
+          ))}
+        </div>
 
-        {/* Mock Metadata */}
-        <div className="flex items-center gap-4 text-xs text-gray-500 fred-light border-t border-gray-100 pt-1">
+        {/* Metadata */}
+        <div className="flex items-center gap-3 text-xs text-gray-500 fred-light border-t border-gray-100 pt-2">
           <div className="flex items-center gap-1">
             <span>⏱️</span>
-            <span>45 min</span>
+            <span>{recipe.prepTime + recipe.cookTime} min</span>
           </div>
           <div className="flex items-center gap-1">
             <span>👥</span>
-            <span>4 servings</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span>Category</span>
-            <span>Dinner, Lunch</span>
+            <span>{recipe.servingCount} servings</span>
           </div>
         </div>
       </div>
