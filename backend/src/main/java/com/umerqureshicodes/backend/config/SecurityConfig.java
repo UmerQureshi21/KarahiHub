@@ -31,6 +31,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Let Spring Security use the CORS config from CorsConfig.java.
+                // Without this, Security blocks the preflight OPTIONS request
+                // before MVC CORS ever runs → browser sees a CORS error.
+                .cors(cors -> {})
+
                 // CSRF off — we're using stateless JWT, not session cookies
                 .csrf(csrf -> csrf.disable())
 

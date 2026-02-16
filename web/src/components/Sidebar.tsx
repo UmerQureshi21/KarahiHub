@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { getCurrentUsername } from "../services/userService";
 
 type SidebarProps = {
   isClosed: boolean;
@@ -69,7 +70,14 @@ const IconUpload = ({ className }: { className?: string }) => (
 
 const IconSearch = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
+    <circle
+      cx="11"
+      cy="11"
+      r="7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    />
     <path
       d="M20 20l-3.5-3.5"
       fill="none"
@@ -143,7 +151,14 @@ const IconMoon = ({ className }: { className?: string }) => (
 
 const IconSun = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-    <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
+    <circle
+      cx="12"
+      cy="12"
+      r="4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    />
     <path
       d="M12 2v3M12 19v3M2 12h3M19 12h3M4.5 4.5l2.1 2.1M17.4 17.4l2.1 2.1M19.5 4.5l-2.1 2.1M6.6 17.4l-2.1 2.1"
       fill="none"
@@ -156,16 +171,24 @@ const IconSun = ({ className }: { className?: string }) => (
 
 export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
   const [isDark, setIsDark] = useState(false);
+  const [name, setName] = useState<string>("Test");
 
   const textClass = `text-[16px] font-medium text-[var(--primary)] transition-opacity duration-200 whitespace-nowrap ${
     isClosed ? "opacity-0" : "opacity-100"
   }`;
 
+  useEffect(() => {
+    const userName = getCurrentUsername();
+    if (userName) {
+      setName(userName);
+    }
+  }, []);
+
   return (
     <nav
       className={`fixed top-0 left-0 h-full ${
         isClosed ? "w-[88px]" : "w-[250px]"
-      } p-[10px] px-[14px] bg-[var(--accent)] transition-all duration-500 z-20`}
+      } fred-bold p-[10px] px-[14px] bg-[var(--accent)] transition-all duration-500 z-20`}
     >
       <header className="relative h-[60px] flex items-center">
         <div className="relative flex items-center w-full">
@@ -177,7 +200,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
               isClosed ? "opacity-0" : "opacity-100"
             }`}
           >
-            <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">Umer Qureshi</span>
+            <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">
+              {name}
+            </span>
           </div>
         </div>
         <button
@@ -199,7 +224,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>Dashboard</span>
+                <span className={`${textClass} group-hover:text-white`}>
+                  Dashboard
+                </span>
               </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
@@ -208,7 +235,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>Upload</span>
+                <span className={`${textClass} group-hover:text-white`}>
+                  Upload
+                </span>
               </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
@@ -217,7 +246,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>Search</span>
+                <span className={`${textClass} group-hover:text-white`}>
+                  Search
+                </span>
               </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
@@ -226,7 +257,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>MyFiles</span>
+                <span className={`${textClass} group-hover:text-white`}>
+                  My Favourites
+                </span>
               </NavLink>
             </li>
           </ul>
@@ -239,7 +272,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
               className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
             >
               <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-              <span className={`${textClass} group-hover:text-white`}>Logout</span>
+              <span className={`${textClass} group-hover:text-white`}>
+                Logout
+              </span>
             </NavLink>
           </li>
 
@@ -261,7 +296,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                   }`}
                 />
               </div>
-              <span className={`${textClass}`}>{isDark ? "Light Mode" : "Dark Mode"}</span>
+              <span className={`${textClass}`}>
+                {isDark ? "Light Mode" : "Dark Mode"}
+              </span>
             </div>
 
             <button
