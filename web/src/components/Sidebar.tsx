@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 type SidebarProps = {
   isClosed: boolean;
@@ -177,7 +178,6 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
             }`}
           >
             <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">Umer Qureshi</span>
-            <span className="text-[14px] text-[var(--primary)] mt-[-2px] whitespace-nowrap">McMaster Student</span>
           </div>
         </div>
         <button
@@ -194,53 +194,53 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
         <div className="menu">
           <ul className="mt-[10px]">
             <li className="h-[50px] mt-[10px] list-none flex items-center">
-              <a
-                href="#"
+              <NavLink
+                to="/app/dashboard"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span className={`${textClass} group-hover:text-white`}>Dashboard</span>
-              </a>
+              </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
-              <a
-                href="#"
+              <NavLink
+                to="/app/upload"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span className={`${textClass} group-hover:text-white`}>Upload</span>
-              </a>
+              </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
-              <a
-                href="#"
+              <NavLink
+                to="/app/search"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span className={`${textClass} group-hover:text-white`}>Search</span>
-              </a>
+              </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
-              <a
-                href="#"
+              <NavLink
+                to="/app/favourites"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span className={`${textClass} group-hover:text-white`}>MyFiles</span>
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>
 
         <div className="bottom-content">
           <li className="h-[50px] mt-[10px] list-none flex items-center">
-            <a
-              href="#"
+            <NavLink
+              to="/auth"
               className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
             >
               <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
               <span className={`${textClass} group-hover:text-white`}>Logout</span>
-            </a>
+            </NavLink>
           </li>
 
           <li className="h-[50px] mt-[10px] list-none flex items-center bg-white/70 relative rounded-[6px]">
