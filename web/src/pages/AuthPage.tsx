@@ -1,7 +1,9 @@
-import { register } from "../services/userService";
+import { useNavigate } from "react-router-dom";
+import { login, register } from "../services/userService";
 import { useState } from "react";
 
 export default function AuthPage() {
+  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
@@ -24,7 +26,7 @@ export default function AuthPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
+
     // Clear error when user starts typing
     setErrors({ ...errors, [name]: "" });
   };
@@ -69,28 +71,51 @@ export default function AuthPage() {
     if (!Object.values(newErrors).some((error) => error)) {
       // Form is valid, proceed with authentication
       console.log("Form submitted:", formData);
-    
+
       // TODO: Integrate with backend API for authentication (sign in/sign up)
       if (isSignUp) {
         handleSignUp();
       } else {
         handleSignIn();
-      }      
+      }
     }
   };
 
-  async function handleSignUp(){
-    const data = await register({
-      email: formData.email,
-      username: formData.username,
-      password: formData.password,
-    });
-    console.log("Registration response:", data);
+  async function handleSignUp() {
+    try {
+      const data = await register({
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+      });
+      console.log("Registration successful:", data);
+      navigate("/app/dashboard");
+    } catch (error) {
+      console.log("Registration error:", error);
 
+      setErrors((prev) => ({
+        ...prev,
+        email: error instanceof Error ? error.message : "Registration failed",
+      }));
+    }
   }
 
-  function handleSignIn(){
+  async function handleSignIn() {
+    try {
+      const data = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log("Login successful:", data);
+      navigate("/app/dashboard");
+    } catch (error) {
+      console.log("Login error:", error);
 
+      setErrors((prev) => ({
+        ...prev,
+        email: error instanceof Error ? error.message : "Login failed",
+      }));
+    }
   }
 
   const handleOAuth = (provider: string) => {
