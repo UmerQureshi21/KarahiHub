@@ -87,7 +87,7 @@ export default function UnitPicker({ value, onChange, className }: UnitPickerPro
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full px-4 py-3 rounded-[10px] border border-gray-200 fred-med text-[14px] text-left outline-none focus:border-[var(--secondary)] transition-colors bg-white flex items-center justify-between"
+        className="w-full px-4 py-3 rounded-[10px] border border-gray-200 fred-med text-[14px] text-left outline-none focus:border-[var(--secondary)] transition-colors bg-[var(--surface)] flex items-center justify-between"
       >
         <span className={value ? "text-[var(--primary)]" : "text-gray-400"}>
           {value || "Unit"}
@@ -108,7 +108,7 @@ export default function UnitPicker({ value, onChange, className }: UnitPickerPro
       {open && (
         <>
           {/* Desktop: floating dropdown (hidden on mobile) */}
-          <div className="hidden md:block absolute z-30 top-[calc(100%+6px)] left-0 w-[200px] bg-white rounded-[12px] shadow-lg border border-gray-100 py-2 max-h-[280px] overflow-y-auto">
+          <div className="hidden md:block absolute z-30 top-[calc(100%+6px)] left-0 w-[200px] bg-[var(--surface)] rounded-[12px] shadow-lg border border-gray-100 py-2 max-h-[280px] overflow-y-auto">
             <UnitList value={value} onSelect={select} />
           </div>
 
@@ -120,7 +120,7 @@ export default function UnitPicker({ value, onChange, className }: UnitPickerPro
               onClick={() => setOpen(false)}
             />
             {/* Sheet */}
-            <div className="relative bg-white rounded-t-[20px] max-h-[70vh] flex flex-col">
+            <div className="relative bg-[var(--surface)] rounded-t-[20px] max-h-[70vh] flex flex-col">
               {/* Handle + header */}
               <div className="flex flex-col items-center pt-3 pb-2 border-b border-gray-100">
                 <div className="w-[36px] h-[4px] bg-gray-300 rounded-full mb-3" />

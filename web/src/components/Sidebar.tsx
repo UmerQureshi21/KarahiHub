@@ -208,7 +208,7 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
         <button
           type="button"
           onClick={onToggle}
-          className="absolute top-1/2 -right-[25px] -translate-y-1/2 h-[35px] w-[35px] bg-[var(--secondary)] flex items-center justify-center rounded-full text-white"
+          className="absolute top-1/2 -right-[25px] -translate-y-1/2 h-[35px] w-[35px] bg-[var(--secondary)] flex items-center justify-center rounded-full text-[var(--surface)]"
           aria-label="Toggle sidebar"
         >
           <IconChevronRight className="h-[22px] w-[22px]" />
@@ -223,8 +223,8 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 to="/app/dashboard"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>
+                <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
                   Dashboard
                 </span>
               </NavLink>
@@ -234,8 +234,8 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 to="/app/upload"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>
+                <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
                   Upload
                 </span>
               </NavLink>
@@ -245,8 +245,8 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 to="/app/search"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>
+                <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
                   Search
                 </span>
               </NavLink>
@@ -256,8 +256,8 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 to="/app/favourites"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>
+                <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
                   My Favourites
                 </span>
               </NavLink>
@@ -271,14 +271,14 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
               to="/auth"
               className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
             >
-              <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-              <span className={`${textClass} group-hover:text-white`}>
+              <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+              <span className={`${textClass} group-hover:text-[var(--surface)]`}>
                 Logout
               </span>
             </NavLink>
           </li>
 
-          <li className="h-[50px] mt-[10px] list-none flex items-center bg-white/70 relative rounded-[6px]">
+          <li className="h-[50px] mt-[10px] list-none flex items-center bg-[var(--surface)]/70 relative rounded-[6px]">
             <div
               className={`absolute left-0 top-1/2 -translate-y-1/2 flex items-center transition-opacity duration-200 ${
                 isClosed ? "opacity-0" : "opacity-100"

@@ -2,11 +2,11 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const linkClass =
-  "px-3 py-2 rounded-[8px] text-[14px] fred-med text-[var(--primary)] transition-colors duration-200 hover:bg-[var(--secondary)] hover:text-white";
+  "px-3 py-2 rounded-[8px] text-[14px] fred-med text-[var(--primary)] transition-colors duration-200 hover:bg-[var(--secondary)] hover:text-[var(--surface)]";
 
 // Same styles but full-width for the mobile drawer
 const mobileLinkClass =
-  "block px-4 py-3 rounded-[8px] text-[15px] fred-med text-[var(--primary)] transition-colors duration-200 hover:bg-[var(--secondary)] hover:text-white";
+  "block px-4 py-3 rounded-[8px] text-[15px] fred-med text-[var(--primary)] transition-colors duration-200 hover:bg-[var(--secondary)] hover:text-[var(--surface)]";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);

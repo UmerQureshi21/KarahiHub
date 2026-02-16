@@ -4,7 +4,7 @@ export default function SignUpButton() {
   return (
     <NavLink
       to="/auth"
-      className="group bg-[var(--secondary)] text-white rounded-[70px] fred-medium h-[40px] px-6 md:h-[45px] md:px-8 lg:w-[10%] lg:h-[50px] shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
+      className="group bg-[var(--secondary)] text-[var(--surface)] rounded-[70px] fred-medium h-[40px] px-6 md:h-[45px] md:px-8 lg:w-[10%] lg:h-[50px] shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
     >
       <span>Sign up</span>
       <svg

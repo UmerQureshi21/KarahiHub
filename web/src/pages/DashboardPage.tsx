@@ -41,19 +41,19 @@ export default function DashboardPage() {
 
       {/* Quick stats */}
       <section className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-        <div className="bg-white rounded-[16px] p-5 shadow-sm">
+        <div className="bg-[var(--surface)] rounded-[16px] p-5 shadow-sm">
           <p className="fred-light text-[13px] text-gray-400">My Recipes</p>
           <p className="fred-bold text-[28px] text-[var(--primary)]">
             {loading ? "-" : recipes.length}
           </p>
         </div>
-        <div className="bg-white rounded-[16px] p-5 shadow-sm">
+        <div className="bg-[var(--surface)] rounded-[16px] p-5 shadow-sm">
           <p className="fred-light text-[13px] text-gray-400">Total Favourites</p>
           <p className="fred-bold text-[28px] text-[var(--secondary)]">
             {loading ? "-" : recipes.reduce((sum, r) => sum + r.favouriteCount, 0)}
           </p>
         </div>
-        <div className="bg-white rounded-[16px] p-5 shadow-sm col-span-2 md:col-span-1">
+        <div className="bg-[var(--surface)] rounded-[16px] p-5 shadow-sm col-span-2 md:col-span-1">
           <p className="fred-light text-[13px] text-gray-400">Avg Cook Time</p>
           <p className="fred-bold text-[28px] text-[var(--primary)]">
             {loading || recipes.length === 0
@@ -81,7 +81,7 @@ export default function DashboardPage() {
         )}
 
         {!loading && !error && recipes.length === 0 && (
-          <div className="bg-white rounded-[16px] p-8 text-center shadow-sm">
+          <div className="bg-[var(--surface)] rounded-[16px] p-8 text-center shadow-sm">
             <p className="fred-med text-[16px] text-gray-400">
               You haven't uploaded any recipes yet.
             </p>

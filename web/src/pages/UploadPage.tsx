@@ -131,7 +131,7 @@ export default function UploadPage() {
   const labelClass = "fred-med text-[14px] text-[var(--primary)] mb-1.5 block";
 
   return (
-    <div className="p-6 md:p-10 max-w-[720px] mx-auto">
+    <div className="p-[40px] md:rounded-[20px] md:my-[20px] max-w-[720px] md:bg-[var(--accent)] mx-auto">
       <h1 className="fred-bold text-[28px] md:text-[34px] text-[var(--primary)] mb-2">
         Upload Recipe
       </h1>
@@ -335,7 +335,7 @@ export default function UploadPage() {
                   onClick={() => toggleCategory(cat)}
                   className={`px-3.5 py-2 rounded-full text-[13px] fred-med transition-colors duration-200 ${
                     selected
-                      ? "bg-[var(--secondary)] text-white"
+                      ? "bg-[var(--secondary)] text-[var(--surface)]"
                       : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                   }`}
                 >
@@ -350,7 +350,7 @@ export default function UploadPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-3.5 rounded-[10px] bg-[var(--secondary)] text-white fred-bold text-[15px] hover:opacity-90 transition-opacity disabled:opacity-50"
+          className="w-full py-3.5 rounded-[10px] bg-[var(--secondary)] text-[var(--surface)] fred-bold text-[15px] hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           {submitting ? "Uploading..." : "Upload Recipe"}
         </button>

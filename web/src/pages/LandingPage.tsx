@@ -244,7 +244,7 @@ export default function LandingPage() {
               ref={(el) => {
                 statsRefs.current[0] = el;
               }}
-              className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
                 visibleStats[0] ? "bounce-card" : ""
               }`}
               style={{ animationDelay: "0s" }}
@@ -262,7 +262,7 @@ export default function LandingPage() {
               ref={(el) => {
                 statsRefs.current[1] = el;
               }}
-              className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
                 visibleStats[1] ? "bounce-card" : ""
               }`}
               style={{ animationDelay: "0.1s" }}
@@ -280,7 +280,7 @@ export default function LandingPage() {
               ref={(el) => {
                 statsRefs.current[2] = el;
               }}
-              className={`bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
                 visibleStats[2] ? "bounce-card" : ""
               }`}
               style={{ animationDelay: "0.2s" }}
@@ -294,7 +294,7 @@ export default function LandingPage() {
             </div>
 
             {/* Stat 4 */}
-            {/* <div className="bg-white rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
+            {/* <div className="bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
               <div className="fred-bold text-[40px] md:text-[48px] text-[var(--secondary)] mb-[8px]">
                 2.5K+
               </div>
@@ -310,7 +310,7 @@ export default function LandingPage() {
               ref={(el) => {
                 testimonialRefs.current[0] = el;
               }}
-              className={`bg-white rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
+              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
                 visibleTestimonials[0] ? "bounce-card" : ""
               }`}
               style={{ animationDelay: "0s" }}
@@ -338,7 +338,7 @@ export default function LandingPage() {
               ref={(el) => {
                 testimonialRefs.current[1] = el;
               }}
-              className={`bg-white rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
+              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
                 visibleTestimonials[1] ? "bounce-card" : ""
               }`}
               style={{ animationDelay: "0.1s" }}
@@ -365,7 +365,7 @@ export default function LandingPage() {
 
           {/* CTA Button */}
           <NavLink to="/auth" className="flex justify-center mt-[50px]">
-            <button className="bg-[var(--primary)] text-white px-[32px] py-[14px] rounded-[12px] fred-bold text-[18px] hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 hover:scale-105 shadow-lg">
+            <button className="bg-[var(--primary)] text-[var(--surface)] px-[32px] py-[14px] rounded-[12px] fred-bold text-[18px] hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 hover:scale-105 shadow-lg">
               Join the Community →
             </button>
           </NavLink>
@@ -373,7 +373,7 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[var(--primary)] text-white py-[40px] px-[20px] md:px-[60px]">
+      <footer className="bg-[var(--primary)] text-[var(--surface)] py-[40px] px-[20px] md:px-[60px]">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[30px] md:gap-[40px]">
             <div>
@@ -438,13 +438,13 @@ export default function LandingPage() {
               <div className="flex gap-[15px]">
                 <a
                   href="#"
-                  className="w-[35px] h-[35px] bg-white/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
+                  className="w-[35px] h-[35px] bg-[var(--surface)]/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
                 >
                   <span className="text-[18px]">📧</span>
                 </a>
                 <a
                   href="#"
-                  className="w-[35px] h-[35px] bg-white/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
+                  className="w-[35px] h-[35px] bg-[var(--surface)]/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
                 >
                   <span className="text-[18px]">🌐</span>
                 </a>
@@ -452,7 +452,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="border-t border-white/20 mt-[30px] pt-[20px] text-center">
+          <div className="border-t border-[var(--surface)]/20 mt-[30px] pt-[20px] text-center">
             <p className="fred-light text-[14px] text-gray-200">
               © {new Date().getFullYear()} Karahi Hub. All rights reserved.
             </p>

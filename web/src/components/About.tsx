@@ -51,7 +51,7 @@ export default function About() {
             ref={(el) => {
               cardRefs.current[0] = el;
             }}
-            className={`bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+            className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
               visibleCards[0] ? 'bounce-card' : ''
             }`}
             style={{ animationDelay: '0s' }}
@@ -78,7 +78,7 @@ export default function About() {
             ref={(el) => {
               cardRefs.current[1] = el;
             }}
-            className={`bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+            className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
               visibleCards[1] ? 'bounce-card' : ''
             }`}
             style={{ animationDelay: '0.1s' }}
@@ -105,7 +105,7 @@ export default function About() {
             ref={(el) => {
               cardRefs.current[2] = el;
             }}
-            className={`bg-white rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
+            className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
               visibleCards[2] ? 'bounce-card' : ''
             }`}
             style={{ animationDelay: '0.2s' }}
