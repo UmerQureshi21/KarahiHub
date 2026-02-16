@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { postRecipe } from "../services/recipeService";
 import type { IngredientRequest, RecipeRequest } from "../types";
+import UnitPicker from "../components/UnitPicker";
 
 // Matches the backend RecipeCategory enum values
 const CATEGORIES = [
@@ -184,44 +185,44 @@ export default function UploadPage() {
           <label className={labelClass}>Ingredients</label>
           <div className="flex flex-col gap-3">
             {ingredients.map((ing, i) => (
-              <div key={i} className="flex items-center gap-2">
+              <div key={i} className="flex flex-col md:flex-row gap-2">
                 <input
                   type="text"
                   value={ing.name}
                   onChange={(e) => updateIngredient(i, "name", e.target.value)}
                   placeholder="Name"
-                  className={`${inputClass} flex-[2]`}
+                  className={`${inputClass} md:flex-[2]`}
                   required
                 />
-                <input
-                  type="text"
-                  value={ing.quantity}
-                  onChange={(e) =>
-                    updateIngredient(i, "quantity", e.target.value)
-                  }
-                  placeholder="Qty"
-                  className={`${inputClass} flex-1`}
-                  required
-                />
-                <input
-                  type="text"
-                  value={ing.unitOfMeasurement ?? ""}
-                  onChange={(e) =>
-                    updateIngredient(i, "unitOfMeasurement", e.target.value)
-                  }
-                  placeholder="Unit (optional)"
-                  className={`${inputClass} flex-1`}
-                />
-                {/* Remove button — only show if more than one ingredient */}
-                {ingredients.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeIngredient(i)}
-                    className="shrink-0 w-[36px] h-[36px] flex items-center justify-center rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors text-[18px]"
-                  >
-                    x
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={ing.quantity}
+                    onChange={(e) =>
+                      updateIngredient(i, "quantity", e.target.value)
+                    }
+                    placeholder="Qty"
+                    className={`${inputClass} flex-1`}
+                    required
+                  />
+                  <UnitPicker
+                    value={ing.unitOfMeasurement}
+                    onChange={(unit) =>
+                      updateIngredient(i, "unitOfMeasurement", unit)
+                    }
+                    className="flex-1"
+                  />
+                  {/* Remove button — only show if more than one ingredient */}
+                  {ingredients.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeIngredient(i)}
+                      className="shrink-0 w-[36px] h-[36px] flex items-center justify-center rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors text-[18px]"
+                    >
+                      x
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

@@ -56,9 +56,13 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile dropdown menu */}
-      {menuOpen && (
-        <nav className="md:hidden px-[16px] pb-[16px] flex flex-col gap-[4px]">
+      {/* Mobile dropdown menu — always rendered, animated with max-height */}
+      <nav
+        className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${
+          menuOpen ? "max-h-[300px]" : "max-h-0"
+        }`}
+      >
+        <div className="px-[16px] pb-[16px] flex flex-col gap-[4px]">
           <NavLink to="/app/dashboard" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>
             Dashboard
           </NavLink>
@@ -71,8 +75,8 @@ export default function Navbar() {
           <NavLink to="/app/favourites" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>
             My Favourites
           </NavLink>
-        </nav>
-      )}
+        </div>
+      </nav>
     </header>
   );
 }
