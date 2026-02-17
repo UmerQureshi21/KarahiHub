@@ -1,25 +1,22 @@
 import { useEffect, useState } from "react";
 import { getMyRecipes } from "../services/recipeService";
-import { getCurrentUsername } from "../services/userService";
+import { useAuth } from "../context/AuthContext";
 import MyRecipeCard from "../components/MyRecipeCard";
-import type { RecipeResponse } from "../types";
+import type { ApiError, RecipeResponse } from "../types";
 
 export default function DashboardPage() {
-  const [username, setUsername] = useState<string>("");
+  const { username } = useAuth();
   const [recipes, setRecipes] = useState<RecipeResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const name = getCurrentUsername();
-    if (name) setUsername(name);
-
     const fetchRecipes = async () => {
       try {
         const data = await getMyRecipes();
         setRecipes(data);
       } catch (err) {
-        setError((err as Error).message);
+        setError((err as ApiError).message);
       } finally {
         setLoading(false);
       }
@@ -28,7 +25,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="p-6 md:p-10 max-w-[1200px] mx-auto">
+    <div className="bg-[var(--surface)] p-6 md:p-10  mx-auto min-h-screen">
       {/* Welcome section */}
       <section className="mb-10">
         <h1 className="fred-bold text-[28px] md:text-[34px] text-[var(--primary)]">
@@ -41,26 +38,30 @@ export default function DashboardPage() {
 
       {/* Quick stats */}
       <section className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-        <div className="bg-[var(--surface)] rounded-[16px] p-5 shadow-sm">
+        <div className="bg-[var(--accent)] rounded-[16px] p-5 shadow-sm">
           <p className="fred-light text-[13px] text-gray-400">My Recipes</p>
           <p className="fred-bold text-[28px] text-[var(--primary)]">
             {loading ? "-" : recipes.length}
           </p>
         </div>
-        <div className="bg-[var(--surface)] rounded-[16px] p-5 shadow-sm">
-          <p className="fred-light text-[13px] text-gray-400">Total Favourites</p>
+        <div className="bg-[var(--accent)] rounded-[16px] p-5 shadow-sm">
+          <p className="fred-light text-[13px] text-gray-400">
+            Total Favourites
+          </p>
           <p className="fred-bold text-[28px] text-[var(--secondary)]">
-            {loading ? "-" : recipes.reduce((sum, r) => sum + r.favouriteCount, 0)}
+            {loading
+              ? "-"
+              : recipes.reduce((sum, r) => sum + r.favouriteCount, 0)}
           </p>
         </div>
-        <div className="bg-[var(--surface)] rounded-[16px] p-5 shadow-sm col-span-2 md:col-span-1">
+        <div className="bg-[var(--accent)] rounded-[16px] p-5 shadow-sm col-span-2 md:col-span-1">
           <p className="fred-light text-[13px] text-gray-400">Avg Cook Time</p>
           <p className="fred-bold text-[28px] text-[var(--primary)]">
             {loading || recipes.length === 0
               ? "-"
               : Math.round(
                   recipes.reduce((sum, r) => sum + r.prepTime + r.cookTime, 0) /
-                    recipes.length
+                    recipes.length,
                 ) + "m"}
           </p>
         </div>
@@ -73,12 +74,12 @@ export default function DashboardPage() {
         </h2>
 
         {loading && (
-          <p className="fred-light text-[15px] text-gray-400">Loading your recipes...</p>
+          <p className="fred-light text-[15px] text-gray-400">
+            Loading your recipes...
+          </p>
         )}
 
-        {error && (
-          <p className="fred-med text-[14px] text-red-500">{error}</p>
-        )}
+        {error && <p className="fred-med text-[14px] text-red-500">{error}</p>}
 
         {!loading && !error && recipes.length === 0 && (
           <div className="bg-[var(--surface)] rounded-[16px] p-8 text-center shadow-sm">

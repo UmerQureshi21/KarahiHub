@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { getCurrentUsername } from "../services/userService";
+import { useAuth } from "../context/AuthContext";
 
 type SidebarProps = {
   isClosed: boolean;
@@ -171,18 +171,11 @@ const IconSun = ({ className }: { className?: string }) => (
 
 export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
   const [isDark, setIsDark] = useState(false);
-  const [name, setName] = useState<string>("Test");
+  const { username } = useAuth();
 
   const textClass = `text-[16px] font-medium text-[var(--primary)] transition-opacity duration-200 whitespace-nowrap ${
     isClosed ? "opacity-0" : "opacity-100"
   }`;
-
-  useEffect(() => {
-    const userName = getCurrentUsername();
-    if (userName) {
-      setName(userName);
-    }
-  }, []);
 
   function onDarkMode() {
     setIsDark((prev) => !prev);
@@ -206,14 +199,14 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
             }`}
           >
             <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">
-              {name}
+              {username || "User"}
             </span>
           </div>
         </div>
         <button
           type="button"
           onClick={onToggle}
-          className="absolute top-1/2 -right-[25px] -translate-y-1/2 h-[35px] w-[35px] bg-[var(--secondary)] flex items-center justify-center rounded-full text-[var(--surface)]"
+          className="absolute top-1/2 -right-[25px] -translate-y-1/2 h-[35px] w-[35px] bg-[var(--secondary)] flex items-center justify-center rounded-full text-white"
           aria-label="Toggle sidebar"
         >
           <IconChevronRight className="h-[22px] w-[22px]" />
@@ -229,7 +222,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
-                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
+                <span
+                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                >
                   Dashboard
                 </span>
               </NavLink>
@@ -240,7 +235,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
-                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
+                <span
+                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                >
                   Upload
                 </span>
               </NavLink>
@@ -251,7 +248,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
-                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
+                <span
+                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                >
                   Search
                 </span>
               </NavLink>
@@ -262,7 +261,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
-                <span className={`${textClass} group-hover:text-[var(--surface)]`}>
+                <span
+                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                >
                   My Favourites
                 </span>
               </NavLink>
@@ -277,7 +278,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
               className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
             >
               <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
-              <span className={`${textClass} group-hover:text-[var(--surface)]`}>
+              <span
+                className={`${textClass} group-hover:text-[var(--surface)]`}
+              >
                 Logout
               </span>
             </NavLink>

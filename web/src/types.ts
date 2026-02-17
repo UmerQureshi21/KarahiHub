@@ -63,3 +63,16 @@ export type ErrorResponse = {
     status: number;
     message: string;
 }
+
+// Custom error class that carries the full ErrorResponse (status + message).
+// Extends Error so it works with try/catch, but also exposes the status code
+// so callers can check for 401s, 409s, etc.
+export class ApiError extends Error {
+    status: number;
+    message: string;
+    constructor(response: ErrorResponse) {
+        super(response.message);
+        this.status = response.status;
+        this.message = response.message;
+    }
+}
