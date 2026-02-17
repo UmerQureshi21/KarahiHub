@@ -178,6 +178,9 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
   function onDarkMode() {
     setIsDark((prev) => !prev);
     document.documentElement.classList.toggle("dark");
+    // document.documentElement is the <html> element, toggling the "dark" 
+    // class on it will allow us to use CSS to switch themes based on that class.
+
   }
 
   return (
@@ -219,9 +222,9 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
                 to="/app/dashboard"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
-                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                  className={`${textClass} group-hover:text-white`}
                 >
                   Dashboard
                 </span>
@@ -232,9 +235,9 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
                 to="/app/upload"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
-                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                  className={`${textClass} group-hover:text-white`}
                 >
                   Upload
                 </span>
@@ -245,9 +248,9 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
                 to="/app/search"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
-                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                  className={`${textClass} group-hover:text-white`}
                 >
                   Search
                 </span>
@@ -258,9 +261,9 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
                 to="/app/favourites"
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
-                <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+                <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
-                  className={`${textClass} group-hover:text-[var(--surface)]`}
+                  className={`${textClass} group-hover:text-white`}
                 >
                   My Favourites
                 </span>
@@ -275,9 +278,9 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
               to="/auth"
               className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
             >
-              <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-[var(--surface)]" />
+              <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
               <span
-                className={`${textClass} group-hover:text-[var(--surface)]`}
+                className={`${textClass} group-hover:text-white`}
               >
                 Logout
               </span>
@@ -302,8 +305,8 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
                   }`}
                 />
               </div>
-              <span className={`${textClass}`}>
-                {isDark ? "Light Mode" : "Dark Mode"}
+              <span className={`${textClass} group-hover:text-white`}>
+                {isDark ? "Dark Mode" : "Light Mode"}
               </span>
             </div>
 

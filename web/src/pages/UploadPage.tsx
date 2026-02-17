@@ -342,7 +342,7 @@ export default function UploadPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 rounded-[10px] bg-[var(--secondary)] text-[var(--surface)] fred-bold text-[15px] hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full py-3.5 rounded-[10px] bg-[var(--secondary)] text-white fred-bold text-[15px] hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {submitting ? "Uploading..." : "Upload Recipe"}
           </button>
