@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
 type SidebarProps = {
   isClosed: boolean;
   onToggle: () => void;
+  name: string;
 };
 
 const IconChevronRight = ({ className }: { className?: string }) => (
@@ -169,10 +169,8 @@ const IconSun = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
+export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
   const [isDark, setIsDark] = useState(false);
-  const { username } = useAuth();
-
   const textClass = `text-[16px] font-medium text-[var(--primary)] transition-opacity duration-200 whitespace-nowrap ${
     isClosed ? "opacity-0" : "opacity-100"
   }`;
@@ -199,7 +197,7 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
             }`}
           >
             <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">
-              {username || "User"}
+              {name || "User"}
             </span>
           </div>
         </div>

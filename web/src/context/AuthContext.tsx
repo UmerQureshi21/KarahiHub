@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import type { ReactNode } from "react";
-import { setAuthListener } from "../services/userService";
+import { setAuthListener, refresh } from "../services/userService";
 
 type AuthState = {
   username: string | null;
@@ -40,6 +40,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthListener(setUser);
     return () => setAuthListener(null);
   }, [setUser]);
+
+  // On app startup (page refresh), try to restore the session from the
+  // httpOnly refresh_token cookie. If it fails (no cookie / expired),
+  // the user stays logged out — no harm done.
+  useEffect(() => {
+    refresh().catch(() => {});
+  }, []);
 
   return (
     <AuthContext.Provider value={{ ...auth, setUser, clearUser }}>

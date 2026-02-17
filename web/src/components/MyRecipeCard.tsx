@@ -8,7 +8,7 @@ export default function MyRecipeCard({ recipe }: MyRecipeCardProps) {
   const totalTime = recipe.prepTime + recipe.cookTime;
 
   return (
-    <div className="bg-[var(--surface)] rounded-[16px] p-5 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-3">
+    <div className="bg-[var(--accent)] rounded-[16px] p-5 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-3">
       {/* Title + favourite count */}
       <div className="flex items-start justify-between gap-3">
         <h3 className="fred-bold text-[18px] text-[var(--primary)] leading-tight">

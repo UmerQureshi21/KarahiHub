@@ -131,7 +131,7 @@ export default function UploadPage() {
   const labelClass = "fred-med text-[14px] text-[var(--primary)] mb-1.5 block";
 
   return (
-    <div className="bg-[var(--surface)] md:py-[20px]">
+    <div className="bg-[var(--surface)] md:py-[50px]">
       <div className="p-[40px] md:rounded-[20px]  w-full max-w-[720px] md:bg-[var(--accent)] mx-auto">
         <h1 className="fred-bold text-[28px] md:text-[34px] text-[var(--primary)] mb-2">
           Upload Recipe
