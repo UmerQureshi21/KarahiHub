@@ -1,10 +1,8 @@
 package com.umerqureshicodes.backend.config;
 
-import com.umerqureshicodes.backend.entities.AppUser;
-import com.umerqureshicodes.backend.entities.Ingredient;
-import com.umerqureshicodes.backend.entities.Recipe;
-import com.umerqureshicodes.backend.entities.RecipeCategory;
+import com.umerqureshicodes.backend.entities.*;
 import com.umerqureshicodes.backend.repositories.AppUserRepository;
+import com.umerqureshicodes.backend.repositories.CategoryRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,16 +17,33 @@ public class DataSeeder implements CommandLineRunner {
 
     private final RecipeRepository recipeRepository;
     private final AppUserRepository appUserRepository;
+    private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(RecipeRepository recipeRepository, AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+    public DataSeeder(RecipeRepository recipeRepository, AppUserRepository appUserRepository,
+                      CategoryRepository categoryRepository, PasswordEncoder passwordEncoder) {
         this.recipeRepository = recipeRepository;
         this.appUserRepository = appUserRepository;
+        this.categoryRepository = categoryRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
+
+        // Seed all category rows — one per enum value
+        // These are fixed reference data, so we save them before any recipes
+        List<Category> allCategories = new ArrayList<>();
+        for (RecipeCategory rc : RecipeCategory.values()) {
+            allCategories.add(new Category(rc, new ArrayList<>()));
+        }
+        categoryRepository.saveAll(allCategories);
+
+        // Helper to look up saved Category entities by enum value
+        Category mainCourse = categoryRepository.findById(RecipeCategory.MAIN_COURSE).orElseThrow();
+        Category breakfast = categoryRepository.findById(RecipeCategory.BREAKFAST).orElseThrow();
+        Category appetizer = categoryRepository.findById(RecipeCategory.APPETIZER).orElseThrow();
+        Category snack = categoryRepository.findById(RecipeCategory.SNACK).orElseThrow();
 
         // Create mock user
         AppUser vishav = new AppUser("purewal@gmail.com", "Vishav", passwordEncoder.encode("mypassword"));
@@ -50,7 +65,7 @@ public class DataSeeder implements CommandLineRunner {
         karahi.setPrepTime(10);
         karahi.setCookTime(30);
         karahi.setServingCount(4);
-        karahi.setCategories(List.of(RecipeCategory.MAIN_COURSE));
+        karahi.setCategories(List.of(mainCourse));
         karahi.setCreatedAt(new Date());
         karahi.setUpdatedAt(new Date());
         karahi.setRating(4.9);
@@ -83,7 +98,7 @@ public class DataSeeder implements CommandLineRunner {
         nihari.setPrepTime(15);
         nihari.setCookTime(300);
         nihari.setServingCount(6);
-        nihari.setCategories(List.of(RecipeCategory.MAIN_COURSE, RecipeCategory.BREAKFAST));
+        nihari.setCategories(List.of(mainCourse, breakfast));
         nihari.setCreatedAt(new Date());
         nihari.setUpdatedAt(new Date());
         nihari.setRating(4.8);
@@ -117,7 +132,7 @@ public class DataSeeder implements CommandLineRunner {
         dahiBhalle.setPrepTime(30);
         dahiBhalle.setCookTime(25);
         dahiBhalle.setServingCount(4);
-        dahiBhalle.setCategories(List.of(RecipeCategory.APPETIZER, RecipeCategory.SNACK));
+        dahiBhalle.setCategories(List.of(appetizer, snack));
         dahiBhalle.setCreatedAt(new Date());
         dahiBhalle.setUpdatedAt(new Date());
         dahiBhalle.setRating(4.5);
@@ -146,7 +161,7 @@ public class DataSeeder implements CommandLineRunner {
         chapliKebab.setPrepTime(40);
         chapliKebab.setCookTime(20);
         chapliKebab.setServingCount(4);
-        chapliKebab.setCategories(List.of(RecipeCategory.MAIN_COURSE, RecipeCategory.SNACK));
+        chapliKebab.setCategories(List.of(mainCourse, snack));
         chapliKebab.setCreatedAt(new Date());
         chapliKebab.setUpdatedAt(new Date());
         chapliKebab.setRating(4.7);

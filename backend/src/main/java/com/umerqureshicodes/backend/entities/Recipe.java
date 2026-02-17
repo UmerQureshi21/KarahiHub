@@ -34,7 +34,13 @@ public class Recipe {
     private int prepTime;
     private int cookTime;
     private int servingCount;
-    private List<RecipeCategory> categories = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "recipe_categories",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_name")
+    )
+    private List<Category> categories= new ArrayList<>();
     private Date createdAt;
     private Date updatedAt;
     private double rating;
@@ -49,7 +55,7 @@ public class Recipe {
 
     public Recipe(AppUser appUser, String title, String description, List<Ingredient> ingredients,
                   List<String> instructions, int prepTime, int cookTime, int servingCount,
-                  List<RecipeCategory> categories, Date createdAt, Date updatedAt, double rating) {
+                  List<Category> categories, Date createdAt, Date updatedAt, double rating) {
         this.appUser = appUser;
         this.title = title;
         this.description = description;
@@ -136,11 +142,11 @@ public class Recipe {
         this.servingCount = servingCount;
     }
 
-    public List<RecipeCategory> getCategories() {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<RecipeCategory> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
