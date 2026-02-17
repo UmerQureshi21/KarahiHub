@@ -47,3 +47,22 @@ export const postRecipe: (recipe: RecipeRequest) => Promise<RecipeResponse> = as
     }
   }
 };
+
+export const searchRecipes: (query: string) => Promise<RecipeResponse[]> = async (query: string) => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.get(`${API_BASE_URL}/recipes/search`, {
+      params: { "query": query },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await searchRecipes(query); // Retry searching recipes after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
+    }
+  }
+};
