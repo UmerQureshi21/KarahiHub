@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 type SidebarProps = {
   isClosed: boolean;
   onToggle: () => void;
+  name: string;
 };
 
 const IconChevronRight = ({ className }: { className?: string }) => (
@@ -69,7 +70,14 @@ const IconUpload = ({ className }: { className?: string }) => (
 
 const IconSearch = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
+    <circle
+      cx="11"
+      cy="11"
+      r="7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    />
     <path
       d="M20 20l-3.5-3.5"
       fill="none"
@@ -143,7 +151,14 @@ const IconMoon = ({ className }: { className?: string }) => (
 
 const IconSun = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-    <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
+    <circle
+      cx="12"
+      cy="12"
+      r="4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    />
     <path
       d="M12 2v3M12 19v3M2 12h3M19 12h3M4.5 4.5l2.1 2.1M17.4 17.4l2.1 2.1M19.5 4.5l-2.1 2.1M6.6 17.4l-2.1 2.1"
       fill="none"
@@ -154,18 +169,25 @@ const IconSun = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
+export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
   const [isDark, setIsDark] = useState(false);
-
   const textClass = `text-[16px] font-medium text-[var(--primary)] transition-opacity duration-200 whitespace-nowrap ${
     isClosed ? "opacity-0" : "opacity-100"
   }`;
+
+  function onDarkMode() {
+    setIsDark((prev) => !prev);
+    document.documentElement.classList.toggle("dark");
+    // document.documentElement is the <html> element, toggling the "dark" 
+    // class on it will allow us to use CSS to switch themes based on that class.
+
+  }
 
   return (
     <nav
       className={`fixed top-0 left-0 h-full ${
         isClosed ? "w-[88px]" : "w-[250px]"
-      } p-[10px] px-[14px] bg-[var(--accent)] transition-all duration-500 z-20`}
+      } fred-bold p-[10px] px-[14px] bg-[var(--accent)] transition-all duration-500 z-20`}
     >
       <header className="relative h-[60px] flex items-center">
         <div className="relative flex items-center w-full">
@@ -177,7 +199,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
               isClosed ? "opacity-0" : "opacity-100"
             }`}
           >
-            <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">Umer Qureshi</span>
+            <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">
+              {name || "User"}
+            </span>
           </div>
         </div>
         <button
@@ -199,7 +223,11 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>Dashboard</span>
+                <span
+                  className={`${textClass} group-hover:text-white`}
+                >
+                  Dashboard
+                </span>
               </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
@@ -208,7 +236,11 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>Upload</span>
+                <span
+                  className={`${textClass} group-hover:text-white`}
+                >
+                  Upload
+                </span>
               </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
@@ -217,7 +249,11 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>Search</span>
+                <span
+                  className={`${textClass} group-hover:text-white`}
+                >
+                  Search
+                </span>
               </NavLink>
             </li>
             <li className="h-[50px] mt-[10px] list-none flex items-center">
@@ -226,7 +262,11 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                 className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
               >
                 <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-                <span className={`${textClass} group-hover:text-white`}>MyFiles</span>
+                <span
+                  className={`${textClass} group-hover:text-white`}
+                >
+                  My Favourites
+                </span>
               </NavLink>
             </li>
           </ul>
@@ -239,13 +279,17 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
               className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
             >
               <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
-              <span className={`${textClass} group-hover:text-white`}>Logout</span>
+              <span
+                className={`${textClass} group-hover:text-white`}
+              >
+                Logout
+              </span>
             </NavLink>
           </li>
 
-          <li className="h-[50px] mt-[10px] list-none flex items-center bg-white/70 relative rounded-[6px]">
+          <li className="h-[50px] mt-[10px] list-none flex items-center bg-[var(--surface)] relative rounded-[6px]">
             <div
-              className={`absolute left-0 top-1/2 -translate-y-1/2 flex items-center transition-opacity duration-200 ${
+              className={`absolute left-0 top-1/2 -translate-y-1/2 flex  items-center transition-opacity duration-200 ${
                 isClosed ? "opacity-0" : "opacity-100"
               }`}
             >
@@ -261,18 +305,20 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
                   }`}
                 />
               </div>
-              <span className={`${textClass}`}>{isDark ? "Light Mode" : "Dark Mode"}</span>
+              <span className={`${textClass} group-hover:text-white`}>
+                {isDark ? "Dark Mode" : "Light Mode"}
+              </span>
             </div>
 
             <button
               type="button"
-              onClick={() => setIsDark((prev) => !prev)}
+              onClick={onDarkMode}
               className="absolute right-[6px] h-full w-[52px] flex items-center justify-center cursor-pointer"
               aria-label="Toggle dark mode"
             >
-              <span className="relative h-[22px] w-[44px] rounded-[25px] bg-[var(--primary)]/20">
+              <span className="relative h-[22px] w-[44px] rounded-[25px] bg-[var(--primary)]">
                 <span
-                  className={`absolute top-1/2 -translate-y-1/2 h-[15px] w-[15px] rounded-full bg-[var(--secondary)] transition-all duration-300 ${
+                  className={`absolute top-1/2 -translate-y-1/2 h-[15px] w-[15px] rounded-full bg-[var(--surface)] transition-all duration-300 ${
                     isDark ? "left-[25px]" : "left-[5px]"
                   }`}
                 ></span>

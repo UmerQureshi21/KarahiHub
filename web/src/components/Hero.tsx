@@ -36,7 +36,7 @@ export default function Hero() {
             onClick={() => {
               document.getElementById('top-recipes')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="mt-[20px] bg-[var(--primary)] text-white px-[24px] py-[12px] rounded-full fred-medium text-[16px] md:text-[18px] hover:bg-[var(--secondary)] hover:text-white transition-all duration-300 hover:scale-105"
+            className="mt-[20px] bg-[var(--primary)] text-[var(--surface)] px-[24px] py-[12px] rounded-full fred-medium text-[16px] md:text-[18px] hover:bg-[var(--secondary)] hover:text-[var(--surface)] transition-all duration-300 hover:scale-105"
           >
             View the Top Recipes ↓
           </button>

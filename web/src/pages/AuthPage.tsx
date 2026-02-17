@@ -129,12 +129,12 @@ export default function AuthPage() {
       <div className="w-full md:w-[50%] bg-[var(--accent)] flex items-center justify-center px-[20px] py-[20px]">
         <div className="w-full max-w-[450px]">
           {/* Toggle Sign In/Sign Up */}
-          <div className="flex gap-[10px] mb-[20px] bg-white rounded-[12px] p-[6px]">
+          <div className="flex gap-[10px] mb-[20px] bg-[var(--surface)] rounded-[12px] p-[6px]">
             <button
               onClick={() => setIsSignUp(false)}
               className={`flex-1 py-[10px] rounded-[8px] fred-medium transition-all duration-300 ${
                 !isSignUp
-                  ? "bg-[var(--primary)] text-white"
+                  ? "bg-[var(--primary)] text-[var(--surface)]"
                   : "bg-transparent text-gray-600"
               }`}
             >
@@ -144,7 +144,7 @@ export default function AuthPage() {
               onClick={() => setIsSignUp(true)}
               className={`flex-1 py-[10px] rounded-[8px] fred-medium transition-all duration-300 ${
                 isSignUp
-                  ? "bg-[var(--primary)] text-white"
+                  ? "bg-[var(--primary)] text-[var(--surface)]"
                   : "bg-transparent text-gray-600"
               }`}
             >
@@ -249,7 +249,7 @@ export default function AuthPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[var(--primary)] text-white py-[14px] rounded-[10px] fred-bold text-[16px] hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="w-full bg-[var(--primary)] text-[var(--surface)] py-[14px] rounded-[10px] fred-bold text-[16px] hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               {isSignUp ? "Sign Up" : "Sign In"}
             </button>
@@ -267,7 +267,7 @@ export default function AuthPage() {
           {/* OAuth Button */}
           <button
             onClick={() => handleOAuth("Google")}
-            className="w-full flex items-center justify-center gap-[10px] bg-white border-2 border-gray-200 py-[12px] rounded-[10px] fred-medium text-[14px] hover:border-[var(--primary)] transition-colors duration-200"
+            className="w-full flex items-center justify-center gap-[10px] bg-[var(--surface)] border-2 border-gray-200 py-[12px] rounded-[10px] fred-medium text-[14px] hover:border-[var(--primary)] transition-colors duration-200"
           >
             <svg className="w-[20px] h-[20px]" viewBox="0 0 24 24">
               <path
@@ -293,7 +293,7 @@ export default function AuthPage() {
       </div>
 
       {/* Right Side - Branding */}
-      <div className="hidden md:flex w-[50%] flex-col items-center justify-center bg-white p-[40px]">
+      <div className="hidden md:flex w-[50%] flex-col items-center justify-center bg-[var(--surface)] p-[40px]">
         <img
           src="/logo.png"
           alt="Karahi Hub Logo"

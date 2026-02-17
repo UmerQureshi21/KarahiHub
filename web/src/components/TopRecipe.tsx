@@ -6,7 +6,7 @@ type TopRecipeProps = {
 
 export default function TopRecipe({ recipe }: TopRecipeProps) {
   return (
-    <div className="bg-white w-full fred-med h-full rounded-[30px] overflow-hidden hover:transform hover:scale-[1.02] transition duration-300 ease shadow-lg flex flex-col">
+    <div className="bg-[var(--surface)] w-full fred-med h-full rounded-[30px] overflow-hidden hover:transform hover:scale-[1.02] transition duration-300 ease shadow-lg flex flex-col">
       {/* Image Section */}
       <div className="relative w-full h-[60%]">
         <img
@@ -16,7 +16,7 @@ export default function TopRecipe({ recipe }: TopRecipeProps) {
           draggable={false}
         />
         {/* Rating Badge */}
-        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+        <div className="absolute top-4 right-4 bg-[var(--surface)]/95 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
           <span className="text-yellow-400 text-lg">★</span>
           <span className="text-[var(--primary)] fred-bold text-sm">
             {recipe.rating.toFixed(1)}
@@ -28,7 +28,7 @@ export default function TopRecipe({ recipe }: TopRecipeProps) {
       <div className="flex-1 p-4 flex flex-col">
         {/* Creator Info */}
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-[32px] h-[32px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[14px] text-white">
+          <div className="w-[32px] h-[32px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[14px] text-[var(--surface)]">
             {recipe.username.charAt(0)}
           </div>
           <div className="flex flex-col">

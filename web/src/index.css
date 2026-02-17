@@ -29,8 +29,18 @@
   --primary: #2c2c2c;
   --secondary: #01411c;
   --accent: #fff6e0;
-  /* fff6e0 */
-  /* 01411c */
+  --surface: #ffffff;
+  /* --primary: #2c2c2c;
+  --secondary: #01411c;
+  --accent: #fff6e0;
+  --surface: #ffffff; */
+}
+
+html.dark{
+  --primary: #c8c8c8;
+  --secondary: #01411c;
+  --accent: #212121;
+  --surface: #2b2b2b;
 }
 
 @keyframes rotate {

@@ -63,6 +63,12 @@ public class RecipeService {
         return convertToDto(Objects.requireNonNull(recipeRepository.findById(id).orElse(null)));
     }
 
+    public List<RecipeResponse> matchRecipesByTitle(String title) {
+        return recipeRepository.searchByTitle(title).stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
     // Toggles favourite: if already favourited, removes it. If not, adds it.
     // @Transactional means JPA tracks all changes to entities within this method
     // and auto-saves them when the method finishes — no manual save() needed.

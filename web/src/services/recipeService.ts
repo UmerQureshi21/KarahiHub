@@ -1,43 +1,68 @@
-import axios from 'axios';
-import type { RecipeRequest, ErrorResponse } from '../types';
-import { getAccessToken } from './userService';
+import axios from "axios";
+import { ApiError } from "../types";
+import type { RecipeRequest, RecipeResponse } from "../types";
+import {
+  checkAuthOnError,
+  getAccessToken,
+  getErrorMessage,
+} from "./userService";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
 
-const getErrorMessage = (error: unknown): string => {
-    if (axios.isAxiosError<ErrorResponse>(error)) {
-        return error.response?.data?.message || 'Something went wrong';
+
+export const getMyRecipes: () => Promise<RecipeResponse[]> = async () => {
+  try {
+    const token = getAccessToken();
+    console.log("Access Token:", token); // Debugging line to check if token is retrieved
+    const response = await axios.get(`${API_BASE_URL}/recipes/mine`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await getMyRecipes(); // Retry fetching recipes after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
     }
-    return 'Something went wrong';
+  }
 };
 
-// Posts a new recipe to the backend. Requires a valid access token in memory
-// because the backend uses @AuthenticationPrincipal to tie the recipe to a user.
-export const createRecipe = async (recipe: RecipeRequest) => {
-    try {
-        const token = getAccessToken();
-        const response = await axios.post(`${API_BASE_URL}/recipes`, recipe, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
-        
-    } catch (error) {
-        throw new Error(getErrorMessage(error));
+export const postRecipe: (recipe: RecipeRequest) => Promise<RecipeResponse> = async (recipe: RecipeRequest) => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.post(`${API_BASE_URL}/recipes`, recipe, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await postRecipe(recipe); // Retry posting recipe after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
     }
+  }
 };
 
-export const getMyRecipes = async () => {
-    try {
-        const token = getAccessToken();
-        const response = await axios.get(`${API_BASE_URL}/recipes/mine`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        throw new Error(getErrorMessage(error));
+export const searchRecipes: (query: string) => Promise<RecipeResponse[]> = async (query: string) => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.get(`${API_BASE_URL}/recipes/search`, {
+      params: { "query": query },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await searchRecipes(query); // Retry searching recipes after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
     }
+  }
 };
