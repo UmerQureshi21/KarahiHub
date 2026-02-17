@@ -184,6 +184,11 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
     }
   }, []);
 
+  function onDarkMode() {
+    setIsDark((prev) => !prev);
+    document.documentElement.classList.toggle("dark");
+  }
+
   return (
     <nav
       className={`fixed top-0 left-0 h-full ${
@@ -278,9 +283,9 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
             </NavLink>
           </li>
 
-          <li className="h-[50px] mt-[10px] list-none flex items-center bg-[var(--surface)]/70 relative rounded-[6px]">
+          <li className="h-[50px] mt-[10px] list-none flex items-center bg-[var(--surface)] relative rounded-[6px]">
             <div
-              className={`absolute left-0 top-1/2 -translate-y-1/2 flex items-center transition-opacity duration-200 ${
+              className={`absolute left-0 top-1/2 -translate-y-1/2 flex  items-center transition-opacity duration-200 ${
                 isClosed ? "opacity-0" : "opacity-100"
               }`}
             >
@@ -303,13 +308,13 @@ export default function Sidebar({ isClosed, onToggle }: SidebarProps) {
 
             <button
               type="button"
-              onClick={() => setIsDark((prev) => !prev)}
+              onClick={onDarkMode}
               className="absolute right-[6px] h-full w-[52px] flex items-center justify-center cursor-pointer"
               aria-label="Toggle dark mode"
             >
-              <span className="relative h-[22px] w-[44px] rounded-[25px] bg-[var(--primary)]/20">
+              <span className="relative h-[22px] w-[44px] rounded-[25px] bg-[var(--primary)]">
                 <span
-                  className={`absolute top-1/2 -translate-y-1/2 h-[15px] w-[15px] rounded-full bg-[var(--secondary)] transition-all duration-300 ${
+                  className={`absolute top-1/2 -translate-y-1/2 h-[15px] w-[15px] rounded-full bg-[var(--surface)] transition-all duration-300 ${
                     isDark ? "left-[25px]" : "left-[5px]"
                   }`}
                 ></span>

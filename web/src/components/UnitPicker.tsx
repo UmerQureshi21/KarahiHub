@@ -87,7 +87,7 @@ export default function UnitPicker({ value, onChange, className }: UnitPickerPro
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full px-4 py-3 rounded-[10px] border border-gray-200 fred-med text-[14px] text-left outline-none focus:border-[var(--secondary)] transition-colors bg-[var(--surface)] flex items-center justify-between"
+        className="w-full px-4 py-3 rounded-[10px] border border-gray-200 md:border-[var(--accent)] fred-med text-[14px] text-left outline-none focus:border-[var(--secondary)] transition-colors bg-[var(--surface)] flex items-center justify-between"
       >
         <span className={value ? "text-[var(--primary)]" : "text-gray-400"}>
           {value || "Unit"}

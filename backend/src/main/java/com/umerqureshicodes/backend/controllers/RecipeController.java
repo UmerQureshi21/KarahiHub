@@ -33,6 +33,11 @@ public class RecipeController {
         return recipeService.getById(id);
     }
 
+    @GetMapping("/search")
+    public List<RecipeResponse> searchByTitle(@RequestParam String query) {
+        return recipeService.matchRecipesByTitle(query);
+    }
+
     @PostMapping
     public RecipeResponse createRecipe(@RequestBody RecipeRequest request, @AuthenticationPrincipal AppUser user) {
         return recipeService.saveRecipe(request, user);
