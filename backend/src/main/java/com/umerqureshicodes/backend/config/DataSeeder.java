@@ -39,11 +39,16 @@ public class DataSeeder implements CommandLineRunner {
         }
         categoryRepository.saveAll(allCategories);
 
-        // Helper to look up saved Category entities by enum value
+        // Look up saved Category entities by enum value
         Category mainCourse = categoryRepository.findById(RecipeCategory.MAIN_COURSE).orElseThrow();
         Category breakfast = categoryRepository.findById(RecipeCategory.BREAKFAST).orElseThrow();
         Category appetizer = categoryRepository.findById(RecipeCategory.APPETIZER).orElseThrow();
         Category snack = categoryRepository.findById(RecipeCategory.SNACK).orElseThrow();
+        Category dessert = categoryRepository.findById(RecipeCategory.DESSERT).orElseThrow();
+        Category sideDish = categoryRepository.findById(RecipeCategory.SIDE_DISH).orElseThrow();
+        Category soup = categoryRepository.findById(RecipeCategory.SOUP).orElseThrow();
+        Category beverage = categoryRepository.findById(RecipeCategory.BEVERAGE).orElseThrow();
+        Category salad = categoryRepository.findById(RecipeCategory.SALAD).orElseThrow();
 
         // Create mock user
         AppUser vishav = new AppUser("purewal@gmail.com", "Vishav", passwordEncoder.encode("mypassword"));
@@ -179,5 +184,162 @@ public class DataSeeder implements CommandLineRunner {
         ));
 
         recipeRepository.saveAll(List.of(karahi, nihari, dahiBhalle, chapliKebab));
+
+        // Second mock user
+        AppUser amna = new AppUser("amna@gmail.com", "Amna", passwordEncoder.encode("mypassword"));
+        appUserRepository.save(amna);
+
+        // 5. Halwa Puri (breakfast + dessert + sideDish — 3 categories)
+        Recipe halwaPuri = new Recipe();
+        halwaPuri.setAppUser(amna);
+        halwaPuri.setTitle("Halwa Puri");
+        halwaPuri.setDescription("Classic Pakistani Sunday breakfast — sweet semolina halwa with deep-fried puri and spicy chana.");
+        halwaPuri.setInstructions(List.of(
+                "Roast semolina in ghee until golden and fragrant.",
+                "Add sugar and water, stir until halwa thickens.",
+                "Add cardamom and food colour, mix well.",
+                "Knead flour with salt and oil into a soft dough for puri.",
+                "Roll into small circles and deep fry until puffed and golden.",
+                "Serve halwa and puri together with chana masala."
+        ));
+        halwaPuri.setPrepTime(20);
+        halwaPuri.setCookTime(40);
+        halwaPuri.setServingCount(6);
+        halwaPuri.setCategories(List.of(breakfast, dessert, sideDish));
+        halwaPuri.setCreatedAt(new Date());
+        halwaPuri.setUpdatedAt(new Date());
+        halwaPuri.setRating(4.6);
+        halwaPuri.setIngredients(List.of(
+                new Ingredient("semolina", "2", "cups", halwaPuri),
+                new Ingredient("ghee", "0.5", "cup", halwaPuri),
+                new Ingredient("sugar", "1", "cup", halwaPuri),
+                new Ingredient("cardamom", "4", null, halwaPuri),
+                new Ingredient("flour", "2", "cups", halwaPuri),
+                new Ingredient("oil for frying", "2", "cups", halwaPuri),
+                new Ingredient("salt", "0.5", "tsp", halwaPuri)
+        ));
+
+        // 6. Mango Lassi (beverage — 1 category, quick recipe)
+        Recipe mangoLassi = new Recipe();
+        mangoLassi.setAppUser(amna);
+        mangoLassi.setTitle("Mango Lassi");
+        mangoLassi.setDescription("A creamy, chilled yogurt drink blended with sweet mango pulp and a hint of cardamom.");
+        mangoLassi.setInstructions(List.of(
+                "Blend mango pulp, yogurt, sugar, and cardamom until smooth.",
+                "Add ice cubes and blend again.",
+                "Pour into glasses and serve chilled."
+        ));
+        mangoLassi.setPrepTime(5);
+        mangoLassi.setCookTime(0);
+        mangoLassi.setServingCount(2);
+        mangoLassi.setCategories(List.of(beverage));
+        mangoLassi.setCreatedAt(new Date());
+        mangoLassi.setUpdatedAt(new Date());
+        mangoLassi.setRating(4.4);
+        mangoLassi.setIngredients(List.of(
+                new Ingredient("mango pulp", "1", "cup", mangoLassi),
+                new Ingredient("yogurt", "1", "cup", mangoLassi),
+                new Ingredient("sugar", "2", "tbsp", mangoLassi),
+                new Ingredient("cardamom powder", "0.25", "tsp", mangoLassi),
+                new Ingredient("ice cubes", "4", null, mangoLassi)
+        ));
+
+        // 7. Paya (soup + mainCourse + breakfast — 3 categories, long cook time)
+        Recipe paya = new Recipe();
+        paya.setAppUser(amna);
+        paya.setTitle("Paya");
+        paya.setDescription("Slow-cooked trotters in a rich, gelatinous bone broth loaded with warm spices.");
+        paya.setInstructions(List.of(
+                "Clean and wash trotters thoroughly.",
+                "Pressure cook trotters with water, salt, and turmeric for 45 minutes.",
+                "In a separate pot, fry onions until deep golden.",
+                "Add ginger-garlic paste, whole spices, and chili powder.",
+                "Add the cooked trotters with their broth and simmer for 2 hours.",
+                "Garnish with ginger, green chilies, and fresh coriander."
+        ));
+        paya.setPrepTime(20);
+        paya.setCookTime(180);
+        paya.setServingCount(5);
+        paya.setCategories(List.of(soup, mainCourse, breakfast));
+        paya.setCreatedAt(new Date());
+        paya.setUpdatedAt(new Date());
+        paya.setRating(4.7);
+        paya.setIngredients(List.of(
+                new Ingredient("trotters", "4", null, paya),
+                new Ingredient("onions", "3", null, paya),
+                new Ingredient("ginger-garlic paste", "2", "tbsp", paya),
+                new Ingredient("whole spices", "1", "tbsp", paya),
+                new Ingredient("red chili powder", "1", "tsp", paya),
+                new Ingredient("turmeric", "0.5", "tsp", paya),
+                new Ingredient("cooking oil", "0.5", "cup", paya),
+                new Ingredient("salt", "2", "tsp", paya),
+                new Ingredient("green chilies", "4", null, paya),
+                new Ingredient("fresh coriander", "1", "handful", paya)
+        ));
+
+        // 8. Kachumber Salad (salad + sideDish — 2 categories, no cook time)
+        Recipe kachumber = new Recipe();
+        kachumber.setAppUser(amna);
+        kachumber.setTitle("Kachumber Salad");
+        kachumber.setDescription("A fresh and crunchy South Asian salad of diced onions, tomatoes, and cucumbers with lemon and chaat masala.");
+        kachumber.setInstructions(List.of(
+                "Dice onions, tomatoes, and cucumbers into small even pieces.",
+                "Finely chop green chilies and fresh coriander.",
+                "Toss everything together in a bowl.",
+                "Squeeze lemon juice, sprinkle salt and chaat masala, and mix well.",
+                "Serve immediately as a side."
+        ));
+        kachumber.setPrepTime(10);
+        kachumber.setCookTime(0);
+        kachumber.setServingCount(4);
+        kachumber.setCategories(List.of(salad, sideDish));
+        kachumber.setCreatedAt(new Date());
+        kachumber.setUpdatedAt(new Date());
+        kachumber.setRating(4.0);
+        kachumber.setIngredients(List.of(
+                new Ingredient("onion", "1", null, kachumber),
+                new Ingredient("tomato", "2", null, kachumber),
+                new Ingredient("cucumber", "1", null, kachumber),
+                new Ingredient("green chili", "1", null, kachumber),
+                new Ingredient("lemon", "1", null, kachumber),
+                new Ingredient("chaat masala", "0.5", "tsp", kachumber),
+                new Ingredient("salt", "0.5", "tsp", kachumber),
+                new Ingredient("fresh coriander", "1", "handful", kachumber)
+        ));
+
+        // 9. Gulab Jamun (dessert + snack — 2 categories)
+        Recipe gulabJamun = new Recipe();
+        gulabJamun.setAppUser(amna);
+        gulabJamun.setTitle("Gulab Jamun");
+        gulabJamun.setDescription("Soft, spongy milk-solid dumplings soaked in rose-scented sugar syrup.");
+        gulabJamun.setInstructions(List.of(
+                "Mix milk powder, flour, and baking soda together.",
+                "Add ghee and milk gradually to form a soft dough — don't overknead.",
+                "Roll into smooth, crack-free balls.",
+                "Deep fry on low heat until deep golden brown.",
+                "Boil sugar with water and cardamom to make syrup.",
+                "Add a few drops of rose water to the syrup.",
+                "Soak the fried balls in warm syrup for at least 30 minutes before serving."
+        ));
+        gulabJamun.setPrepTime(25);
+        gulabJamun.setCookTime(35);
+        gulabJamun.setServingCount(8);
+        gulabJamun.setCategories(List.of(dessert, snack));
+        gulabJamun.setCreatedAt(new Date());
+        gulabJamun.setUpdatedAt(new Date());
+        gulabJamun.setRating(4.8);
+        gulabJamun.setIngredients(List.of(
+                new Ingredient("milk powder", "1", "cup", gulabJamun),
+                new Ingredient("flour", "3", "tbsp", gulabJamun),
+                new Ingredient("baking soda", "0.25", "tsp", gulabJamun),
+                new Ingredient("ghee", "1", "tbsp", gulabJamun),
+                new Ingredient("milk", "3", "tbsp", gulabJamun),
+                new Ingredient("sugar", "1.5", "cups", gulabJamun),
+                new Ingredient("cardamom", "3", null, gulabJamun),
+                new Ingredient("rose water", "1", "tsp", gulabJamun),
+                new Ingredient("oil for frying", "2", "cups", gulabJamun)
+        ));
+
+        recipeRepository.saveAll(List.of(halwaPuri, mangoLassi, paya, kachumber, gulabJamun));
     }
 }

@@ -3,6 +3,7 @@ package com.umerqureshicodes.backend.services;
 import com.umerqureshicodes.backend.dto.IngredientRequest;
 import com.umerqureshicodes.backend.dto.RecipeRequest;
 import com.umerqureshicodes.backend.dto.RecipeResponse;
+import com.umerqureshicodes.backend.dto.SearchFilterRequest;
 import com.umerqureshicodes.backend.entities.AppUser;
 import com.umerqureshicodes.backend.entities.Category;
 import com.umerqureshicodes.backend.entities.Ingredient;
@@ -73,12 +74,6 @@ public class RecipeService {
         return convertToDto(Objects.requireNonNull(recipeRepository.findById(id).orElse(null)));
     }
 
-    public List<RecipeResponse> matchRecipesByTitle(String title) {
-        return recipeRepository.searchByTitle(title).stream()
-                .map(this::convertToDto)
-                .toList();
-    }
-
     // Toggles favourite: if already favourited, removes it. If not, adds it.
     // @Transactional means JPA tracks all changes to entities within this method
     // and auto-saves them when the method finishes — no manual save() needed.
@@ -100,6 +95,33 @@ public class RecipeService {
         }
 
         return convertToDto(recipe);
+    }
+
+    public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
+        List<Recipe> results;
+
+        // pick the right repo method based on sort direction
+        if (request.ascending()) {
+            results = recipeRepository.searchAndFilterAsc(
+                    request.query(), request.categories(),
+                    request.minPrep(), request.maxPrep(),
+                    request.minCook(), request.maxCook(),
+                    request.minRating(), request.maxRating(),
+                    request.minServings(), request.maxServings(),
+                    request.sortBy()
+            );
+        } else {
+            results = recipeRepository.searchAndFilterDesc(
+                    request.query(), request.categories(),
+                    request.minPrep(), request.maxPrep(),
+                    request.minCook(), request.maxCook(),
+                    request.minRating(), request.maxRating(),
+                    request.minServings(), request.maxServings(),
+                    request.sortBy()
+            );
+        }
+
+        return results.stream().map(this::convertToDto).toList();
     }
 
     public List<RecipeResponse> getAllByEmail(String email) {

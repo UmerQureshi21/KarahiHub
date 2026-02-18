@@ -9,6 +9,7 @@ import java.util.List;
 public class Category {
 
     @Id
+    @Enumerated(EnumType.STRING)
     private RecipeCategory name;
 
     @ManyToMany(mappedBy = "categories")

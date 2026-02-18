@@ -2,10 +2,8 @@ package com.umerqureshicodes.backend.controllers;
 
 import com.umerqureshicodes.backend.dto.RecipeRequest;
 import com.umerqureshicodes.backend.dto.RecipeResponse;
+import com.umerqureshicodes.backend.dto.SearchFilterRequest;
 import com.umerqureshicodes.backend.entities.AppUser;
-import com.umerqureshicodes.backend.entities.Ingredient;
-import com.umerqureshicodes.backend.entities.Recipe;
-import com.umerqureshicodes.backend.repositories.RecipeRepository;
 import com.umerqureshicodes.backend.services.RecipeService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +31,11 @@ public class RecipeController {
         return recipeService.getById(id);
     }
 
-    @GetMapping("/search")
-    public List<RecipeResponse> searchByTitle(@RequestParam String query) {
-        return recipeService.matchRecipesByTitle(query);
+
+    // POST /api/recipes/search — search by title + filter by categories, time, rating, servings + sort
+    @PostMapping("/search")
+    public List<RecipeResponse> searchAndFilter(@RequestBody SearchFilterRequest request) {
+        return recipeService.searchAndFilter(request);
     }
 
     @PostMapping
