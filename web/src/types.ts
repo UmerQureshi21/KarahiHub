@@ -82,6 +82,7 @@ export type CategoryResponse = {
 };
 
 export type SearchFilterRequest = {
+  query: string;
   categories: string[];
   minPrep: number;
   maxPrep: number;
@@ -91,6 +92,6 @@ export type SearchFilterRequest = {
   maxRating: number;
   minServings: number;
   maxServings: number;
-  sortBy: "rating" | "prepTime" | "cookTime";
+  sortBy: "rating" | "prep_time" | "cook_time" | "created_at";
   ascending: boolean;
 };
