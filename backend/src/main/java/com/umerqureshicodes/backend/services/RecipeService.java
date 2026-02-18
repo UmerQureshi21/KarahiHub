@@ -3,10 +3,14 @@ package com.umerqureshicodes.backend.services;
 import com.umerqureshicodes.backend.dto.IngredientRequest;
 import com.umerqureshicodes.backend.dto.RecipeRequest;
 import com.umerqureshicodes.backend.dto.RecipeResponse;
+import com.umerqureshicodes.backend.dto.SearchFilterRequest;
 import com.umerqureshicodes.backend.entities.AppUser;
+import com.umerqureshicodes.backend.entities.Category;
 import com.umerqureshicodes.backend.entities.Ingredient;
 import com.umerqureshicodes.backend.entities.Recipe;
+import com.umerqureshicodes.backend.entities.RecipeCategory;
 import com.umerqureshicodes.backend.repositories.AppUserRepository;
+import com.umerqureshicodes.backend.repositories.CategoryRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +24,13 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final AppUserRepository appUserRepository;
+    private final CategoryRepository categoryRepository;
 
-    public RecipeService(RecipeRepository recipeRepository, AppUserRepository appUserRepository) {
+    public RecipeService(RecipeRepository recipeRepository, AppUserRepository appUserRepository,
+                         CategoryRepository categoryRepository) {
         this.recipeRepository = recipeRepository;
         this.appUserRepository = appUserRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public RecipeResponse saveRecipe(RecipeRequest request, AppUser appUser) {
@@ -39,7 +46,11 @@ public class RecipeService {
         recipe.setPrepTime(request.prepTime());
         recipe.setCookTime(request.cookTime());
         recipe.setServingCount(request.servingCount());
-        recipe.setCategories(request.categories());
+        // look up the actual Category entities from the enum values sent by the frontend
+        List<Category> categories = request.categories().stream()
+                .map(cat -> categoryRepository.findById(cat).orElseThrow())
+                .toList();
+        recipe.setCategories(categories);
         recipe.setRating(0);
         recipe.setCreatedAt(new Date());
         recipe.setUpdatedAt(new Date());
@@ -61,12 +72,6 @@ public class RecipeService {
 
     public RecipeResponse getById(Long id) {
         return convertToDto(Objects.requireNonNull(recipeRepository.findById(id).orElse(null)));
-    }
-
-    public List<RecipeResponse> matchRecipesByTitle(String title) {
-        return recipeRepository.searchByTitle(title).stream()
-                .map(this::convertToDto)
-                .toList();
     }
 
     // Toggles favourite: if already favourited, removes it. If not, adds it.
@@ -92,6 +97,33 @@ public class RecipeService {
         return convertToDto(recipe);
     }
 
+    public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
+        List<Recipe> results;
+
+        // pick the right repo method based on sort direction
+        if (request.ascending()) {
+            results = recipeRepository.searchAndFilterAsc(
+                    request.query(), request.categories(),
+                    request.minPrep(), request.maxPrep(),
+                    request.minCook(), request.maxCook(),
+                    request.minRating(), request.maxRating(),
+                    request.minServings(), request.maxServings(),
+                    request.sortBy()
+            );
+        } else {
+            results = recipeRepository.searchAndFilterDesc(
+                    request.query(), request.categories(),
+                    request.minPrep(), request.maxPrep(),
+                    request.minCook(), request.maxCook(),
+                    request.minRating(), request.maxRating(),
+                    request.minServings(), request.maxServings(),
+                    request.sortBy()
+            );
+        }
+
+        return results.stream().map(this::convertToDto).toList();
+    }
+
     public List<RecipeResponse> getAllByEmail(String email) {
         return recipeRepository.findByAppUserEmail(email).stream()
                 .map(this::convertToDto)
@@ -103,9 +135,14 @@ public class RecipeService {
                 .map(ing -> new IngredientRequest(ing.getName(), ing.getQuantity(), ing.getUnitOfMeasurement().orElse(null)))
                 .toList();
 
+        // convert Category entities back to enum values for the API response
+        List<RecipeCategory> categoryNames = recipe.getCategories().stream()
+                .map(Category::getName)
+                .toList();
+
         return new RecipeResponse(
                 recipe.getId(),
-                recipe.getAppUser().getDisplayName() ,
+                recipe.getAppUser().getDisplayName(),
                 recipe.getTitle(),
                 recipe.getDescription(),
                 ingredients,
@@ -113,7 +150,7 @@ public class RecipeService {
                 recipe.getPrepTime(),
                 recipe.getCookTime(),
                 recipe.getServingCount(),
-                recipe.getCategories(),
+                categoryNames,
                 recipe.getFavouritedBy().size()
         );
     }

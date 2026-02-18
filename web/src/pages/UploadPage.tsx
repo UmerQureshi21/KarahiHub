@@ -282,6 +282,7 @@ export default function UploadPage() {
                 placeholder="15"
                 className={inputClass}
                 required
+                max={60*24}
               />
             </div>
             <div>
@@ -296,6 +297,7 @@ export default function UploadPage() {
                 placeholder="30"
                 className={inputClass}
                 required
+                max={60*24}
               />
             </div>
             <div>
@@ -312,6 +314,7 @@ export default function UploadPage() {
                 placeholder="4"
                 className={inputClass}
                 required
+                max={10}
               />
             </div>
           </div>

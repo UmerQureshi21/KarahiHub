@@ -6,7 +6,32 @@ import TopFoodCarousel from "../components/TopFoodCarousel";
 import TopFoodDisplay from "../components/TopFoodDisplay";
 import type { Recipe } from "../types";
 import About from "../components/About";
+import StatCard from "../components/StatCard";
+import TestimonialCard from "../components/TestimonialCard";
 import { NavLink } from "react-router-dom";
+
+const stats = [
+  { label: "Recipes Shared", color: "var(--primary)", delay: "0s" },
+  { label: "Active Food Enthusiasts", color: "var(--secondary)", delay: "0.1s" },
+  { label: "Ratings Given", color: "var(--primary)", delay: "0.2s" },
+];
+
+const testimonials = [
+  {
+    initial: "A",
+    name: "Ayesha Khan",
+    role: "Home Chef",
+    quote: "Finally found a platform where I can share my grandmother's Nihari recipe! The community feedback has been incredible.",
+    delay: "0s",
+  },
+  {
+    initial: "Z",
+    name: "Zain Ahmed",
+    role: "Food Enthusiast",
+    quote: "I've tried over 50 recipes from Karahi Hub. Every single dish turned out authentic and delicious!",
+    delay: "0.1s",
+  },
+];
 
 export default function LandingPage() {
   let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
@@ -239,128 +264,33 @@ export default function LandingPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] md:gap-[30px] mb-[60px]">
-            {/* Stat 1 */}
-            <div
-              ref={(el) => {
-                statsRefs.current[0] = el;
-              }}
-              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
-                visibleStats[0] ? "bounce-card" : ""
-              }`}
-              style={{ animationDelay: "0s" }}
-            >
-              <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
-                {statCounts[0]}+
-              </div>
-              <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
-                Recipes Shared
-              </p>
-            </div>
-
-            {/* Stat 2 */}
-            <div
-              ref={(el) => {
-                statsRefs.current[1] = el;
-              }}
-              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
-                visibleStats[1] ? "bounce-card" : ""
-              }`}
-              style={{ animationDelay: "0.1s" }}
-            >
-              <div className="fred-bold text-[40px] md:text-[48px] text-[var(--secondary)] mb-[8px]">
-                {statCounts[1]}+
-              </div>
-              <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
-                Active Food Enthusiasts
-              </p>
-            </div>
-
-            {/* Stat 3 */}
-            <div
-              ref={(el) => {
-                statsRefs.current[2] = el;
-              }}
-              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300 bounce-card-initial ${
-                visibleStats[2] ? "bounce-card" : ""
-              }`}
-              style={{ animationDelay: "0.2s" }}
-            >
-              <div className="fred-bold text-[40px] md:text-[48px] text-[var(--primary)] mb-[8px]">
-                {statCounts[2]}+
-              </div>
-              <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
-                Ratings Given
-              </p>
-            </div>
-
-            {/* Stat 4 */}
-            {/* <div className="bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg text-center hover:shadow-xl transition-shadow duration-300">
-              <div className="fred-bold text-[40px] md:text-[48px] text-[var(--secondary)] mb-[8px]">
-                2.5K+
-              </div>
-              <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
-                Daily Visitors
-              </p>
-            </div> */}
+            {stats.map((stat, i) => (
+              <StatCard
+                key={stat.label}
+                ref={(el) => { statsRefs.current[i] = el; }}
+                count={statCounts[i]}
+                label={stat.label}
+                color={stat.color}
+                visible={visibleStats[i]}
+                delay={stat.delay}
+              />
+            ))}
           </div>
 
           {/* Testimonials */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-[30px]">
-            <div
-              ref={(el) => {
-                testimonialRefs.current[0] = el;
-              }}
-              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
-                visibleTestimonials[0] ? "bounce-card" : ""
-              }`}
-              style={{ animationDelay: "0s" }}
-            >
-              <div className="flex items-center gap-[12px] mb-[15px]">
-                <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--primary)]">
-                  A
-                </div>
-                <div>
-                  <h4 className="fred-bold text-[18px] text-[var(--primary)]">
-                    Ayesha Khan
-                  </h4>
-                  <p className="fred-light text-[14px] text-gray-500">
-                    Home Chef
-                  </p>
-                </div>
-              </div>
-              <p className="fred-light text-[16px] text-gray-700 italic">
-                "Finally found a platform where I can share my grandmother's
-                Nihari recipe! The community feedback has been incredible."
-              </p>
-            </div>
-
-            <div
-              ref={(el) => {
-                testimonialRefs.current[1] = el;
-              }}
-              className={`bg-[var(--surface)] rounded-[20px] p-[30px] shadow-lg bounce-card-initial ${
-                visibleTestimonials[1] ? "bounce-card" : ""
-              }`}
-              style={{ animationDelay: "0.1s" }}
-            >
-              <div className="flex items-center gap-[12px] mb-[15px]">
-                <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--primary)]">
-                  Z
-                </div>
-                <div>
-                  <h4 className="fred-bold text-[18px] text-[var(--primary)]">
-                    Zain Ahmed
-                  </h4>
-                  <p className="fred-light text-[14px] text-gray-500">
-                    Food Enthusiast
-                  </p>
-                </div>
-              </div>
-              <p className="fred-light text-[16px] text-gray-700 italic">
-                "I've tried over 50 recipes from Karahi Hub. Every single dish
-                turned out authentic and delicious!"
-              </p>
-            </div>
+            {testimonials.map((t, i) => (
+              <TestimonialCard
+                key={t.name}
+                ref={(el) => { testimonialRefs.current[i] = el; }}
+                initial={t.initial}
+                name={t.name}
+                role={t.role}
+                quote={t.quote}
+                visible={visibleTestimonials[i]}
+                delay={t.delay}
+              />
+            ))}
           </div>
 
           {/* CTA Button */}

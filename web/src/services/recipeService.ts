@@ -1,6 +1,10 @@
 import axios from "axios";
 import { ApiError } from "../types";
-import type { RecipeRequest, RecipeResponse } from "../types";
+import type {
+  RecipeRequest,
+  RecipeResponse,
+  SearchFilterRequest,
+} from "../types";
 import {
   checkAuthOnError,
   getAccessToken,
@@ -9,7 +13,6 @@ import {
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
-
 
 export const getMyRecipes: () => Promise<RecipeResponse[]> = async () => {
   try {
@@ -30,7 +33,9 @@ export const getMyRecipes: () => Promise<RecipeResponse[]> = async () => {
   }
 };
 
-export const postRecipe: (recipe: RecipeRequest) => Promise<RecipeResponse> = async (recipe: RecipeRequest) => {
+export const postRecipe: (
+  recipe: RecipeRequest,
+) => Promise<RecipeResponse> = async (recipe: RecipeRequest) => {
   try {
     const token = getAccessToken();
     const response = await axios.post(`${API_BASE_URL}/recipes`, recipe, {
@@ -48,11 +53,12 @@ export const postRecipe: (recipe: RecipeRequest) => Promise<RecipeResponse> = as
   }
 };
 
-export const searchRecipes: (query: string) => Promise<RecipeResponse[]> = async (query: string) => {
+export const searchRecipes: (
+  query: SearchFilterRequest,
+) => Promise<RecipeResponse[]> = async (query: SearchFilterRequest) => {
   try {
     const token = getAccessToken();
-    const response = await axios.get(`${API_BASE_URL}/recipes/search`, {
-      params: { "query": query },
+    const response = await axios.post(`${API_BASE_URL}/recipes/search`, query, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
