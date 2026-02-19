@@ -70,7 +70,7 @@ export default function TopFoodDisplay({ recipes }: Props) {
   return (
     <div
       id="big-container"
-      className="relative pt-[100px] relative bg-cover bg-center bg-no-repeat"
+      className="relative pt-[100px] relative bg-cover bg-center bg-no-repeat overflow-hidden"
       style={{ backgroundImage: "url('/paki-graphic.png')" }}
     >
       <style>{`
