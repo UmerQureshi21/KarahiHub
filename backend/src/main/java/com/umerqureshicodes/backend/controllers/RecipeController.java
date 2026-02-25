@@ -5,10 +5,11 @@ import com.umerqureshicodes.backend.dto.RecipeResponse;
 import com.umerqureshicodes.backend.dto.SearchFilterRequest;
 import com.umerqureshicodes.backend.entities.AppUser;
 import com.umerqureshicodes.backend.services.RecipeService;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -38,9 +39,15 @@ public class RecipeController {
         return recipeService.searchAndFilter(request);
     }
 
-    @PostMapping
-    public RecipeResponse createRecipe(@RequestBody RecipeRequest request, @AuthenticationPrincipal AppUser user) {
-        return recipeService.saveRecipe(request, user);
+    // consumes MULTIPART_FORM_DATA — the request has two named parts:
+    //   "recipe"  → JSON body, deserialized into RecipeRequest
+    //   "images"  → binary files (optional, user might not upload any)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public RecipeResponse createRecipe(
+            @RequestPart("recipe") RecipeRequest request,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            @AuthenticationPrincipal AppUser user) {
+        return recipeService.saveRecipe(request, images, user);
     }
 
     @GetMapping("/mine")

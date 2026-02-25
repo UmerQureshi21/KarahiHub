@@ -10,6 +10,7 @@ public record RecipeResponse(
         String title,
         String description,
         List<IngredientRequest> ingredients,
+        List<String> imageUrls,
         List<String> instructions,
         int prepTime,
         int cookTime,

@@ -50,6 +50,7 @@ export type RecipeResponse = {
   title: string;
   description: string;
   ingredients: IngredientRequest[];
+  imageUrls: string[];
   instructions: string[];
   prepTime: number;
   cookTime: number;

@@ -30,6 +30,8 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeImage> images = new ArrayList<>();
     private List<String> instructions = new ArrayList<>();
     private int prepTime;
     private int cookTime;
@@ -53,13 +55,14 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(AppUser appUser, String title, String description, List<Ingredient> ingredients,
+    public Recipe(AppUser appUser, String title, String description, List<Ingredient> ingredients, List<RecipeImage> images,
                   List<String> instructions, int prepTime, int cookTime, int servingCount,
-                  List<Category> categories, Date createdAt, Date updatedAt, double rating) {
+                  List<Category> categories, Date createdAt, Date updatedAt, double rating, List<AppUser> favouritedBy) {
         this.appUser = appUser;
         this.title = title;
         this.description = description;
         this.ingredients = ingredients;
+        this.images = images;
         this.instructions = instructions;
         this.prepTime = prepTime;
         this.cookTime = cookTime;
@@ -68,11 +71,14 @@ public class Recipe {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.rating = rating;
+        this.favouritedBy = favouritedBy;
     }
+
 
     public Long getId() {
         return id;
     }
+
 
     public void setId(Long id) {
         this.id = id;
@@ -104,6 +110,14 @@ public class Recipe {
 
     public List<Ingredient> getIngredients() {
         return ingredients;
+    }
+
+    public List<RecipeImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<RecipeImage> images) {
+        this.images = images;
     }
 
     public void setIngredients(List<Ingredient> ingredients) {

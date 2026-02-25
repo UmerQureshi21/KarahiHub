@@ -85,6 +85,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("salt", "1", "tsp", karahi),
                 new Ingredient("fresh coriander", "1", "handful", karahi)
         ));
+        karahi.setImages(List.of(new RecipeImage("recipes/1/biryani.jpg", karahi)));
 
         // 2. Nihari
         Recipe nihari = new Recipe();
@@ -121,6 +122,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("lemon", "1", null, nihari),
                 new Ingredient("fresh coriander", "1", "handful", nihari)
         ));
+        nihari.setImages(List.of(new RecipeImage("recipes/2/nihari.jpg", nihari)));
 
         // 3. Dahi Bhalle
         Recipe dahiBhalle = new Recipe();
@@ -150,6 +152,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("salt", "1", "tsp", dahiBhalle),
                 new Ingredient("oil for frying", "2", "cups", dahiBhalle)
         ));
+        dahiBhalle.setImages(List.of(new RecipeImage("recipes/3/raita.jpg", dahiBhalle)));
 
         // 4. Chapli Kebab
         Recipe chapliKebab = new Recipe();
@@ -182,6 +185,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("salt", "1", "tsp", chapliKebab),
                 new Ingredient("cooking oil", "0.5", "cup", chapliKebab)
         ));
+        chapliKebab.setImages(List.of(new RecipeImage("recipes/4/charga.jpg", chapliKebab)));
 
         recipeRepository.saveAll(List.of(karahi, nihari, dahiBhalle, chapliKebab));
 
@@ -218,6 +222,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("oil for frying", "2", "cups", halwaPuri),
                 new Ingredient("salt", "0.5", "tsp", halwaPuri)
         ));
+        halwaPuri.setImages(List.of(new RecipeImage("recipes/5/jalebi.jpg", halwaPuri)));
 
         // 6. Mango Lassi (beverage — 1 category, quick recipe)
         Recipe mangoLassi = new Recipe();
@@ -243,6 +248,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("cardamom powder", "0.25", "tsp", mangoLassi),
                 new Ingredient("ice cubes", "4", null, mangoLassi)
         ));
+        mangoLassi.setImages(List.of(new RecipeImage("recipes/6/mango-lassi.jpg", mangoLassi)));
 
         // 7. Paya (soup + mainCourse + breakfast — 3 categories, long cook time)
         Recipe paya = new Recipe();
@@ -276,6 +282,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("green chilies", "4", null, paya),
                 new Ingredient("fresh coriander", "1", "handful", paya)
         ));
+        paya.setImages(List.of(new RecipeImage("recipes/7/palak-gosht.jpg", paya)));
 
         // 8. Kachumber Salad (salad + sideDish — 2 categories, no cook time)
         Recipe kachumber = new Recipe();
@@ -306,6 +313,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("salt", "0.5", "tsp", kachumber),
                 new Ingredient("fresh coriander", "1", "handful", kachumber)
         ));
+        kachumber.setImages(List.of(new RecipeImage("recipes/8/raita.jpg", kachumber)));
 
         // 9. Gulab Jamun (dessert + snack — 2 categories)
         Recipe gulabJamun = new Recipe();
@@ -339,6 +347,7 @@ public class DataSeeder implements CommandLineRunner {
                 new Ingredient("rose water", "1", "tsp", gulabJamun),
                 new Ingredient("oil for frying", "2", "cups", gulabJamun)
         ));
+        gulabJamun.setImages(List.of(new RecipeImage("recipes/9/jalebi.jpg", gulabJamun)));
 
         recipeRepository.saveAll(List.of(halwaPuri, mangoLassi, paya, kachumber, gulabJamun));
     }
