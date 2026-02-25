@@ -33,20 +33,32 @@ export const getMyRecipes: () => Promise<RecipeResponse[]> = async () => {
   }
 };
 
-export const postRecipe: (
+export const postRecipe = async (
   recipe: RecipeRequest,
-) => Promise<RecipeResponse> = async (recipe: RecipeRequest) => {
+  images: File[],
+): Promise<RecipeResponse> => {
   try {
     const token = getAccessToken();
-    const response = await axios.post(`${API_BASE_URL}/recipes`, recipe, {
+
+    // Build multipart form: "recipe" part is a JSON blob, "images" part is the file list.
+    // This matches the backend @RequestPart("recipe") + @RequestPart("images") signature.
+    const formData = new FormData();
+    formData.append(
+      "recipe",
+      new Blob([JSON.stringify(recipe)], { type: "application/json" }),
+    );
+    images.forEach((file) => formData.append("images", file));
+
+    const response = await axios.post(`${API_BASE_URL}/recipes`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        // Let the browser set Content-Type with the multipart boundary automatically
       },
     });
     return response.data;
   } catch (error) {
     if (checkAuthOnError(error)) {
-      return await postRecipe(recipe); // Retry posting recipe after refreshing token
+      return await postRecipe(recipe, images);
     } else {
       throw new ApiError(getErrorMessage(error));
     }

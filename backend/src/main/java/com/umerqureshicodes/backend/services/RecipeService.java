@@ -4,17 +4,16 @@ import com.umerqureshicodes.backend.dto.IngredientRequest;
 import com.umerqureshicodes.backend.dto.RecipeRequest;
 import com.umerqureshicodes.backend.dto.RecipeResponse;
 import com.umerqureshicodes.backend.dto.SearchFilterRequest;
-import com.umerqureshicodes.backend.entities.AppUser;
-import com.umerqureshicodes.backend.entities.Category;
-import com.umerqureshicodes.backend.entities.Ingredient;
-import com.umerqureshicodes.backend.entities.Recipe;
-import com.umerqureshicodes.backend.entities.RecipeCategory;
+import com.umerqureshicodes.backend.entities.*;
 import com.umerqureshicodes.backend.repositories.AppUserRepository;
 import com.umerqureshicodes.backend.repositories.CategoryRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
+import com.umerqureshicodes.backend.s3.S3Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -25,15 +24,17 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final AppUserRepository appUserRepository;
     private final CategoryRepository categoryRepository;
+    private final S3Service s3Service;
 
     public RecipeService(RecipeRepository recipeRepository, AppUserRepository appUserRepository,
-                         CategoryRepository categoryRepository) {
+                         CategoryRepository categoryRepository, S3Service s3Service) {
         this.recipeRepository = recipeRepository;
         this.appUserRepository = appUserRepository;
         this.categoryRepository = categoryRepository;
+        this.s3Service = s3Service;
     }
 
-    public RecipeResponse saveRecipe(RecipeRequest request, AppUser appUser) {
+    public RecipeResponse saveRecipe(RecipeRequest request, List<MultipartFile> images, AppUser appUser) {
         // The appUser from @AuthenticationPrincipal only has email (from the JWT).
         // Load the full user from the DB so JPA can properly set the foreign key.
         AppUser fullUser = appUserRepository.findByEmail(appUser.getEmail()).orElseThrow();
@@ -59,6 +60,16 @@ public class RecipeService {
                 .map(ing -> new Ingredient(ing.name(), ing.quantity(), ing.unitOfMeasurement(), recipe))
                 .toList();
         recipe.setIngredients(ingredients);
+
+        // Upload each image to S3, then create RecipeImage entities with the returned keys
+        List<RecipeImage> recipeImages = (images != null ? images : Collections.<MultipartFile>emptyList())
+                .stream()
+                .map(file -> {
+                    String s3Key = s3Service.uploadFile(file);
+                    return new RecipeImage(s3Key, recipe);
+                })
+                .toList();
+        recipe.setImages(recipeImages);
 
         recipeRepository.save(recipe);
         return convertToDto(recipe);
@@ -140,12 +151,18 @@ public class RecipeService {
                 .map(Category::getName)
                 .toList();
 
+        // generate a temporary presigned URL for each image so the frontend can display them
+        List<String> imageUrls = recipe.getImages().stream()
+                .map(img -> s3Service.generatePresignedUrl(img.getS3Key()))
+                .toList();
+
         return new RecipeResponse(
                 recipe.getId(),
                 recipe.getAppUser().getDisplayName(),
                 recipe.getTitle(),
                 recipe.getDescription(),
                 ingredients,
+                imageUrls,
                 recipe.getInstructions(),
                 recipe.getPrepTime(),
                 recipe.getCookTime(),

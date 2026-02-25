@@ -58,3 +58,4 @@ build/
 .vscode/
 
 .claude/
+application.properties

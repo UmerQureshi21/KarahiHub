@@ -36,6 +36,7 @@ export default function UploadPage() {
   const [prepTime, setPrepTime] = useState<number | "">("");
   const [cookTime, setCookTime] = useState<number | "">("");
   const [servingCount, setServingCount] = useState<number | "">("");
+  const [images, setImages] = useState<File[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,6 +78,19 @@ export default function UploadPage() {
     setInstructions(instructions.filter((_, i) => i !== index));
   };
 
+  // --- Image helpers ---
+  const addImages = (files: FileList | null) => {
+    if (!files) return;
+    // Only allow up to 3 total
+    const remaining = 3 - images.length;
+    const newFiles = Array.from(files).slice(0, remaining);
+    setImages((prev) => [...prev, ...newFiles]);
+  };
+
+  const removeImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
+
   // --- Category toggle ---
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
@@ -107,7 +121,7 @@ export default function UploadPage() {
 
     setSubmitting(true);
     try {
-      await postRecipe(recipe);
+      await postRecipe(recipe, images);
       setSuccess(true);
       // Reset form
       setTitle("");
@@ -117,6 +131,7 @@ export default function UploadPage() {
       setPrepTime("");
       setCookTime("");
       setServingCount("");
+      setImages([]);
       setSelectedCategories([]);
     } catch (err) {
       setError((err as Error).message);
@@ -176,6 +191,55 @@ export default function UploadPage() {
               required
             />
           </div>
+          {/* Images — max 3 */}
+          <div>
+            <label className={labelClass}>
+              Photos{" "}
+              <span className="text-gray-400 fred-light">
+                ({images.length}/3)
+              </span>
+            </label>
+
+            <div className="flex flex-wrap gap-3">
+              {/* Thumbnails of selected images */}
+              {images.map((file, i) => (
+                <div
+                  key={i}
+                  className="relative w-[100px] h-[100px] rounded-[10px] overflow-hidden group"
+                >
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Upload ${i + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Remove button — appears on hover */}
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white fred-bold text-[18px]"
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+
+              {/* Add button — only show if under 3 images */}
+              {images.length < 3 && (
+                <label className="w-[100px] h-[100px] rounded-[10px] border-2 border-dashed border-gray-300 hover:border-[var(--secondary)] transition-colors flex flex-col items-center justify-center cursor-pointer text-gray-400 hover:text-[var(--secondary)]">
+                  <span className="text-[24px] leading-none">+</span>
+                  <span className="fred-med text-[11px] mt-1">Add photo</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => addImages(e.target.files)}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
           {/* Ingredients */}
           <div>
             <label className={labelClass}>Ingredients</label>
