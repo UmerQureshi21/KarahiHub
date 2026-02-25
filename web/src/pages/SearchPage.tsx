@@ -2,6 +2,7 @@ import { useState } from "react";
 import { searchRecipes } from "../services/recipeService";
 import type { RecipeResponse, SearchFilterRequest } from "../types";
 import MyRecipeCard from "../components/MyRecipeCard";
+import ViewRecipePage from "./ViewRecipePage";
 
 const ALL_CATEGORIES = [
   "APPETIZER",
@@ -26,6 +27,7 @@ export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [recipes, setRecipes] = useState<RecipeResponse[]>([]);
   const [searched, setSearched] = useState(false);
+  const [recipeToView, setRecipeToView] = useState<RecipeResponse | null>(null);
 
   // filter state
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -90,7 +92,13 @@ export default function SearchPage() {
       .join(" ");
   }
 
-  return (
+  function handleRecipeToView(recipe: RecipeResponse) {
+    setRecipeToView(recipe);
+  }
+
+  return recipeToView != null ? (
+    <ViewRecipePage recipe={recipeToView} onBack={() => setRecipeToView(null)} />
+  ) : (
     <div className="bg-[var(--surface)] p-6 md:p-10 mx-auto min-h-screen">
       <h1 className="fred-bold text-[28px] md:text-[34px] text-[var(--primary)] mb-2">
         Search Recipes
@@ -312,7 +320,13 @@ export default function SearchPage() {
       {recipes.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {recipes.map((recipe) => (
-            <MyRecipeCard key={recipe.id} recipe={recipe} />
+            <div
+              onClick={() => {
+                handleRecipeToView(recipe);
+              }}
+            >
+              <MyRecipeCard key={`Recipe ${recipe.id}`} recipe={recipe} />
+            </div>
           ))}
         </div>
       )}

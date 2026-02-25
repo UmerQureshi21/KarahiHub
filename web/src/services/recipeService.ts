@@ -23,6 +23,7 @@ export const getMyRecipes: () => Promise<RecipeResponse[]> = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (checkAuthOnError(error)) {
@@ -64,6 +65,24 @@ export const postRecipe = async (
     }
   }
 };
+
+// export const getRecipeById = async (id: number): Promise<RecipeResponse> => {
+//   try {
+//     const token = getAccessToken();
+//     const response = await axios.get(`${API_BASE_URL}/recipes/${id}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     if (checkAuthOnError(error)) {
+//       return await getRecipeById(id);
+//     } else {
+//       throw new ApiError(getErrorMessage(error));
+//     }
+//   }
+// };
 
 export const searchRecipes: (
   query: SearchFilterRequest,
