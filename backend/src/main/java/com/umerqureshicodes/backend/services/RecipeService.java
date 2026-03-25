@@ -108,6 +108,11 @@ public class RecipeService {
         return convertToDto(recipe);
     }
 
+    public List<RecipeResponse> getFavouriteRecipes(String email) {
+        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
+        return user.getFavourites().stream().map(this::convertToDto).toList();
+    }
+
     public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
         List<Recipe> results;
 

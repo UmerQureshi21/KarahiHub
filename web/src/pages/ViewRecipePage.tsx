@@ -10,7 +10,10 @@ interface ViewRecipePageProps {
 const formatCategory = (cat: string) =>
   cat.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
-export default function ViewRecipePage({ recipe, onBack }: ViewRecipePageProps) {
+export default function ViewRecipePage({
+  recipe,
+  onBack,
+}: ViewRecipePageProps) {
   const totalTime = recipe.prepTime + recipe.cookTime;
   const images = recipe.imageUrls.slice(0, 3);
   const imageCount = images.length;
@@ -139,9 +142,11 @@ export default function ViewRecipePage({ recipe, onBack }: ViewRecipePageProps) 
                   <span>
                     <span className="fred-med">{ing.quantity}</span>
                     {ing.unitOfMeasurement && (
-                      <span className="text-gray-400"> {ing.unitOfMeasurement}</span>
-                    )}
-                    {" "}
+                      <span className="text-gray-400">
+                        {" "}
+                        {ing.unitOfMeasurement}
+                      </span>
+                    )}{" "}
                     {ing.name}
                   </span>
                 </li>

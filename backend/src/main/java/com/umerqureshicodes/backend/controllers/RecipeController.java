@@ -60,4 +60,9 @@ public class RecipeController {
     public RecipeResponse toggleFavourite(@PathVariable Long id, @AuthenticationPrincipal AppUser user) {
         return recipeService.toggleFavourite(id, user.getEmail());
     }
+
+    @GetMapping("/favs")
+    public List<RecipeResponse> getFavouriteRecipes(@AuthenticationPrincipal AppUser user) {
+        return recipeService.getFavouriteRecipes(user.getEmail());
+    }
 }
