@@ -108,6 +108,19 @@ public class RecipeService {
         return convertToDto(recipe);
     }
 
+    public List<RecipeResponse> getFavouriteRecipes(String email) {
+        AppUser user = appUserRepository.findByEmail(email).orElseThrow();
+        return user.getFavourites().stream().map(this::convertToDto).toList();
+    }
+
+    public boolean isSelectedInFavs(Long recipeId, String email){
+return recipeRepository.isSelectedInFavs(recipeId, email);
+    }
+
+
+    /* USE SQL AVG() TO GET AVERAGE RATING */
+
+
     public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
         List<Recipe> results;
 

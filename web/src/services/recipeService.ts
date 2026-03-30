@@ -23,6 +23,7 @@ export const getMyRecipes: () => Promise<RecipeResponse[]> = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (checkAuthOnError(error)) {
@@ -65,6 +66,24 @@ export const postRecipe = async (
   }
 };
 
+// export const getRecipeById = async (id: number): Promise<RecipeResponse> => {
+//   try {
+//     const token = getAccessToken();
+//     const response = await axios.get(`${API_BASE_URL}/recipes/${id}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     if (checkAuthOnError(error)) {
+//       return await getRecipeById(id);
+//     } else {
+//       throw new ApiError(getErrorMessage(error));
+//     }
+//   }
+// };
+
 export const searchRecipes: (
   query: SearchFilterRequest,
 ) => Promise<RecipeResponse[]> = async (query: SearchFilterRequest) => {
@@ -79,6 +98,68 @@ export const searchRecipes: (
   } catch (error) {
     if (checkAuthOnError(error)) {
       return await searchRecipes(query); // Retry searching recipes after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
+    }
+  }
+};
+
+export const getFavs: () => Promise<RecipeResponse[]> = async () => {
+  try {
+    const token = getAccessToken();
+    console.log("Access Token:", token); // Debugging line to check if token is retrieved
+    const response = await axios.get(`${API_BASE_URL}/recipes/favs`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await getFavs(); // Retry fetching recipes after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
+    }
+  }
+};
+
+export const favRecipe: (id: number) => Promise<RecipeResponse> = async (
+  id: number,
+) => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.post(
+      `${API_BASE_URL}/recipes/${id}/favourite`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await favRecipe(id); // Retry fetching recipes after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
+    }
+  }
+};
+
+export const inFavs: (id: number) => Promise<boolean> = async (id: number) => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.get(`${API_BASE_URL}/recipes/${id}/isfav`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await inFavs(id); // Retry fetching recipes after refreshing token
     } else {
       throw new ApiError(getErrorMessage(error));
     }

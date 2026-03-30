@@ -12,7 +12,11 @@ import { NavLink } from "react-router-dom";
 
 const stats = [
   { label: "Recipes Shared", color: "var(--primary)", delay: "0s" },
-  { label: "Active Food Enthusiasts", color: "var(--secondary)", delay: "0.1s" },
+  {
+    label: "Active Food Enthusiasts",
+    color: "var(--secondary)",
+    delay: "0.1s",
+  },
   { label: "Ratings Given", color: "var(--primary)", delay: "0.2s" },
 ];
 
@@ -21,14 +25,16 @@ const testimonials = [
     initial: "A",
     name: "Ayesha Khan",
     role: "Home Chef",
-    quote: "Finally found a platform where I can share my grandmother's Nihari recipe! The community feedback has been incredible.",
+    quote:
+      "Finally found a platform where I can share my grandmother's Nihari recipe! The community feedback has been incredible.",
     delay: "0s",
   },
   {
     initial: "Z",
     name: "Zain Ahmed",
     role: "Food Enthusiast",
-    quote: "I've tried over 50 recipes from Karahi Hub. Every single dish turned out authentic and delicious!",
+    quote:
+      "I've tried over 50 recipes from Karahi Hub. Every single dish turned out authentic and delicious!",
     delay: "0.1s",
   },
 ];
@@ -51,6 +57,7 @@ export default function LandingPage() {
 
   const statTargets = [100, 50, 150];
 
+  // Mock recipes
   const recipes: Recipe[] = [
     {
       name: "Fire Lassi",
@@ -267,7 +274,9 @@ export default function LandingPage() {
             {stats.map((stat, i) => (
               <StatCard
                 key={stat.label}
-                ref={(el) => { statsRefs.current[i] = el; }}
+                ref={(el) => {
+                  statsRefs.current[i] = el;
+                }}
                 count={statCounts[i]}
                 label={stat.label}
                 color={stat.color}
@@ -282,7 +291,9 @@ export default function LandingPage() {
             {testimonials.map((t, i) => (
               <TestimonialCard
                 key={t.name}
-                ref={(el) => { testimonialRefs.current[i] = el; }}
+                ref={(el) => {
+                  testimonialRefs.current[i] = el;
+                }}
                 initial={t.initial}
                 name={t.name}
                 role={t.role}

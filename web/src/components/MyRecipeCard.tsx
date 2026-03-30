@@ -11,11 +11,11 @@ export default function MyRecipeCard({ recipe }: MyRecipeCardProps) {
   const imageCount = images.length;
 
   return (
-    <div className="flex flex-col gap-[20px] bg-[var(--accent)] p-[10px] rounded-[20px]">
+    <div className="group flex flex-col gap-[20px] bg-[var(--accent)] p-[10px] rounded-[20px] cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
       {/* Image section — rounded, sits above the data card with a slight overlap */}
       {imageCount > 0 && (
         <div
-          className={`relative z-10 grid gap-[3px] h-[190px] rounded-[14px] overflow-hidden shadow-md ${
+          className={`relative z-10 grid gap-[3px] h-[190px] rounded-[14px] overflow-hidden shadow-md [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-105 ${
             imageCount === 1
               ? "grid-cols-1"
               : imageCount === 2
