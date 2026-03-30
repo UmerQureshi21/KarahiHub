@@ -20,11 +20,11 @@ public class RatingId implements Serializable {
         this.recipe = recipe;
     }
 
-    public String getUser() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setUser(String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 

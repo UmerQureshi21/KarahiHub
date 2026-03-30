@@ -6,10 +6,13 @@ import com.umerqureshicodes.backend.entities.AppUser;
 import com.umerqureshicodes.backend.entities.Rating;
 import com.umerqureshicodes.backend.entities.RatingId;
 import com.umerqureshicodes.backend.entities.Recipe;
+import com.umerqureshicodes.backend.exceptions.GeneralException;
 import com.umerqureshicodes.backend.repositories.AppUserRepository;
 import com.umerqureshicodes.backend.repositories.RatingRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class RatingService {
@@ -23,9 +26,13 @@ public class RatingService {
     }
 
     public RatingResponse save(RatingRequest ratingRequest, String authorEmail) {
-        Rating rating = new Rating();
         AppUser author = appUserRepository.findByEmail(authorEmail).orElseThrow();
         Recipe recipe = recipeRepository.findById(ratingRequest.recipeId()).orElseThrow();
+        Optional<Rating> prevRating = ratingRepository.findById(new RatingId(authorEmail, ratingRequest.recipeId()));
+        if (prevRating.isPresent()) {
+            throw new GeneralException("Rating already exists");
+        }
+        Rating rating = new Rating();
         rating.setAuthor(author);
         rating.setRecipe(recipe);
         rating.setScore(ratingRequest.score());
