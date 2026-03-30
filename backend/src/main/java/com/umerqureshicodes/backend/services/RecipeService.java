@@ -113,6 +113,10 @@ public class RecipeService {
         return user.getFavourites().stream().map(this::convertToDto).toList();
     }
 
+
+    /* USE SQL AVG() TO GET AVERAGE RATING */
+
+
     public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
         List<Recipe> results;
 

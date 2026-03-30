@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { RecipeResponse } from "../types";
+import { favRecipe } from "../services/recipeService";
 
 interface ViewRecipePageProps {
   recipe: RecipeResponse;
@@ -21,6 +22,19 @@ export default function ViewRecipePage({
   // Placeholder state for rating — wired up later
   const [hoveredStar, setHoveredStar] = useState(0);
   const [selectedStar, setSelectedStar] = useState(0);
+  const [favCount, setFavCount] = useState<number>(recipe.favouriteCount);
+
+  async function handleToggleFav() {
+    // Placeholder function for favouriting — wired up later
+    try {
+      const data = await favRecipe(recipe.id);
+      console.log("Toggled favourite:", data);
+      // Update local state to reflect new favourite count and status
+      setFavCount(data.favouriteCount);
+    } catch (error) {
+      console.error("Error toggling favourite:", error);
+    }
+  }
 
   return (
     <div className="bg-[var(--surface)] min-h-screen">
@@ -70,10 +84,13 @@ export default function ViewRecipePage({
             </h1>
 
             {/* Favourite button — placeholder, wired up later */}
-            <button className="shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/5 transition-colors">
+            <button
+              onClick={handleToggleFav}
+              className="shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/5 transition-colors"
+            >
               <span className="text-[18px]">&#9825;</span>
               <span className="fred-med text-[13px] text-[var(--primary)]">
-                {recipe.favouriteCount}
+                {favCount}
               </span>
             </button>
           </div>
