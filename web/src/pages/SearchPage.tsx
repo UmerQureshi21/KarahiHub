@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { searchRecipes } from "../services/recipeService";
+import { searchRecipes, inFavs } from "../services/recipeService";
 import type { RecipeResponse, SearchFilterRequest } from "../types";
 import MyRecipeCard from "../components/MyRecipeCard";
 import ViewRecipePage from "./ViewRecipePage";
@@ -28,6 +28,7 @@ export default function SearchPage() {
   const [recipes, setRecipes] = useState<RecipeResponse[]>([]);
   const [searched, setSearched] = useState(false);
   const [recipeToView, setRecipeToView] = useState<RecipeResponse | null>(null);
+  const [isFav, setIsFav] = useState(false);
 
   // filter state
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -92,12 +93,19 @@ export default function SearchPage() {
       .join(" ");
   }
 
-  function handleRecipeToView(recipe: RecipeResponse) {
+  async function handleRecipeToView(recipe: RecipeResponse) {
+    try {
+      const favStatus = await inFavs(recipe.id);
+      setIsFav(favStatus);
+    } catch (error) {
+      console.error("Error checking favourite status:", error);
+      setIsFav(false);
+    }
     setRecipeToView(recipe);
   }
 
   return recipeToView != null ? (
-    <ViewRecipePage recipe={recipeToView} onBack={() => setRecipeToView(null)} />
+    <ViewRecipePage recipe={recipeToView} onBack={() => setRecipeToView(null)} isFav={isFav} />
   ) : (
     <div className="bg-[var(--surface)] p-6 md:p-10 mx-auto min-h-screen">
       <h1 className="fred-bold text-[28px] md:text-[34px] text-[var(--primary)] mb-2">

@@ -61,4 +61,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             @Param("minServings") int minServings, @Param("maxServings") int maxServings,
             @Param("sortBy") String sortBy
     );
+
+    // Returns true if the given recipe is in the user's favourites join table
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM user_favourites " +
+            "WHERE user_email = :email AND recipe_id = :recipeId)", nativeQuery = true)
+    Boolean isSelectedInFavs(@Param("recipeId") Long recipeId, @Param("email") String email);
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getFavs } from "../services/recipeService";
+import { getFavs, inFavs } from "../services/recipeService";
 import type { RecipeResponse } from "../types";
 import MyRecipeCard from "../components/MyRecipeCard";
 import ViewRecipePage from "./ViewRecipePage";
@@ -9,6 +9,7 @@ export default function FavRecipesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [recipeToView, setRecipeToView] = useState<RecipeResponse | null>(null);
+  const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
     async function fetchFavourites() {
@@ -25,12 +26,24 @@ export default function FavRecipesPage() {
     fetchFavourites();
   }, []);
 
+  async function handleRecipeToView(recipe: RecipeResponse) {
+    try {
+      const favStatus = await inFavs(recipe.id);
+      setIsFav(favStatus);
+    } catch (error) {
+      console.error("Error checking favourite status:", error);
+      setIsFav(false);
+    }
+    setRecipeToView(recipe);
+  }
+
   // Full recipe view when a card is clicked
   if (recipeToView) {
     return (
       <ViewRecipePage
         recipe={recipeToView}
         onBack={() => setRecipeToView(null)}
+        isFav={isFav}
       />
     );
   }
@@ -85,7 +98,7 @@ export default function FavRecipesPage() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {recipes.map((recipe) => (
-              <div key={recipe.id} onClick={() => setRecipeToView(recipe)}>
+              <div key={recipe.id} onClick={() => handleRecipeToView(recipe)}>
                 <MyRecipeCard recipe={recipe} />
               </div>
             ))}

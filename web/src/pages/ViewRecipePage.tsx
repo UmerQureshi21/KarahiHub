@@ -5,6 +5,7 @@ import { favRecipe } from "../services/recipeService";
 interface ViewRecipePageProps {
   recipe: RecipeResponse;
   onBack: () => void;
+  isFav: boolean;
 }
 
 // Formats "MAIN_COURSE" → "Main Course"
@@ -14,24 +15,37 @@ const formatCategory = (cat: string) =>
 export default function ViewRecipePage({
   recipe,
   onBack,
+  isFav,
 }: ViewRecipePageProps) {
   const totalTime = recipe.prepTime + recipe.cookTime;
   const images = recipe.imageUrls.slice(0, 3);
   const imageCount = images.length;
 
-  // Placeholder state for rating — wired up later
   const [hoveredStar, setHoveredStar] = useState(0);
   const [selectedStar, setSelectedStar] = useState(0);
-  const [favCount, setFavCount] = useState<number>(recipe.favouriteCount);
+  const [favCount, setFavCount] = useState(recipe.favouriteCount);
+  const [isFaved, setIsFaved] = useState(isFav);
+  const [animating, setAnimating] = useState(false);
 
   async function handleToggleFav() {
-    // Placeholder function for favouriting — wired up later
+    const wasFaved = isFaved;
+
+    // Optimistic update — flip immediately so the UI feels instant
+    setIsFaved(!wasFaved);
+    setFavCount((prev) => prev + (wasFaved ? -1 : 1));
+
+    // Trigger the bounce animation
+    setAnimating(true);
+    setTimeout(() => setAnimating(false), 500);
+
     try {
       const data = await favRecipe(recipe.id);
-      console.log("Toggled favourite:", data);
-      // Update local state to reflect new favourite count and status
+      // Sync count with server in case of drift
       setFavCount(data.favouriteCount);
     } catch (error) {
+      // Revert on failure
+      setIsFaved(wasFaved);
+      setFavCount((prev) => prev + (wasFaved ? 1 : -1));
       console.error("Error toggling favourite:", error);
     }
   }
@@ -83,12 +97,29 @@ export default function ViewRecipePage({
               {recipe.title}
             </h1>
 
-            {/* Favourite button — placeholder, wired up later */}
+            {/* Favourite button with heart fill + pop animation */}
             <button
               onClick={handleToggleFav}
-              className="shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/5 transition-colors"
+              className={`shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 cursor-pointer ${
+                isFaved
+                  ? "border-[var(--secondary)] bg-[var(--secondary)]/10"
+                  : "border-gray-200 hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/5"
+              }`}
             >
-              <span className="text-[18px]">&#9825;</span>
+              {/* Heart icon with burst ring behind it */}
+              <span className="relative flex items-center justify-center w-[22px] h-[22px]">
+                {/* Burst ring — expands and fades on favourite */}
+                {animating && isFaved && (
+                  <span className="absolute inset-0 rounded-full border-2 border-[var(--secondary)] heart-burst" />
+                )}
+                {/* Heart glyph — pops on every click */}
+                <span
+                  className={`text-[18px] transition-colors duration-300 ${animating ? "heart-pop" : ""}`}
+                  style={{ color: isFaved ? "var(--secondary)" : "#9ca3af" }}
+                >
+                  {isFaved ? "\u2665" : "\u2661"}
+                </span>
+              </span>
               <span className="fred-med text-[13px] text-[var(--primary)]">
                 {favCount}
               </span>

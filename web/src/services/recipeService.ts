@@ -147,3 +147,21 @@ export const favRecipe: (id: number) => Promise<RecipeResponse> = async (
     }
   }
 };
+
+export const inFavs: (id: number) => Promise<boolean> = async (id: number) => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.get(`${API_BASE_URL}/recipes/${id}/isfav`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await inFavs(id); // Retry fetching recipes after refreshing token
+    } else {
+      throw new ApiError(getErrorMessage(error));
+    }
+  }
+};

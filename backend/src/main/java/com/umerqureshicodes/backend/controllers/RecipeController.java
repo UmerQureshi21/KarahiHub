@@ -65,4 +65,9 @@ public class RecipeController {
     public List<RecipeResponse> getFavouriteRecipes(@AuthenticationPrincipal AppUser user) {
         return recipeService.getFavouriteRecipes(user.getEmail());
     }
+
+    @GetMapping("/{id}/isfav")
+    public boolean isSelectedInFavs(@AuthenticationPrincipal AppUser user, @PathVariable Long id) {
+        return recipeService.isSelectedInFavs(id, user.getEmail());
+    }
 }
