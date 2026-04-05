@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { getMyRecipes } from "../services/recipeService";
+import { getMyRecipes, inFavs } from "../services/recipeService";
 import { useAuth } from "../context/AuthContext";
 import MyRecipeCard from "../components/MyRecipeCard";
+import ViewRecipePage from "./ViewRecipePage";
 import type { ApiError, RecipeResponse } from "../types";
 
 export default function DashboardPage() {
@@ -9,6 +10,8 @@ export default function DashboardPage() {
   const [recipes, setRecipes] = useState<RecipeResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [recipeToView, setRecipeToView] = useState<RecipeResponse | null>(null);
+  const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -23,6 +26,27 @@ export default function DashboardPage() {
     };
     fetchRecipes();
   }, []);
+
+  async function handleRecipeToView(recipe: RecipeResponse) {
+    try {
+      const favStatus = await inFavs(recipe.id);
+      setIsFav(favStatus);
+    } catch (error) {
+      console.error("Error checking favourite status:", error);
+      setIsFav(false);
+    }
+    setRecipeToView(recipe);
+  }
+
+  if (recipeToView) {
+    return (
+      <ViewRecipePage
+        recipe={recipeToView}
+        onBack={() => setRecipeToView(null)}
+        isFav={isFav}
+      />
+    );
+  }
 
   return (
     <div className="bg-[var(--surface)] p-6 md:p-10  mx-auto min-h-screen">
@@ -95,7 +119,9 @@ export default function DashboardPage() {
         {!loading && !error && recipes.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {recipes.map((recipe) => (
-              <MyRecipeCard key={recipe.id} recipe={recipe} />
+              <div key={recipe.id} onClick={() => handleRecipeToView(recipe)}>
+                <MyRecipeCard recipe={recipe} />
+              </div>
             ))}
           </div>
         )}
