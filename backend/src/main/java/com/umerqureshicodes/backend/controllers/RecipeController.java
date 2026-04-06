@@ -32,6 +32,11 @@ public class RecipeController {
         return recipeService.getById(id);
     }
 
+    @GetMapping("/owned")
+    public boolean recipeOwnedByAppUser(@AuthenticationPrincipal AppUser appUser, @RequestParam Long recipeId) {
+        return recipeService.recipeOwnedByAppUser(appUser.getEmail(), recipeId);
+    }
+
 
     // POST /api/recipes/search — search by title + filter by categories, time, rating, servings + sort
     @PostMapping("/search")

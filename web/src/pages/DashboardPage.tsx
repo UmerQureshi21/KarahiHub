@@ -44,6 +44,7 @@ export default function DashboardPage() {
         recipe={recipeToView}
         onBack={() => setRecipeToView(null)}
         isFav={isFav}
+        isUsersRecipe={true}
       />
     );
   }

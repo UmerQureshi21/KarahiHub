@@ -6,6 +6,7 @@ interface ViewRecipePageProps {
   recipe: RecipeResponse;
   onBack: () => void;
   isFav: boolean;
+  isUsersRecipe: boolean;
 }
 
 // Formats "MAIN_COURSE" → "Main Course"
@@ -16,6 +17,7 @@ export default function ViewRecipePage({
   recipe,
   onBack,
   isFav,
+  isUsersRecipe,
 }: ViewRecipePageProps) {
   const totalTime = recipe.prepTime + recipe.cookTime;
   const images = recipe.imageUrls.slice(0, 3);
@@ -223,7 +225,8 @@ export default function ViewRecipePage({
           </div>
         </div>
 
-        {/* Rate this recipe — placeholder section */}
+        {/* Rate this recipe — hidden if the user owns this recipe */}
+        {!isUsersRecipe && (
         <div className="bg-[var(--accent)] rounded-[16px] p-6 text-center">
           <h2 className="fred-bold text-[18px] text-[var(--primary)] mb-2">
             Rate this recipe
@@ -259,6 +262,7 @@ export default function ViewRecipePage({
             </p>
           )}
         </div>
+        )}
       </div>
     </div>
   );

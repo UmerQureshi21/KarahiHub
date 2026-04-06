@@ -85,6 +85,11 @@ public class RecipeService {
         return convertToDto(Objects.requireNonNull(recipeRepository.findById(id).orElse(null)));
     }
 
+    public boolean recipeOwnedByAppUser(String email, Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow();
+        return email.equals(recipe.getAppUser().getEmail());
+    }
+
     // Toggles favourite: if already favourited, removes it. If not, adds it.
     // @Transactional means JPA tracks all changes to entities within this method
     // and auto-saves them when the method finishes — no manual save() needed.
