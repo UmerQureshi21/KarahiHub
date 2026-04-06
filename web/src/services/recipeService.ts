@@ -165,3 +165,23 @@ export const inFavs: (id: number) => Promise<boolean> = async (id: number) => {
     }
   }
 };
+
+
+  export const isRecipeOwned = async (recipeId: number): Promise<boolean> => {                                                                                             
+    try {                                                                                                                                                                
+      const token = getAccessToken();                                                                                                                                      
+      const response = await axios.get(`${API_BASE_URL}/recipes/owned?recipeId=${recipeId}`, {                                                                           
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (checkAuthOnError(error)) {
+        return await isRecipeOwned(recipeId);
+      } else {
+        throw new ApiError(getErrorMessage(error));
+      }
+    }
+  };
+

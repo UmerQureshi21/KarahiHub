@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getFavs, inFavs } from "../services/recipeService";
+import { getFavs, inFavs, isRecipeOwned } from "../services/recipeService";
 import type { RecipeResponse } from "../types";
 import MyRecipeCard from "../components/MyRecipeCard";
 import ViewRecipePage from "./ViewRecipePage";
@@ -10,6 +10,7 @@ export default function FavRecipesPage() {
   const [error, setError] = useState<string | null>(null);
   const [recipeToView, setRecipeToView] = useState<RecipeResponse | null>(null);
   const [isFav, setIsFav] = useState(false);
+  const [isOwned, setIsOwned] = useState(false);
 
   useEffect(() => {
     async function fetchFavourites() {
@@ -28,11 +29,16 @@ export default function FavRecipesPage() {
 
   async function handleRecipeToView(recipe: RecipeResponse) {
     try {
-      const favStatus = await inFavs(recipe.id);
+      const [favStatus, ownedStatus] = await Promise.all([
+        inFavs(recipe.id),
+        isRecipeOwned(recipe.id),
+      ]);
       setIsFav(favStatus);
+      setIsOwned(ownedStatus);
     } catch (error) {
-      console.error("Error checking favourite status:", error);
+      console.error("Error checking recipe status:", error);
       setIsFav(false);
+      setIsOwned(false);
     }
     setRecipeToView(recipe);
   }
@@ -44,6 +50,7 @@ export default function FavRecipesPage() {
         recipe={recipeToView}
         onBack={() => setRecipeToView(null)}
         isFav={isFav}
+        isUsersRecipe={isOwned}
       />
     );
   }

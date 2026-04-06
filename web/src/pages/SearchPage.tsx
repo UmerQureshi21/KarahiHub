@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { searchRecipes, inFavs } from "../services/recipeService";
+import { searchRecipes, inFavs, isRecipeOwned } from "../services/recipeService";
 import type { RecipeResponse, SearchFilterRequest } from "../types";
 import MyRecipeCard from "../components/MyRecipeCard";
 import ViewRecipePage from "./ViewRecipePage";
@@ -29,6 +29,7 @@ export default function SearchPage() {
   const [searched, setSearched] = useState(false);
   const [recipeToView, setRecipeToView] = useState<RecipeResponse | null>(null);
   const [isFav, setIsFav] = useState(false);
+  const [isOwned, setIsOwned] = useState(false);
 
   // filter state
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -95,17 +96,22 @@ export default function SearchPage() {
 
   async function handleRecipeToView(recipe: RecipeResponse) {
     try {
-      const favStatus = await inFavs(recipe.id);
+      const [favStatus, ownedStatus] = await Promise.all([
+        inFavs(recipe.id),
+        isRecipeOwned(recipe.id),
+      ]);
       setIsFav(favStatus);
+      setIsOwned(ownedStatus);
     } catch (error) {
-      console.error("Error checking favourite status:", error);
+      console.error("Error checking recipe status:", error);
       setIsFav(false);
+      setIsOwned(false);
     }
     setRecipeToView(recipe);
   }
 
   return recipeToView != null ? (
-    <ViewRecipePage recipe={recipeToView} onBack={() => setRecipeToView(null)} isFav={isFav} />
+    <ViewRecipePage recipe={recipeToView} onBack={() => setRecipeToView(null)} isFav={isFav} isUsersRecipe={isOwned} />
   ) : (
     <div className="bg-[var(--surface)] p-6 md:p-10 mx-auto min-h-screen">
       <h1 className="fred-bold text-[28px] md:text-[34px] text-[var(--primary)] mb-2">
