@@ -19,10 +19,14 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final AppUserRepository appUserRepository;
     private final RecipeRepository recipeRepository;
-    public RatingService(RatingRepository ratingRepository, AppUserRepository appUserRepository, RecipeRepository recipeRepository) {
+    private final RecipeService recipeService;
+
+    public RatingService(RatingRepository ratingRepository, AppUserRepository appUserRepository,
+                         RecipeRepository recipeRepository, RecipeService recipeService) {
         this.ratingRepository = ratingRepository;
         this.appUserRepository = appUserRepository;
         this.recipeRepository = recipeRepository;
+        this.recipeService = recipeService;
     }
 
     public RatingResponse save(RatingRequest ratingRequest, String authorEmail) {
@@ -36,7 +40,13 @@ public class RatingService {
         rating.setAuthor(author);
         rating.setRecipe(recipe);
         rating.setScore(ratingRequest.score());
-        return ratingRepository.save(rating).toResponse();
+        RatingResponse response = ratingRepository.save(rating).toResponse();
+
+        // Recalculate and update the recipe's average rating
+        Double avgScore = ratingRepository.getAverageScore(ratingRequest.recipeId());
+        recipeService.updateRating(ratingRequest.recipeId(), avgScore != null ? avgScore : 0.0);
+
+        return response;
     }
 
 }

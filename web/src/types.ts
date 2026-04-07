@@ -57,6 +57,7 @@ export type RecipeResponse = {
   servingCount: number;
   categories: string[];
   favouriteCount: number;
+  rating: number;
 };
 
 // Matches the backend ErrorResponse record from GlobalExceptionHandler
@@ -95,4 +96,14 @@ export type SearchFilterRequest = {
   maxServings: number;
   sortBy: "rating" | "prep_time" | "cook_time" | "created_at";
   ascending: boolean;
+};
+
+export type RatingRequest = {
+  recipeId: number;
+  score: number;
+};
+
+export type RatingResponse = {
+  recipeId: number;
+  score: number;
 };

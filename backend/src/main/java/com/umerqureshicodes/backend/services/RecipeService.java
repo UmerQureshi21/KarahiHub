@@ -90,6 +90,13 @@ public class RecipeService {
         return email.equals(recipe.getAppUser().getEmail());
     }
 
+    // Updates a recipe's average rating score
+    @Transactional
+    public void updateRating(Long recipeId, double newScore) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow();
+        recipe.setRating(newScore);
+    }
+
     // Toggles favourite: if already favourited, removes it. If not, adds it.
     // @Transactional means JPA tracks all changes to entities within this method
     // and auto-saves them when the method finishes — no manual save() needed.
@@ -186,7 +193,8 @@ return recipeRepository.isSelectedInFavs(recipeId, email);
                 recipe.getCookTime(),
                 recipe.getServingCount(),
                 categoryNames,
-                recipe.getFavouritedBy().size()
+                recipe.getFavouritedBy().size(),
+                recipe.getRating()
         );
     }
 }

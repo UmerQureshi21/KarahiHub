@@ -1,6 +1,8 @@
 import axios from "axios";
 import { ApiError } from "../types";
 import type {
+  RatingRequest,
+  RatingResponse,
   RecipeRequest,
   RecipeResponse,
   SearchFilterRequest,
@@ -166,22 +168,45 @@ export const inFavs: (id: number) => Promise<boolean> = async (id: number) => {
   }
 };
 
-
-  export const isRecipeOwned = async (recipeId: number): Promise<boolean> => {                                                                                             
-    try {                                                                                                                                                                
-      const token = getAccessToken();                                                                                                                                      
-      const response = await axios.get(`${API_BASE_URL}/recipes/owned?recipeId=${recipeId}`, {                                                                           
+export const isRecipeOwned = async (recipeId: number): Promise<boolean> => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.get(
+      `${API_BASE_URL}/recipes/owned?recipeId=${recipeId}`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
-      return response.data;
-    } catch (error) {
-      if (checkAuthOnError(error)) {
-        return await isRecipeOwned(recipeId);
-      } else {
-        throw new ApiError(getErrorMessage(error));
-      }
+      },
+    );
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await isRecipeOwned(recipeId);
+    } else {
+      throw new ApiError(getErrorMessage(error));
     }
-  };
+  }
+};
 
+export const rateRecipe:(ratingRequest: RatingRequest) => Promise<RatingResponse> = async (ratingRequest: RatingRequest) => {
+  try {
+    const token = getAccessToken();
+    const response = await axios.post(
+      `${API_BASE_URL}/ratings`,
+      ratingRequest,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    if (checkAuthOnError(error)) {
+      return await rateRecipe(ratingRequest);
+    } else {
+      throw new ApiError(getErrorMessage(error));
+    }
+  }
+};

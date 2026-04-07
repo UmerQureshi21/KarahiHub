@@ -16,7 +16,8 @@ public record RecipeResponse(
         int cookTime,
         int servingCount,
         List<RecipeCategory> categories,
-        int favouriteCount
+        int favouriteCount,
+        double rating
 ) {
 
 }
