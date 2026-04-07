@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { RecipeResponse } from "../types";
 import { favRecipe } from "../services/recipeService";
+import RatingSection from "../components/RatingSection";
 
 interface ViewRecipePageProps {
   recipe: RecipeResponse;
@@ -23,11 +24,10 @@ export default function ViewRecipePage({
   const images = recipe.imageUrls.slice(0, 3);
   const imageCount = images.length;
 
-  const [hoveredStar, setHoveredStar] = useState(0);
-  const [selectedStar, setSelectedStar] = useState(0);
   const [favCount, setFavCount] = useState(recipe.favouriteCount);
   const [isFaved, setIsFaved] = useState(isFav);
   const [animating, setAnimating] = useState(false);
+
 
   async function handleToggleFav() {
     const wasFaved = isFaved;
@@ -141,6 +141,7 @@ export default function ViewRecipePage({
         {/* Stats row */}
         <div className="flex flex-wrap gap-3">
           {[
+            { label: "Rating", value: recipe.rating > 0 ? `${recipe.rating.toFixed(1)}/5` : "N/A" },
             { label: "Prep", value: `${recipe.prepTime}m` },
             { label: "Cook", value: `${recipe.cookTime}m` },
             { label: "Total", value: `${totalTime}m` },
@@ -225,44 +226,8 @@ export default function ViewRecipePage({
           </div>
         </div>
 
-        {/* Rate this recipe — hidden if the user owns this recipe */}
-        {!isUsersRecipe && (
-        <div className="bg-[var(--accent)] rounded-[16px] p-6 text-center">
-          <h2 className="fred-bold text-[18px] text-[var(--primary)] mb-2">
-            Rate this recipe
-          </h2>
-          <p className="fred-light text-[13px] text-gray-400 mb-4">
-            How would you rate this dish?
-          </p>
-
-          {/* 5-star rating */}
-          <div className="flex items-center justify-center gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                onMouseEnter={() => setHoveredStar(star)}
-                onMouseLeave={() => setHoveredStar(0)}
-                onClick={() => setSelectedStar(star)}
-                className="text-[32px] transition-colors"
-                style={{
-                  color:
-                    star <= (hoveredStar || selectedStar)
-                      ? "var(--secondary)"
-                      : "#d1d5db",
-                }}
-              >
-                &#9733;
-              </button>
-            ))}
-          </div>
-
-          {selectedStar > 0 && (
-            <p className="fred-med text-[13px] text-[var(--secondary)] mt-3">
-              You rated this {selectedStar}/5
-            </p>
-          )}
-        </div>
-        )}
+        {/* Rating section — hidden if the user owns this recipe */}
+        {!isUsersRecipe && <RatingSection recipe={recipe} />}
       </div>
     </div>
   );
