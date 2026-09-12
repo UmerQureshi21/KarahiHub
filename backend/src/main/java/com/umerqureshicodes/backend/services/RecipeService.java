@@ -5,6 +5,7 @@ import com.umerqureshicodes.backend.dto.RecipeRequest;
 import com.umerqureshicodes.backend.dto.RecipeResponse;
 import com.umerqureshicodes.backend.dto.SearchFilterRequest;
 import com.umerqureshicodes.backend.entities.*;
+import com.umerqureshicodes.backend.exceptions.GeneralException;
 import com.umerqureshicodes.backend.repositories.AppUserRepository;
 import com.umerqureshicodes.backend.repositories.CategoryRepository;
 import com.umerqureshicodes.backend.repositories.RecipeRepository;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class RecipeService {
@@ -105,6 +103,11 @@ public class RecipeService {
     public RecipeResponse toggleFavourite(Long recipeId, String email) {
         AppUser user = appUserRepository.findByEmail(email).orElseThrow();
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow();
+
+        //TODO: user can't favourite their own recipe
+        if (this.recipeOwnedByAppUser(email, recipeId)) {
+            throw new GeneralException("Can't favourite your recipe");
+        }
 
         // Must update BOTH sides in memory so the DTO reflects the current state.
         // JPA only syncs the owning side (user.favourites) to the DB —
@@ -197,4 +200,23 @@ return recipeRepository.isSelectedInFavs(recipeId, email);
                 recipe.getRating()
         );
     }
+
+
+    //    public void idk (){
+//
+//                                        Profile UmerQureshi = new SoftwareEngineer(
+//                                                "Umer Qureshi",
+//                                                "McMaster University",
+//                                                "Computer Science",
+//                                                "Toronto",
+//                                                new String[]{
+//                                                        "Backend Development",
+//                                                        "Frontend Development",
+//                                                        "Platform Architecture"}
+//                                        );
+//
+//
+//        System.out.println(Arrays.toString(UmerQureshi.getDomains()));
+//
+//    }
 }
