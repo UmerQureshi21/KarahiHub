@@ -1,9 +1,8 @@
 package com.umerqureshicodes.backend.config;
 
-import com.umerqureshicodes.backend.entities.*;
-import com.umerqureshicodes.backend.repositories.AppUserRepository;
-import com.umerqureshicodes.backend.repositories.CategoryRepository;
-import com.umerqureshicodes.backend.repositories.RecipeRepository;
+import com.umerqureshicodes.backend.auth.AppUser;
+import com.umerqureshicodes.backend.auth.AppUserRepository;
+import com.umerqureshicodes.backend.recipe.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

@@ -60,11 +60,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(new ErrorResponse(409, "Resource already exists"));
     }
 
-    // 500 — Your custom error with a specific message.
-    // throw new GeneralException("whatever you want") → returns { status: 500, message: "whatever you want" }
+    // 400 — Business logic errors (e.g. "can't rate your own recipe", "rating already exists")
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(GeneralException e) {
-        return ResponseEntity.status(500).body(new ErrorResponse(500, e.getMessage()));
+        return ResponseEntity.status(400).body(new ErrorResponse(400, e.getMessage()));
     }
 
     // 500 — Catch-all for anything unexpected. This is the last resort.

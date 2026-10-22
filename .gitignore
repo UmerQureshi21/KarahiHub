@@ -59,5 +59,6 @@ build/
 
 .claude/
 application.properties
+application.properties.secrets
 
 backend/tmp/
