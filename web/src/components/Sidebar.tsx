@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { logout } from "../services/userService";
 
 type SidebarProps = {
   isClosed: boolean;
@@ -170,6 +171,7 @@ const IconSun = ({ className }: { className?: string }) => (
 );
 
 export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
+  const navigate = useNavigate();
   const [isDark, setIsDark] = useState(false);
   const textClass = `text-[16px] font-medium text-[var(--primary)] transition-opacity duration-200 whitespace-nowrap ${
     isClosed ? "opacity-0" : "opacity-100"
@@ -274,8 +276,12 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
 
         <div className="bottom-content">
           <li className="h-[50px] mt-[10px] list-none flex items-center">
-            <NavLink
-              to="/auth"
+            <button
+              type="button"
+              onClick={async () => {
+                await logout();
+                navigate("/auth");
+              }}
               className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
             >
               <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
@@ -284,7 +290,7 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
               >
                 Logout
               </span>
-            </NavLink>
+            </button>
           </li>
 
           <li className="h-[50px] mt-[10px] list-none flex items-center bg-[var(--surface)] relative rounded-[6px]">

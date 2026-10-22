@@ -1,6 +1,7 @@
 package com.umerqureshicodes.backend.recipe;
 
 import com.umerqureshicodes.backend.auth.AppUser;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class RecipeController {
     //   "images"  → binary files (optional, user might not upload any)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public RecipeResponse createRecipe(
-            @RequestPart("recipe") RecipeRequest request,
+            @Valid @RequestPart("recipe") RecipeRequest request,
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
             @AuthenticationPrincipal AppUser user) {
         return recipeService.saveRecipe(request, images, user);

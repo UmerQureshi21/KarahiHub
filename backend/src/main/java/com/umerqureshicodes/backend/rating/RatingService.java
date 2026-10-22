@@ -28,10 +28,18 @@ public class RatingService {
     public RatingResponse save(RatingRequest ratingRequest, String authorEmail) {
         AppUser author = appUserRepository.findByEmail(authorEmail).orElseThrow();
         Recipe recipe = recipeRepository.findById(ratingRequest.recipeId()).orElseThrow();
+        if (authorEmail.equals(recipe.getAppUser().getEmail())) {
+            throw new GeneralException("You can't rate your own recipe");
+        }
+
         Optional<Rating> prevRating = ratingRepository.findById(new RatingId(authorEmail, ratingRequest.recipeId()));
         if (prevRating.isPresent()) {
             throw new GeneralException("Rating already exists");
         }
+        if (ratingRequest.score() < 1 || ratingRequest.score() > 5) {
+            throw new IllegalArgumentException("Rating score must be between 1 and 5");
+        }
+
         Rating rating = new Rating();
         rating.setAuthor(author);
         rating.setRecipe(recipe);

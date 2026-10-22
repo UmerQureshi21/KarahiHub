@@ -3,6 +3,7 @@ package com.umerqureshicodes.backend.auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class AuthController {
     // Also sets a refresh_token HTTP-only cookie.
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-            @RequestBody RegisterRequest request,
+            @Valid @RequestBody RegisterRequest request,
             HttpServletResponse response // this is how we get access to the raw HTTP response object so we can add the refresh token cookie to it.
     ) {
         AuthResponse authResponse = authService.register(request);
@@ -35,7 +36,7 @@ public class AuthController {
     // Also sets a refresh_token HTTP-only cookie.
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @RequestBody LoginRequest request,
+            @Valid @RequestBody LoginRequest request,
             HttpServletResponse response
     ) {
         AuthResponse authResponse = authService.login(request);
@@ -67,6 +68,19 @@ public class AuthController {
         addRefreshTokenCookie(response, newRefreshToken);
 
         return ResponseEntity.ok(authResponse);
+    }
+
+    // POST /api/auth/logout
+    // Clears the refresh_token cookie by setting maxAge to 0.
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("refresh_token", "");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/api/auth");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return ResponseEntity.ok().build();
     }
 
     // Sets the refresh token as an HTTP-only cookie.

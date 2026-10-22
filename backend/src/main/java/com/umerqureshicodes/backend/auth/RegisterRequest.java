@@ -1,8 +1,12 @@
 package com.umerqureshicodes.backend.auth;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public record RegisterRequest(
-        String email,
-        String username,
-        String password
+        @NotBlank @Email String email,
+        @NotBlank String username,
+        @NotBlank @Size(min = 6, message = "Password must be at least 6 characters") String password
 ) {
 }
