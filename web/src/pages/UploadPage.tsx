@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { postRecipe } from "../services/recipeService";
 import type { IngredientRequest, RecipeRequest } from "../types";
 import UnitPicker from "../components/UnitPicker";
@@ -41,6 +41,12 @@ export default function UploadPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Create preview URLs for selected images and revoke them on cleanup
+  const previewUrls = useMemo(() => images.map((f) => URL.createObjectURL(f)), [images]);
+  useEffect(() => {
+    return () => previewUrls.forEach((url) => URL.revokeObjectURL(url));
+  }, [previewUrls]);
 
   // --- Ingredient helpers ---
   const updateIngredient = (
@@ -208,7 +214,7 @@ export default function UploadPage() {
                   className="relative w-[100px] h-[100px] rounded-[10px] overflow-hidden group"
                 >
                   <img
-                    src={URL.createObjectURL(file)}
+                    src={previewUrls[i]}
                     alt={`Upload ${i + 1}`}
                     className="w-full h-full object-cover"
                   />

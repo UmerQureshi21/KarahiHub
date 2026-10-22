@@ -130,7 +130,13 @@ return recipeRepository.isSelectedInFavs(recipeId, email);
     /* USE SQL AVG() TO GET AVERAGE RATING */
 
 
+    private static final List<String> ALLOWED_SORT_COLUMNS = List.of("rating", "cook_time", "prep_time", "created_at");
+
     public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
+        if (!ALLOWED_SORT_COLUMNS.contains(request.sortBy())) {
+            throw new IllegalArgumentException("Invalid sort column: " + request.sortBy());
+        }
+
         List<Recipe> results;
 
         // pick the right repo method based on sort direction

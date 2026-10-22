@@ -40,7 +40,7 @@ const testimonials = [
 ];
 
 export default function LandingPage() {
-  let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [visibleStats, setVisibleStats] = useState<boolean[]>([
     false,
     false,
@@ -153,9 +153,8 @@ export default function LandingPage() {
   ];
 
   useEffect(() => {
-    window.addEventListener("resize", () => {
-      setWindowWidth(window.innerWidth);
-    });
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
 
     const statsObserver = new IntersectionObserver(
       (entries) => {
@@ -204,12 +203,14 @@ export default function LandingPage() {
     });
 
     return () => {
+      window.removeEventListener("resize", handleResize);
       statsObserver.disconnect();
       testimonialObserver.disconnect();
     };
   }, []);
 
   useEffect(() => {
+    const intervals: ReturnType<typeof setInterval>[] = [];
     visibleStats.forEach((isVisible, index) => {
       if (isVisible && statCounts[index] < statTargets[index]) {
         const interval = setInterval(() => {
@@ -223,10 +224,10 @@ export default function LandingPage() {
             return newCounts;
           });
         }, 60);
-
-        return () => clearInterval(interval);
+        intervals.push(interval);
       }
     });
+    return () => intervals.forEach(clearInterval);
   }, [visibleStats]);
 
   return (

@@ -122,7 +122,14 @@ export const refresh = async (): Promise<AuthResponse> => {
 
 // Clears the in-memory token. To fully logout, the backend should also
 // clear the refresh_token cookie (or you can expire it client-side).
-export const logout = (): void => {
+export const logout = async (): Promise<void> => {
+  try {
+    await axios.post(`${API_BASE_URL}/auth/logout`, null, {
+      withCredentials: true,
+    });
+  } catch {
+    // even if the backend call fails, still clear local state
+  }
   accessToken = null;
   currentUserEmail = null;
   currentUsername = null;

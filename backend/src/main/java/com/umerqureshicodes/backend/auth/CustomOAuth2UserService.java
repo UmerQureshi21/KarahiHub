@@ -55,13 +55,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (appUser.isPresent()) {
             user = appUser.get();
             if (user.getProviderId() == null) {
-                // this means that their original sign up was traditional
-                // since traditional doesn't store providerId
+                // Link accounts: store Google's providerId so we recognise them
+                // next time, but keep provider as TRADITIONAL so password login
+                // still works.
                 user.setProviderId(providerId);
-                user.setProvider(AuthProvider.GOOGLE);
             }
-            // if they doin't enter this block then they are already oauth,
-            // so no need to do anything
         }
         else{
             //create user

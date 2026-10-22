@@ -27,14 +27,15 @@ export default function TopFoodCarousel({
   const lastTime = useRef<number>(0);
   const [speed, setSpeed] = useState(flowSpeed);
   const [isPaused, setIsPaused] = useState(false);
-  let recipes2: Recipe[] = recipes; // recipes2 is the array that gets updated when you press left or right
+  const recipes2: Recipe[] = recipes; // recipes2 is the array that gets updated when you press left or right
 
   // Adjust speed for first render of text carousel
-  setTimeout(() => {
+  useEffect(() => {
     if (!isImages) {
-      setSpeed(60);
+      const timer = setTimeout(() => setSpeed(60), 500);
+      return () => clearTimeout(timer);
     }
-  }, 500);
+  }, [isImages]);
 
   useEffect(() => {
     const step = (time: number) => {
@@ -97,6 +98,11 @@ export default function TopFoodCarousel({
 
     container.addEventListener("mouseenter", handleMouseEnter);
     container.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      container.removeEventListener("mouseenter", handleMouseEnter);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
   return (
