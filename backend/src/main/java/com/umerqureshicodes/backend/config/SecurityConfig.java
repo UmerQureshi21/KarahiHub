@@ -1,7 +1,9 @@
 package com.umerqureshicodes.backend.config;
 
 import com.umerqureshicodes.backend.jwt.JwtAuthenticationFilter;
-import com.umerqureshicodes.backend.repositories.AppUserRepository;
+import com.umerqureshicodes.backend.auth.AppUserRepository;
+import com.umerqureshicodes.backend.auth.CustomOAuth2UserService;
+import com.umerqureshicodes.backend.auth.OAuth2AuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,11 +23,17 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AppUserRepository appUserRepository;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          AppUserRepository appUserRepository) {
+                          AppUserRepository appUserRepository,
+                          CustomOAuth2UserService customOAuth2UserService,
+                          OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.appUserRepository = appUserRepository;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
     }
 
     @Bean
@@ -47,6 +55,7 @@ public class SecurityConfig {
                 // Route permissions
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()     // login/register/refresh — must be open
+                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll() // OAuth2 flow endpoints
                         //.requestMatchers("/api/recipes/**").permitAll()  // keep recipes public for now
                         .anyRequest().authenticated()                   // everything else needs a valid JWT
                 )
@@ -70,6 +79,16 @@ public class SecurityConfig {
                         //Filter level (SecurityConfig's exceptionHandling) — catches 401/403 from Spring Security before requests reach
                         //controllers. So i customizes to give proper error responses so
 
+                )
+
+                // OAuth2 login — Google (and future providers)
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)  // calls its
+                                // loadUser() method
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler) // calls its
+                        // onAuthenticationSuccess()method
                 )
 
                 // Wire up our DaoAuthenticationProvider (handles login password checking)

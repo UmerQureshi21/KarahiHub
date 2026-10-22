@@ -16,35 +16,33 @@ import {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
 
-export const getMyRecipes: () => Promise<RecipeResponse[]> = async () => {
+export const getMyRecipes = async (
+  _retried = false,
+): Promise<RecipeResponse[]> => {
   try {
     const token = getAccessToken();
-    console.log("Access Token:", token); // Debugging line to check if token is retrieved
     const response = await axios.get(`${API_BASE_URL}/recipes/mine`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await getMyRecipes(); // Retry fetching recipes after refreshing token
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await getMyRecipes(true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };
 
 export const postRecipe = async (
   recipe: RecipeRequest,
   images: File[],
+  _retried = false,
 ): Promise<RecipeResponse> => {
   try {
     const token = getAccessToken();
 
-    // Build multipart form: "recipe" part is a JSON blob, "images" part is the file list.
-    // This matches the backend @RequestPart("recipe") + @RequestPart("images") signature.
     const formData = new FormData();
     formData.append(
       "recipe",
@@ -55,40 +53,21 @@ export const postRecipe = async (
     const response = await axios.post(`${API_BASE_URL}/recipes`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        // Let the browser set Content-Type with the multipart boundary automatically
       },
     });
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await postRecipe(recipe, images);
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await postRecipe(recipe, images, true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };
 
-// export const getRecipeById = async (id: number): Promise<RecipeResponse> => {
-//   try {
-//     const token = getAccessToken();
-//     const response = await axios.get(`${API_BASE_URL}/recipes/${id}`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     if (checkAuthOnError(error)) {
-//       return await getRecipeById(id);
-//     } else {
-//       throw new ApiError(getErrorMessage(error));
-//     }
-//   }
-// };
-
-export const searchRecipes: (
+export const searchRecipes = async (
   query: SearchFilterRequest,
-) => Promise<RecipeResponse[]> = async (query: SearchFilterRequest) => {
+  _retried = false,
+): Promise<RecipeResponse[]> => {
   try {
     const token = getAccessToken();
     const response = await axios.post(`${API_BASE_URL}/recipes/search`, query, {
@@ -98,37 +77,36 @@ export const searchRecipes: (
     });
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await searchRecipes(query); // Retry searching recipes after refreshing token
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await searchRecipes(query, true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };
 
-export const getFavs: () => Promise<RecipeResponse[]> = async () => {
+export const getFavs = async (
+  _retried = false,
+): Promise<RecipeResponse[]> => {
   try {
     const token = getAccessToken();
-    console.log("Access Token:", token); // Debugging line to check if token is retrieved
     const response = await axios.get(`${API_BASE_URL}/recipes/favs`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await getFavs(); // Retry fetching recipes after refreshing token
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await getFavs(true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };
 
-export const favRecipe: (id: number) => Promise<RecipeResponse> = async (
+export const favRecipe = async (
   id: number,
-) => {
+  _retried = false,
+): Promise<RecipeResponse> => {
   try {
     const token = getAccessToken();
     const response = await axios.post(
@@ -142,15 +120,17 @@ export const favRecipe: (id: number) => Promise<RecipeResponse> = async (
     );
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await favRecipe(id); // Retry fetching recipes after refreshing token
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await favRecipe(id, true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };
 
-export const inFavs: (id: number) => Promise<boolean> = async (id: number) => {
+export const inFavs = async (
+  id: number,
+  _retried = false,
+): Promise<boolean> => {
   try {
     const token = getAccessToken();
     const response = await axios.get(`${API_BASE_URL}/recipes/${id}/isfav`, {
@@ -160,15 +140,17 @@ export const inFavs: (id: number) => Promise<boolean> = async (id: number) => {
     });
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await inFavs(id); // Retry fetching recipes after refreshing token
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await inFavs(id, true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };
 
-export const isRecipeOwned = async (recipeId: number): Promise<boolean> => {
+export const isRecipeOwned = async (
+  recipeId: number,
+  _retried = false,
+): Promise<boolean> => {
   try {
     const token = getAccessToken();
     const response = await axios.get(
@@ -181,15 +163,17 @@ export const isRecipeOwned = async (recipeId: number): Promise<boolean> => {
     );
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await isRecipeOwned(recipeId);
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await isRecipeOwned(recipeId, true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };
 
-export const rateRecipe:(ratingRequest: RatingRequest) => Promise<RatingResponse> = async (ratingRequest: RatingRequest) => {
+export const rateRecipe = async (
+  ratingRequest: RatingRequest,
+  _retried = false,
+): Promise<RatingResponse> => {
   try {
     const token = getAccessToken();
     const response = await axios.post(
@@ -203,10 +187,9 @@ export const rateRecipe:(ratingRequest: RatingRequest) => Promise<RatingResponse
     );
     return response.data;
   } catch (error) {
-    if (checkAuthOnError(error)) {
-      return await rateRecipe(ratingRequest);
-    } else {
-      throw new ApiError(getErrorMessage(error));
+    if (!_retried && (await checkAuthOnError(error))) {
+      return await rateRecipe(ratingRequest, true);
     }
+    throw new ApiError(getErrorMessage(error));
   }
 };

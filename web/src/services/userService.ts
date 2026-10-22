@@ -39,11 +39,16 @@ export const getErrorMessage = (error: unknown): ErrorResponse => {
   return { status: 500, message: "Something went wrong" };
 };
 
-export const checkAuthOnError = (error: unknown): boolean => {
-  let errorResponse = getErrorMessage(error);
-  if (errorResponse.status === 401 || errorResponse.status === 403) {
-    refresh();
-    return true;
+export const checkAuthOnError = async (error: unknown): Promise<boolean> => {
+  const errorResponse = getErrorMessage(error);
+  if (errorResponse.status === 401) {
+    try {
+      await refresh();
+      return true;
+    } catch {
+      logout();
+      return false;
+    }
   }
   return false;
 };

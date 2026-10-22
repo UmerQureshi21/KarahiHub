@@ -335,11 +335,12 @@ export default function SearchPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {recipes.map((recipe) => (
             <div
+              key={recipe.id}
               onClick={() => {
                 handleRecipeToView(recipe);
               }}
             >
-              <MyRecipeCard key={`Recipe ${recipe.id}`} recipe={recipe} />
+              <MyRecipeCard recipe={recipe} />
             </div>
           ))}
         </div>
