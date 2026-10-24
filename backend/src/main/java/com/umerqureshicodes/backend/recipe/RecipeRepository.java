@@ -25,6 +25,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             "WHEN 'cook_time' THEN CAST(cook_time AS DOUBLE PRECISION) " +
             "WHEN 'prep_time' THEN CAST(prep_time AS DOUBLE PRECISION) " +
             "WHEN 'created_at' THEN EXTRACT(EPOCH FROM created_at) " +
+            "WHEN 'favourite_count' THEN CAST((SELECT COUNT(*) FROM user_favourites WHERE recipe_id = recipesMatchingTitle.id) AS DOUBLE PRECISION) " +
             "END ASC", nativeQuery = true)
     List<Recipe> searchAndFilterAsc(
             @Param("query") String query,
@@ -49,6 +50,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             "WHEN 'cook_time' THEN CAST(cook_time AS DOUBLE PRECISION) " +
             "WHEN 'prep_time' THEN CAST(prep_time AS DOUBLE PRECISION) " +
             "WHEN 'created_at' THEN EXTRACT(EPOCH FROM created_at) " +
+            "WHEN 'favourite_count' THEN CAST((SELECT COUNT(*) FROM user_favourites WHERE recipe_id = recipesMatchingTitle.id) AS DOUBLE PRECISION) " +
             "END DESC", nativeQuery = true)
     List<Recipe> searchAndFilterDesc(
             @Param("query") String query,

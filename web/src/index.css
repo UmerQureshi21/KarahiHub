@@ -25,15 +25,17 @@
   font-variation-settings: "wdth" 100;
 }
 
+*,
+*::before,
+*::after {
+  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
+}
+
 :root {
   --primary: #2c2c2c;
   --secondary: #01411c;
-  --accent: #fff6e0;
+  --accent: #f0f1ee;
   --surface: #ffffff;
-  /* --primary: #2c2c2c;
-  --secondary: #01411c;
-  --accent: #fff6e0;
-  --surface: #ffffff; */
 }
 
 html.dark {

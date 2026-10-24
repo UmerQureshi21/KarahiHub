@@ -130,7 +130,7 @@ return recipeRepository.isSelectedInFavs(recipeId, email);
     /* USE SQL AVG() TO GET AVERAGE RATING */
 
 
-    private static final List<String> ALLOWED_SORT_COLUMNS = List.of("rating", "cook_time", "prep_time", "created_at");
+    private static final List<String> ALLOWED_SORT_COLUMNS = List.of("rating", "cook_time", "prep_time", "created_at", "favourite_count");
 
     public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
         if (!ALLOWED_SORT_COLUMNS.contains(request.sortBy())) {

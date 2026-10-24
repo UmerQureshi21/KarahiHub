@@ -2,6 +2,7 @@ import { useState } from "react";
 import { searchRecipes, inFavs, isRecipeOwned } from "../services/recipeService";
 import type { RecipeResponse, SearchFilterRequest } from "../types";
 import MyRecipeCard from "../components/MyRecipeCard";
+import SortControls from "../components/SortControls";
 import ViewRecipePage from "./ViewRecipePage";
 
 const ALL_CATEGORIES = [
@@ -21,6 +22,7 @@ const SORT_OPTIONS = [
   { value: "cook_time", label: "Cook Time" },
   { value: "prep_time", label: "Prep Time" },
   { value: "created_at", label: "Newest" },
+  { value: "favourite_count", label: "Most Favorited" },
 ] as const;
 
 export default function SearchPage() {
@@ -291,36 +293,13 @@ export default function SearchPage() {
           </div>
 
           {/* Sort controls */}
-          <div>
-            <h3 className="fred-bold text-[14px] text-[var(--primary)] mb-2">
-              Sort by
-            </h3>
-            <div className="flex flex-wrap items-center gap-2">
-              {SORT_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setSortBy(option.value)}
-                  className={`px-3 py-1.5 rounded-full text-[13px] fred-med transition-colors ${
-                    sortBy === option.value
-                      ? "bg-[var(--secondary)] text-[var(--surface)]"
-                      : "bg-[var(--surface)] text-[var(--primary)] border border-gray-200"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-
-              {/* ASC / DESC toggle */}
-              <button
-                type="button"
-                onClick={() => setAscending(!ascending)}
-                className="ml-2 px-3 py-1.5 rounded-full text-[13px] fred-med bg-[var(--surface)] text-[var(--primary)] border border-gray-200 hover:border-[var(--secondary)] transition-colors"
-              >
-                {ascending ? "Low to High" : "High to Low"}
-              </button>
-            </div>
-          </div>
+          <SortControls
+            options={SORT_OPTIONS}
+            sortBy={sortBy}
+            onSortChange={(value) => setSortBy(value as SearchFilterRequest["sortBy"])}
+            ascending={ascending}
+            onAscendingChange={setAscending}
+          />
         </div>
       )}
 

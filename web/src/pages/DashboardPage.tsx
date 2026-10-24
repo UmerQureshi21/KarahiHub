@@ -1,9 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getMyRecipes, inFavs } from "../services/recipeService";
 import { useAuth } from "../context/AuthContext";
 import MyRecipeCard from "../components/MyRecipeCard";
+import SortControls from "../components/SortControls";
 import ViewRecipePage from "./ViewRecipePage";
 import type { ApiError, RecipeResponse } from "../types";
+
+const SORT_OPTIONS = [
+  { value: "rating", label: "Rating" },
+  { value: "cook_time", label: "Cook Time" },
+  { value: "prep_time", label: "Prep Time" },
+  { value: "created_at", label: "Newest" },
+  { value: "favourite_count", label: "Most Favorited" },
+] as const;
 
 export default function DashboardPage() {
   const { username } = useAuth();
@@ -12,6 +21,24 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [recipeToView, setRecipeToView] = useState<RecipeResponse | null>(null);
   const [isFav, setIsFav] = useState(false);
+  const [sortBy, setSortBy] = useState("rating");
+  const [ascending, setAscending] = useState(false);
+
+  const sortedRecipes = useMemo(() => {
+    const sorted = [...recipes].sort((a, b) => {
+      let aVal: number, bVal: number;
+      switch (sortBy) {
+        case "rating": aVal = a.rating; bVal = b.rating; break;
+        case "cook_time": aVal = a.cookTime; bVal = b.cookTime; break;
+        case "prep_time": aVal = a.prepTime; bVal = b.prepTime; break;
+        case "favourite_count": aVal = a.favouriteCount; bVal = b.favouriteCount; break;
+        case "created_at":
+        default: aVal = a.id; bVal = b.id; break; // higher id = newer
+      }
+      return ascending ? aVal - bVal : bVal - aVal;
+    });
+    return sorted;
+  }, [recipes, sortBy, ascending]);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -94,9 +121,20 @@ export default function DashboardPage() {
 
       {/* My recipes section */}
       <section>
-        <h2 className="fred-bold text-[20px] text-[var(--primary)] mb-4">
-          My Recipes
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+          <h2 className="fred-bold text-[20px] text-[var(--primary)]">
+            My Recipes
+          </h2>
+          {recipes.length > 1 && (
+            <SortControls
+              options={SORT_OPTIONS}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              ascending={ascending}
+              onAscendingChange={setAscending}
+            />
+          )}
+        </div>
 
         {loading && (
           <p className="fred-light text-[15px] text-gray-400">
@@ -119,7 +157,7 @@ export default function DashboardPage() {
 
         {!loading && !error && recipes.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recipes.map((recipe) => (
+            {sortedRecipes.map((recipe) => (
               <div key={recipe.id} onClick={() => handleRecipeToView(recipe)}>
                 <MyRecipeCard recipe={recipe} />
               </div>
