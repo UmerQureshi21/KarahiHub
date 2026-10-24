@@ -53,4 +53,9 @@ public class RatingService {
         return response;
     }
 
+    // The current user's rating for a recipe, or empty if they haven't rated it yet
+    public Optional<RatingResponse> getMyRating(Long recipeId, String authorEmail) {
+        return ratingRepository.findById(new RatingId(authorEmail, recipeId)).map(Rating::toResponse);
+    }
+
 }

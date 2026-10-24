@@ -51,7 +51,7 @@ export default function TopRecipe({ recipe }: TopRecipeProps) {
           {recipe.categories.map((category, idx) => (
             <span
               key={idx}
-              className="text-xs bg-[var(--accent)] text-[var(--primary)] fred-medium px-2 py-1 rounded-full"
+              className="text-xs bg-[var(--accent)] text-[var(--primary)] fred-med px-2 py-1 rounded-full"
             >
               {category}
             </span>

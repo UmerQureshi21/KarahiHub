@@ -20,7 +20,7 @@ const TestimonialCard = forwardRef<HTMLDivElement, TestimonialCardProps>(
         style={{ animationDelay: delay }}
       >
         <div className="flex items-center gap-[12px] mb-[15px]">
-          <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--primary)]">
+          <div className="w-[50px] h-[50px] bg-[var(--secondary)] rounded-full flex items-center justify-center fred-bold text-[20px] text-[var(--on-secondary)]">
             {initial}
           </div>
           <div>

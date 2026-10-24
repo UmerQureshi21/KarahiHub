@@ -1,10 +1,20 @@
-import { useNavigate } from "react-router-dom";
-import { login, register } from "../services/userService";
+import { Navigate, useLocation } from "react-router-dom";
+import type { Location } from "react-router-dom";
+import { isAuthenticated, login, register } from "../services/userService";
+import { useAuth } from "../context/useAuth";
 import { useState } from "react";
 
 export default function AuthPage() {
-  const navigate = useNavigate();
+  const location = useLocation();
+  const { initializing } = useAuth();
+  // UserLayout sends people here with the page they were trying to open
+  const from = (location.state as { from?: Location } | null)?.from;
+  const redirectTo = from ? `${from.pathname}${from.search}` : "/app/dashboard";
+
   const [isSignUp, setIsSignUp] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  // server errors (wrong password, email taken, ...) that aren't about one field
+  const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -29,6 +39,14 @@ export default function AuthPage() {
 
     // Clear error when user starts typing
     setErrors({ ...errors, [name]: "" });
+    setFormError(null);
+  };
+
+  // Switching tabs clears errors left over from the other form
+  const switchMode = (signUp: boolean) => {
+    setIsSignUp(signUp);
+    setErrors({ username: "", email: "", password: "", confirmPassword: "" });
+    setFormError(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -67,54 +85,37 @@ export default function AuthPage() {
 
     setErrors(newErrors);
 
-    // Check if there are any errors
+    // Form is valid, proceed with authentication
     if (!Object.values(newErrors).some((error) => error)) {
-      // Form is valid, proceed with authentication
-      console.log("Form submitted:", formData);
-
-      // TODO: Integrate with backend API for authentication (sign in/sign up)
-      if (isSignUp) {
-        handleSignUp();
-      } else {
-        handleSignIn();
-      }
+      authenticate();
     }
   };
 
-  async function handleSignUp() {
+  // Signs up or in. On success userService updates AuthContext, this page re-renders,
+  // and the isAuthenticated() check below redirects to where the user was headed.
+  async function authenticate() {
+    setSubmitting(true);
+    setFormError(null);
     try {
-      const data = await register({
-        email: formData.email,
-        username: formData.username,
-        password: formData.password,
-      });
-      console.log("Registration successful:", data);
-      navigate("/app/dashboard");
+      if (isSignUp) {
+        await register({
+          email: formData.email,
+          username: formData.username,
+          password: formData.password,
+        });
+      } else {
+        await login({ email: formData.email, password: formData.password });
+      }
     } catch (error) {
-      console.log("Registration error:", error);
-
-      setErrors((prev) => ({
-        ...prev,
-        email: error instanceof Error ? error.message : "Registration failed",
-      }));
-    }
-  }
-
-  async function handleSignIn() {
-    try {
-      const data = await login({
-        email: formData.email,
-        password: formData.password,
-      });
-      console.log("Login successful:", data);
-      navigate("/app/dashboard");
-    } catch (error) {
-      console.log("Login error:", error);
-
-      setErrors((prev) => ({
-        ...prev,
-        email: error instanceof Error ? error.message : "Login failed",
-      }));
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : isSignUp
+            ? "Registration failed"
+            : "Login failed",
+      );
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -123,16 +124,23 @@ export default function AuthPage() {
     alert(`${provider} OAuth integration coming soon!`);
   };
 
+  // Already logged in (e.g. restored from the refresh cookie) — skip the form
+  if (!initializing && isAuthenticated()) {
+    return <Navigate to={redirectTo} replace />;
+  }
+
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex min-h-screen">
       {/* Left Side - Auth Form */}
       <div className="w-full md:w-[50%] bg-[var(--accent)] flex items-center justify-center px-[20px] py-[20px]">
         <div className="w-full max-w-[450px]">
           {/* Toggle Sign In/Sign Up */}
           <div className="flex gap-[10px] mb-[20px] bg-[var(--surface)] rounded-[12px] p-[6px]">
             <button
-              onClick={() => setIsSignUp(false)}
-              className={`flex-1 py-[10px] rounded-[8px] fred-medium transition-all duration-300 ${
+              type="button"
+              aria-pressed={!isSignUp}
+              onClick={() => switchMode(false)}
+              className={`flex-1 py-[10px] rounded-[8px] fred-med transition-all duration-300 ${
                 !isSignUp
                   ? "bg-[var(--primary)] text-[var(--surface)]"
                   : "bg-transparent text-gray-600"
@@ -141,8 +149,10 @@ export default function AuthPage() {
               Sign In
             </button>
             <button
-              onClick={() => setIsSignUp(true)}
-              className={`flex-1 py-[10px] rounded-[8px] fred-medium transition-all duration-300 ${
+              type="button"
+              aria-pressed={isSignUp}
+              onClick={() => switchMode(true)}
+              className={`flex-1 py-[10px] rounded-[8px] fred-med transition-all duration-300 ${
                 isSignUp
                   ? "bg-[var(--primary)] text-[var(--surface)]"
                   : "bg-transparent text-gray-600"
@@ -161,97 +171,77 @@ export default function AuthPage() {
               : "Sign in to access your recipes"}
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-[16px]">
+          {/* Server-side errors (wrong password, email already used, ...) */}
+          {formError && (
+            <div
+              role="alert"
+              className="bg-red-50 border border-red-200 text-red-600 fred-med text-[14px] px-4 py-3 rounded-[10px] mb-[16px]"
+            >
+              {formError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} noValidate className="space-y-[16px]">
             {/* Username - Only for Sign Up */}
             {isSignUp && (
-              <div>
-                <label className="fred-medium text-[14px] text-gray-700 mb-[6px] block">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  className="w-full px-[16px] py-[12px] rounded-[10px] border-2 border-gray-200 focus:border-[var(--primary)] outline-none transition-colors duration-200 fred-light"
-                  placeholder="Choose a username"
-                />
-                {errors.username && (
-                  <p className="text-red-500 text-[12px] fred-light mt-[4px]">
-                    {errors.username}
-                  </p>
-                )}
-              </div>
+              <Field
+                label="Username"
+                name="username"
+                type="text"
+                autoComplete="username"
+                placeholder="Choose a username"
+                value={formData.username}
+                error={errors.username}
+                onChange={handleInputChange}
+              />
             )}
-
-            {/* Email */}
-            <div>
-              <label className="fred-medium text-[14px] text-gray-700 mb-[6px] block">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full px-[16px] py-[12px] rounded-[10px] border-2 border-gray-200 focus:border-[var(--primary)] outline-none transition-colors duration-200 fred-light"
-                placeholder="Enter your email"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-[12px] fred-light mt-[4px]">
-                  {errors.email}
-                </p>
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="fred-medium text-[14px] text-gray-700 mb-[6px] block">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className="w-full px-[16px] py-[12px] rounded-[10px] border-2 border-gray-200 focus:border-[var(--primary)] outline-none transition-colors duration-200 fred-light"
-                placeholder="Enter your password"
-              />
-              {errors.password && (
-                <p className="text-red-500 text-[12px] fred-light mt-[4px]">
-                  {errors.password}
-                </p>
-              )}
-            </div>
-
+            <Field
+              label="Email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              error={errors.email}
+              onChange={handleInputChange}
+            />
+            <Field
+              label="Password"
+              name="password"
+              type="password"
+              autoComplete={isSignUp ? "new-password" : "current-password"}
+              placeholder="Enter your password"
+              value={formData.password}
+              error={errors.password}
+              onChange={handleInputChange}
+            />
             {/* Confirm Password - Only for Sign Up */}
             {isSignUp && (
-              <div>
-                <label className="fred-medium text-[14px] text-gray-700 mb-[6px] block">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  className="w-full px-[16px] py-[12px] rounded-[10px] border-2 border-gray-200 focus:border-[var(--primary)] outline-none transition-colors duration-200 fred-light"
-                  placeholder="Re-enter your password"
-                />
-                {errors.confirmPassword && (
-                  <p className="text-red-500 text-[12px] fred-light mt-[4px]">
-                    {errors.confirmPassword}
-                  </p>
-                )}
-              </div>
+              <Field
+                label="Confirm Password"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Re-enter your password"
+                value={formData.confirmPassword}
+                error={errors.confirmPassword}
+                onChange={handleInputChange}
+              />
             )}
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[var(--primary)] text-[var(--surface)] py-[14px] rounded-[10px] fred-bold text-[16px] hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 shadow-lg hover:shadow-xl"
+              disabled={submitting}
+              className="w-full bg-[var(--primary)] text-[var(--surface)] py-[14px] rounded-[10px] fred-bold text-[16px] hover:bg-[var(--secondary)] hover:text-[var(--on-secondary)] transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-wait"
             >
-              {isSignUp ? "Sign Up" : "Sign In"}
+              {submitting
+                ? isSignUp
+                  ? "Creating account..."
+                  : "Signing in..."
+                : isSignUp
+                  ? "Sign Up"
+                  : "Sign In"}
             </button>
           </form>
 
@@ -267,7 +257,7 @@ export default function AuthPage() {
           {/* OAuth Button */}
           <button
             onClick={() => handleOAuth("Google")}
-            className="w-full flex items-center justify-center gap-[10px] bg-[var(--surface)] border-2 border-gray-200 py-[12px] rounded-[10px] fred-medium text-[14px] hover:border-[var(--primary)] transition-colors duration-200"
+            className="w-full flex items-center justify-center gap-[10px] bg-[var(--surface)] border-2 border-gray-200 py-[12px] rounded-[10px] fred-med text-[14px] hover:border-[var(--primary)] transition-colors duration-200"
           >
             <svg className="w-[20px] h-[20px]" viewBox="0 0 24 24">
               <path
@@ -306,6 +296,46 @@ export default function AuthPage() {
           Preserving Pakistani flavors, one recipe at a time
         </p>
       </div>
+    </div>
+  );
+}
+
+type FieldProps = {
+  label: string;
+  name: string;
+  type: string;
+  autoComplete: string;
+  placeholder: string;
+  value: string;
+  error: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+// One labelled input with its validation message underneath.
+// The id/htmlFor pair lets clicking the label focus the input and screen readers announce it.
+function Field({ label, name, error, ...inputProps }: FieldProps) {
+  const id = `auth-${name}`;
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className="fred-med text-[14px] text-gray-700 mb-[6px] block"
+      >
+        {label}
+      </label>
+      <input
+        id={id}
+        name={name}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        className="w-full px-[16px] py-[12px] rounded-[10px] border-2 border-gray-200 bg-white focus:border-[var(--primary)] outline-none transition-colors duration-200 fred-light"
+        {...inputProps}
+      />
+      {error && (
+        <p id={`${id}-error`} className="text-red-500 text-[12px] fred-light mt-[4px]">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

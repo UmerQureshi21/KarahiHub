@@ -4,6 +4,9 @@ import com.umerqureshicodes.backend.auth.AppUser;
 import com.umerqureshicodes.backend.auth.AppUserRepository;
 import com.umerqureshicodes.backend.exceptions.GeneralException;
 import com.umerqureshicodes.backend.s3.S3Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -126,41 +129,20 @@ public class RecipeService {
 return recipeRepository.isSelectedInFavs(recipeId, email);
     }
 
+    public Page<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
+        String sortField = request.sortBy().getField();
+        Sort sort = request.ascending()
+                ? Sort.by(sortField).ascending()
+                : Sort.by(sortField).descending();
 
-    /* USE SQL AVG() TO GET AVERAGE RATING */
-
-
-    private static final List<String> ALLOWED_SORT_COLUMNS = List.of("rating", "cook_time", "prep_time", "created_at", "favourite_count");
-
-    public List<RecipeResponse> searchAndFilter(SearchFilterRequest request) {
-        if (!ALLOWED_SORT_COLUMNS.contains(request.sortBy())) {
-            throw new IllegalArgumentException("Invalid sort column: " + request.sortBy());
-        }
-
-        List<Recipe> results;
-
-        // pick the right repo method based on sort direction
-        if (request.ascending()) {
-            results = recipeRepository.searchAndFilterAsc(
-                    request.query(), request.categories(),
-                    request.minPrep(), request.maxPrep(),
-                    request.minCook(), request.maxCook(),
-                    request.minRating(), request.maxRating(),
-                    request.minServings(), request.maxServings(),
-                    request.sortBy()
-            );
-        } else {
-            results = recipeRepository.searchAndFilterDesc(
-                    request.query(), request.categories(),
-                    request.minPrep(), request.maxPrep(),
-                    request.minCook(), request.maxCook(),
-                    request.minRating(), request.maxRating(),
-                    request.minServings(), request.maxServings(),
-                    request.sortBy()
-            );
-        }
-
-        return results.stream().map(this::convertToDto).toList();
+        return recipeRepository.searchAndFilter(
+                request.query(), request.categories(),
+                request.minPrep(), request.maxPrep(),
+                request.minCook(), request.maxCook(),
+                request.minRating(), request.maxRating(),
+                request.minServings(), request.maxServings(),
+                PageRequest.of(request.page(), request.size(), sort)
+        ).map(this::convertToDto);
     }
 
     public List<RecipeResponse> getAllByEmail(String email) {
@@ -200,7 +182,6 @@ return recipeRepository.isSelectedInFavs(recipeId, email);
                 recipe.getRating()
         );
     }
-
 
     //    public void idk (){
 //

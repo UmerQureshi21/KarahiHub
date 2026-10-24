@@ -1,14 +1,21 @@
-"use client";
-
 import { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import Hero from "../components/Hero";
 import TopFoodCarousel from "../components/TopFoodCarousel";
 import TopFoodDisplay from "../components/TopFoodDisplay";
-import type { Recipe } from "../types";
 import About from "../components/About";
 import StatCard from "../components/StatCard";
 import TestimonialCard from "../components/TestimonialCard";
-import { NavLink } from "react-router-dom";
+import { TOP_RECIPES } from "../data/mockRecipes";
+
+const CAROUSEL_HEIGHT = 500;
+
+// What each stat counts up to once it scrolls into view
+const STAT_TARGETS = [100, 50, 150];
+
+// Footer links sit on the dark --primary background, so hover lightens + underlines
+const footerLinkClass =
+  "text-gray-200 hover:text-white hover:underline transition-colors duration-200";
 
 const stats = [
   { label: "Recipes Shared", color: "var(--primary)", delay: "0s" },
@@ -53,104 +60,6 @@ export default function LandingPage() {
   const [statCounts, setStatCounts] = useState<number[]>([0, 0, 0]);
   const statsRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
   const testimonialRefs = useRef<(HTMLDivElement | null)[]>([null, null]);
-  const carouselHeight = 500;
-
-  const statTargets = [100, 50, 150];
-
-  // Mock recipes
-  const recipes: Recipe[] = [
-    {
-      name: "Fire Lassi",
-      imageUrl: "/mango-lassi.jpg",
-      rating: 5.0,
-      username: "Ayesha Khan",
-      description: "Refreshing yogurt drink",
-      instructions: ["Blend", "Serve cold"],
-      prepTime: 5,
-      cookTime: 0,
-      servingCount: 4,
-      categories: ["Beverage", "Refreshing"],
-      ingredients: [],
-    },
-    {
-      name: "Nihari Goated",
-      imageUrl: "/nihari.jpg",
-      rating: 4.9,
-      username: "Zain Ahmed",
-      description: "Slow cooked meat delicacy",
-      instructions: ["Cook", "Simmer"],
-      prepTime: 20,
-      cookTime: 90,
-      servingCount: 6,
-      categories: ["Dinner", "Main Course"],
-      ingredients: [],
-    },
-    {
-      name: "Biryani",
-      imageUrl: "/biryani.jpg",
-      rating: 4.8,
-      username: "Fatima Ali",
-      description: "Fragrant rice dish",
-      instructions: ["Marinate", "Layer", "Cook"],
-      prepTime: 30,
-      cookTime: 45,
-      servingCount: 8,
-      categories: ["Dinner", "Rice Dish"],
-      ingredients: [],
-    },
-    {
-      name: "Raita",
-      imageUrl: "/raita.jpg",
-      rating: 4.7,
-      username: "Omar Hassan",
-      description: "Yogurt side dish",
-      instructions: ["Mix", "Chill"],
-      prepTime: 10,
-      cookTime: 0,
-      servingCount: 4,
-      categories: ["Side Dish", "Yogurt"],
-      ingredients: [],
-    },
-    {
-      name: "Charga",
-      imageUrl: "/charga.jpg",
-      rating: 4.6,
-      username: "Sara Malik",
-      description: "Fried crispy poultry",
-      instructions: ["Marinate", "Fry"],
-      prepTime: 15,
-      cookTime: 30,
-      servingCount: 4,
-      categories: ["Main Course", "Fried"],
-      ingredients: [],
-    },
-    {
-      name: "Jalebi",
-      imageUrl: "/jalebi.jpg",
-      rating: 4.5,
-      username: "Ahmed Raza",
-      description: "Sweet spiral dessert",
-      instructions: ["Mix", "Fry", "Soak"],
-      prepTime: 20,
-      cookTime: 25,
-      servingCount: 6,
-      categories: ["Dessert", "Sweet"],
-      ingredients: [],
-    },
-    {
-      name: "Palak Gosht",
-      imageUrl: "/palak-gosht.jpg",
-      rating: 4.4,
-      username: "Nadia Siddiqui",
-      description: "Spinach and meat curry",
-      instructions: ["Sauté", "Simmer"],
-      prepTime: 15,
-      cookTime: 60,
-      servingCount: 5,
-      categories: ["Curry", "Main Course"],
-      ingredients: [],
-    },
-  ];
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -209,54 +118,52 @@ export default function LandingPage() {
     };
   }, []);
 
+  // Count each visible stat up to its target in ~20 steps.
+  // Once a count reaches its target the update returns the same array, so nothing re-renders.
   useEffect(() => {
     const intervals: ReturnType<typeof setInterval>[] = [];
     visibleStats.forEach((isVisible, index) => {
-      if (isVisible && statCounts[index] < statTargets[index]) {
-        const interval = setInterval(() => {
-          setStatCounts((prev) => {
-            const newCounts = [...prev];
-            const increment = Math.ceil(statTargets[index] / 20);
-            newCounts[index] = Math.min(
-              newCounts[index] + increment,
-              statTargets[index],
-            );
-            return newCounts;
-          });
-        }, 60);
-        intervals.push(interval);
-      }
+      if (!isVisible) return;
+      const interval = setInterval(() => {
+        setStatCounts((prev) => {
+          if (prev[index] >= STAT_TARGETS[index]) return prev;
+          const newCounts = [...prev];
+          const increment = Math.ceil(STAT_TARGETS[index] / 20);
+          newCounts[index] = Math.min(
+            prev[index] + increment,
+            STAT_TARGETS[index],
+          );
+          return newCounts;
+        });
+      }, 60);
+      intervals.push(interval);
     });
     return () => intervals.forEach(clearInterval);
   }, [visibleStats]);
 
   return (
-    <div className="bg-white">
+    <div id="top" className="bg-[#F5F0E9]">
       <Hero />
       <About />
-      <h1 className="fred-bold text-[80px] text-center text-[var(--primary)] mb-[100px]">
+      {/* id is the target of the hero's "View the Top Recipes" button and the footer link */}
+      <h2
+        id="top-recipes"
+        className="fred-bold text-[40px] md:text-[56px] lg:text-[80px] text-center text-[var(--primary)] mb-[50px] md:mb-[100px] px-[20px] scroll-mt-[20px]"
+      >
         View the <span className="text-[var(--secondary)]">Top</span> Recipes
-      </h1>
-      <div id="top-recipes">
-        {windowWidth >= 800 ? (
-          <TopFoodCarousel
-            recipes={recipes}
-            flowSpeed={60}
-            carouselHeight={carouselHeight}
-            width={`${carouselHeight - 50}px`}
-            height={carouselHeight - 50}
-            text={[]}
-            isImages={true}
-          />
-        ) : (
-          <div
-            className="relative bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/paki-graphic.png')" }}
-          >
-            <TopFoodDisplay recipes={recipes} />
-          </div>
-        )}
-      </div>
+      </h2>
+      {/* Auto-scrolling carousel on wide screens, swipe-style display on small ones */}
+      {windowWidth >= 800 ? (
+        <TopFoodCarousel
+          recipes={TOP_RECIPES}
+          flowSpeed={60}
+          carouselHeight={CAROUSEL_HEIGHT}
+          width={`${CAROUSEL_HEIGHT - 50}px`}
+          height={CAROUSEL_HEIGHT - 50}
+        />
+      ) : (
+        <TopFoodDisplay recipes={TOP_RECIPES} />
+      )}
 
       {/* Community Stats Section */}
       <div className="w-full px-[20px] md:px-[60px] lg:px-[120px] py-[80px] md:py-[120px]">
@@ -306,11 +213,14 @@ export default function LandingPage() {
           </div>
 
           {/* CTA Button */}
-          <NavLink to="/auth" className="flex justify-center mt-[50px]">
-            <button className="bg-[var(--primary)] text-[var(--surface)] px-[32px] py-[14px] rounded-[12px] fred-bold text-[18px] hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 hover:scale-105 shadow-lg">
+          <div className="flex justify-center mt-[50px]">
+            <Link
+              to="/auth"
+              className="bg-[var(--primary)] text-[var(--surface)] px-[32px] py-[14px] rounded-[12px] fred-bold text-[18px] hover:bg-[var(--secondary)] hover:text-[var(--on-secondary)] transition-all duration-300 hover:scale-105 shadow-lg"
+            >
               Join the Community →
-            </button>
-          </NavLink>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -332,40 +242,29 @@ export default function LandingPage() {
               </p>
             </div>
 
+            {/* In-page anchors scroll to sections; the rest are real routes */}
             <div>
               <h4 className="fred-bold text-[18px] mb-[15px]">Quick Links</h4>
               <ul className="space-y-[10px] fred-light text-[14px]">
                 <li>
-                  <a
-                    href="/"
-                    className="hover:text-[var(--secondary)] transition-colors duration-200"
-                  >
+                  <a href="#top" className={footerLinkClass}>
                     Home
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="/recipes"
-                    className="hover:text-[var(--secondary)] transition-colors duration-200"
-                  >
-                    Recipes
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/about"
-                    className="hover:text-[var(--secondary)] transition-colors duration-200"
-                  >
+                  <a href="#about" className={footerLinkClass}>
                     About Us
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="/contact"
-                    className="hover:text-[var(--secondary)] transition-colors duration-200"
-                  >
-                    Contact
+                  <a href="#top-recipes" className={footerLinkClass}>
+                    Top Recipes
                   </a>
+                </li>
+                <li>
+                  <Link to="/auth" className={footerLinkClass}>
+                    Sign Up / Sign In
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -377,20 +276,9 @@ export default function LandingPage() {
               <p className="fred-light text-[14px] text-gray-200 mb-[15px]">
                 Join our community and share your love for Pakistani cuisine.
               </p>
-              <div className="flex gap-[15px]">
-                <a
-                  href="#"
-                  className="w-[35px] h-[35px] bg-[var(--surface)]/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
-                >
-                  <span className="text-[18px]">📧</span>
-                </a>
-                <a
-                  href="#"
-                  className="w-[35px] h-[35px] bg-[var(--surface)]/10 hover:bg-[var(--secondary)] rounded-full flex items-center justify-center transition-all duration-300"
-                >
-                  <span className="text-[18px]">🌐</span>
-                </a>
-              </div>
+              <Link to="/auth" className={footerLinkClass}>
+                Create a free account →
+              </Link>
             </div>
           </div>
 

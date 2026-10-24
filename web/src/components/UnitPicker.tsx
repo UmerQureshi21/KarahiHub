@@ -19,15 +19,15 @@ function UnitList({ value, onSelect }: { value: string | null; onSelect: (unit: 
       <button
         type="button"
         onClick={() => onSelect("")}
-        className={`w-full text-left px-4 py-2.5 fred-med text-[14px] transition-colors hover:bg-gray-50 ${
-          !value ? "text-[var(--secondary)]" : "text-gray-400"
+        className={`w-full text-left px-4 py-2.5 fred-med text-[14px] transition-colors hover:bg-[var(--accent)] ${
+          !value ? "text-[var(--secondary)]" : "text-[var(--muted)]"
         }`}
       >
         No unit
       </button>
       {UNITS.map((group) => (
         <div key={group.label}>
-          <p className="px-4 pt-3 pb-1 fred-bold text-[11px] text-gray-300 uppercase tracking-wide">
+          <p className="px-4 pt-3 pb-1 fred-bold text-[11px] text-[var(--muted)] uppercase tracking-wide">
             {group.label}
           </p>
           {group.items.map((unit) => (
@@ -87,13 +87,13 @@ export default function UnitPicker({ value, onChange, className }: UnitPickerPro
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full px-4 py-3 rounded-[10px] border border-gray-200 md:border-[var(--accent)] fred-med text-[14px] text-left outline-none focus:border-[var(--secondary)] transition-colors bg-[var(--surface)] flex items-center justify-between"
+        className="w-full px-4 py-3 rounded-[10px] border border-[var(--border)] md:border-[var(--accent)] fred-med text-[14px] text-left outline-none focus:border-[var(--secondary)] transition-colors bg-[var(--surface)] flex items-center justify-between"
       >
-        <span className={value ? "text-[var(--primary)]" : "text-gray-400"}>
+        <span className={value ? "text-[var(--primary)]" : "text-[var(--muted)]"}>
           {value || "Unit"}
         </span>
         <svg
-          className={`w-[14px] h-[14px] text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`w-[14px] h-[14px] text-[var(--muted)] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -108,7 +108,7 @@ export default function UnitPicker({ value, onChange, className }: UnitPickerPro
       {open && (
         <>
           {/* Desktop: floating dropdown (hidden on mobile) */}
-          <div className="hidden md:block absolute z-30 top-[calc(100%+6px)] left-0 w-[200px] bg-[var(--surface)] rounded-[12px] shadow-lg border border-gray-100 py-2 max-h-[280px] overflow-y-auto">
+          <div className="hidden md:block absolute z-30 top-[calc(100%+6px)] left-0 w-[200px] bg-[var(--surface)] rounded-[12px] shadow-lg border border-[var(--border)] py-2 max-h-[280px] overflow-y-auto">
             <UnitList value={value} onSelect={select} />
           </div>
 
@@ -122,8 +122,8 @@ export default function UnitPicker({ value, onChange, className }: UnitPickerPro
             {/* Sheet */}
             <div className="relative bg-[var(--surface)] rounded-t-[20px] max-h-[70vh] flex flex-col">
               {/* Handle + header */}
-              <div className="flex flex-col items-center pt-3 pb-2 border-b border-gray-100">
-                <div className="w-[36px] h-[4px] bg-gray-300 rounded-full mb-3" />
+              <div className="flex flex-col items-center pt-3 pb-2 border-b border-[var(--border)]">
+                <div className="w-[36px] h-[4px] bg-[var(--border)] rounded-full mb-3" />
                 <span className="fred-bold text-[16px] text-[var(--primary)]">
                   Select Unit
                 </span>

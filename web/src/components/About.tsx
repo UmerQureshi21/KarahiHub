@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 import FeatureCard from './FeatureCard';
 
@@ -66,7 +64,10 @@ export default function About() {
   }, []);
 
   return (
-    <div className="w-full px-[20px] md:px-[60px] lg:px-[120px] py-[80px] md:py-[120px]">
+    <div
+      id="about"
+      className="w-full px-[20px] md:px-[60px] lg:px-[120px] py-[80px] md:py-[120px]"
+    >
       <div className="max-w-[1200px] mx-auto">
         <h2 className="fred-bold text-[36px] md:text-[48px] lg:text-[56px] text-center text-[var(--primary)] mb-[20px]">
           Your One-Stop{" "}

@@ -1,5 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
+/* @import rules must come before any other rule, or the browser drops them */
 @import "tailwindcss";
+
+/* Smooth colour change when the theme toggles. It lives in the base layer
+   so Tailwind's transition-* utilities still win where an element sets its own. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, color, border-color;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+  }
+}
 
 .fred-light {
   font-family: "Fredoka", sans-serif;
@@ -25,25 +38,29 @@
   font-variation-settings: "wdth" 100;
 }
 
-*,
-*::before,
-*::after {
-  transition: background-color 300ms ease, color 300ms ease, border-color 300ms ease;
-}
-
 :root {
   --primary: #2c2c2c;
   --secondary: #01411c;
+  /* text/icons drawn on top of a --secondary background */
+  --on-secondary: #ffffff;
   --accent: #f0f1ee;
   --surface: #ffffff;
+  /* secondary text (captions, placeholders, meta info) */
+  --muted: #6b7280;
+  /* hairlines and input borders */
+  --border: #e5e7eb;
 }
 
-html.dark {
+/* Applied by UserLayout to the app shell, so only the logged-in pages switch theme */
+.dark {
   --primary: #c8c8c8;
-  --secondary: #7b7b7b;
-  /* --secondary: #01411c; */
+  /* lighter green so it stays readable on the dark surfaces */
+  --secondary: #5cb87e;
+  --on-secondary: #0f1f15;
   --accent: #212121;
   --surface: #2b2b2b;
+  --muted: #a3a3a3;
+  --border: #3d3d3d;
 }
 
 @keyframes rotate {
@@ -117,4 +134,19 @@ html.dark {
 
 .heart-burst {
   animation: heart-burst 0.5s ease-out forwards;
+}
+
+/* Respect the OS "reduce motion" setting for the decorative animations */
+@media (prefers-reduced-motion: reduce) {
+  .rotate-infinite,
+  .heart-pop,
+  .heart-burst {
+    animation: none;
+  }
+  .bounce-card,
+  .text-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

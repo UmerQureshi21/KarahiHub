@@ -1,24 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { postRecipe } from "../services/recipeService";
-import type { IngredientRequest, RecipeRequest } from "../types";
+import type { IngredientRequest, RecipeRequest, RecipeResponse } from "../types";
+import { CATEGORIES, formatCategory } from "../utils/recipes";
 import UnitPicker from "../components/UnitPicker";
-
-// Matches the backend RecipeCategory enum values
-const CATEGORIES = [
-  "APPETIZER",
-  "MAIN_COURSE",
-  "DESSERT",
-  "SIDE_DISH",
-  "SOUP",
-  "SALAD",
-  "BREAKFAST",
-  "SNACK",
-  "BEVERAGE",
-];
-
-// Formats "MAIN_COURSE" → "Main Course" for display
-const formatCategory = (cat: string) =>
-  cat.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 const emptyIngredient: IngredientRequest = {
   name: "",
@@ -40,7 +25,8 @@ export default function UploadPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  // the recipe that was just uploaded, so the success banner can link to it
+  const [uploaded, setUploaded] = useState<RecipeResponse | null>(null);
 
   // Create preview URLs for selected images and revoke them on cleanup
   const previewUrls = useMemo(() => images.map((f) => URL.createObjectURL(f)), [images]);
@@ -108,7 +94,17 @@ export default function UploadPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(false);
+    setUploaded(null);
+
+    // The banners sit at the top of the form, so bring them into view
+    const showBanner = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // The backend requires a category, and search only finds recipes through them
+    if (selectedCategories.length === 0) {
+      setError("Pick at least one category so people can find your recipe.");
+      showBanner();
+      return;
+    }
 
     const recipe: RecipeRequest = {
       title: title.trim(),
@@ -127,8 +123,7 @@ export default function UploadPage() {
 
     setSubmitting(true);
     try {
-      await postRecipe(recipe, images);
-      setSuccess(true);
+      setUploaded(await postRecipe(recipe, images));
       // Reset form
       setTitle("");
       setDescription("");
@@ -143,11 +138,12 @@ export default function UploadPage() {
       setError((err as Error).message);
     } finally {
       setSubmitting(false);
+      showBanner();
     }
   };
 
   const inputClass =
-    "w-full px-4 py-3 rounded-[10px] border border-gray-200 md:border-[var(--accent)] md:bg-[var(--surface)] fred-med text-[14px] text-[var(--primary)] outline-none focus:border-[var(--secondary)] transition-colors";
+    "w-full px-4 py-3 rounded-[10px] border border-[var(--border)] md:border-[var(--accent)] bg-[var(--surface)] fred-med text-[14px] text-[var(--primary)] outline-none focus:border-[var(--secondary)] transition-colors";
 
   const labelClass = "fred-med text-[14px] text-[var(--primary)] mb-1.5 block";
 
@@ -157,18 +153,31 @@ export default function UploadPage() {
         <h1 className="fred-bold text-[28px] md:text-[34px] text-[var(--primary)] mb-2">
           Upload Recipe
         </h1>
-        <p className="fred-light text-[15px] text-gray-500 mb-8">
+        <p className="fred-light text-[15px] text-[var(--muted)] mb-8">
           Share your favourite recipe with the community.
         </p>
         {/* Success banner */}
-        {success && (
-          <div className="bg-[var(--secondary)]/10 border border-[var(--secondary)]/30 text-[var(--secondary)] fred-med text-[14px] px-4 py-3 rounded-[10px] mb-6">
-            Recipe uploaded successfully!
+        {uploaded && (
+          <div
+            role="status"
+            className="flex flex-wrap items-center justify-between gap-2 bg-[var(--secondary)]/10 border border-[var(--secondary)]/30 text-[var(--secondary)] fred-med text-[14px] px-4 py-3 rounded-[10px] mb-6"
+          >
+            <span>Recipe uploaded successfully!</span>
+            <Link
+              to={`/app/recipes/${uploaded.id}`}
+              state={{ recipe: uploaded }}
+              className="fred-bold underline"
+            >
+              View recipe &rarr;
+            </Link>
           </div>
         )}
         {/* Error banner */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 fred-med text-[14px] px-4 py-3 rounded-[10px] mb-6">
+          <div
+            role="alert"
+            className="bg-red-500/10 border border-red-500/30 text-red-500 fred-med text-[14px] px-4 py-3 rounded-[10px] mb-6"
+          >
             {error}
           </div>
         )}
@@ -201,45 +210,49 @@ export default function UploadPage() {
           <div>
             <label className={labelClass}>
               Photos{" "}
-              <span className="text-gray-400 fred-light">
+              <span className="text-[var(--muted)] fred-light">
                 ({images.length}/3)
               </span>
             </label>
 
             <div className="flex flex-wrap gap-3">
               {/* Thumbnails of selected images */}
-              {images.map((file, i) => (
+              {previewUrls.map((url, i) => (
                 <div
-                  key={i}
-                  className="relative w-[100px] h-[100px] rounded-[10px] overflow-hidden group"
+                  key={url}
+                  className="relative w-[100px] h-[100px] rounded-[10px] overflow-hidden"
                 >
                   <img
-                    src={previewUrls[i]}
+                    src={url}
                     alt={`Upload ${i + 1}`}
                     className="w-full h-full object-cover"
                   />
-                  {/* Remove button — appears on hover */}
+                  {/* Remove button — always visible so it also works on touch screens */}
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
-                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white fred-bold text-[18px]"
+                    aria-label={`Remove photo ${i + 1}`}
+                    className="absolute top-1.5 right-1.5 w-[26px] h-[26px] rounded-full bg-black/60 hover:bg-black/80 transition-colors flex items-center justify-center text-white fred-bold text-[14px] leading-none"
                   >
-                    x
+                    &times;
                   </button>
                 </div>
               ))}
 
               {/* Add button — only show if under 3 images */}
               {images.length < 3 && (
-                <label className="w-[100px] h-[100px] rounded-[10px] border-2 border-dashed border-gray-300 hover:border-[var(--secondary)] transition-colors flex flex-col items-center justify-center cursor-pointer text-gray-400 hover:text-[var(--secondary)]">
+                <label className="w-[100px] h-[100px] rounded-[10px] border-2 border-dashed border-[var(--border)] hover:border-[var(--secondary)] transition-colors flex flex-col items-center justify-center cursor-pointer text-[var(--muted)] hover:text-[var(--secondary)] focus-within:border-[var(--secondary)]">
                   <span className="text-[24px] leading-none">+</span>
                   <span className="fred-med text-[11px] mt-1">Add photo</span>
                   <input
                     type="file"
                     accept="image/*"
                     multiple
-                    onChange={(e) => addImages(e.target.files)}
-                    className="hidden"
+                    onChange={(e) => {
+                      addImages(e.target.files);
+                      e.target.value = ""; // so picking the same file again still fires onChange
+                    }}
+                    className="sr-only"
                   />
                 </label>
               )}
@@ -283,9 +296,10 @@ export default function UploadPage() {
                       <button
                         type="button"
                         onClick={() => removeIngredient(i)}
-                        className="shrink-0 w-[36px] h-[36px] flex items-center justify-center rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors text-[18px]"
+                        aria-label={`Remove ingredient ${i + 1}`}
+                        className="shrink-0 w-[36px] h-[36px] flex items-center justify-center rounded-full text-[var(--muted)] hover:bg-red-500/10 hover:text-red-500 transition-colors text-[18px]"
                       >
-                        x
+                        &times;
                       </button>
                     )}
                   </div>
@@ -322,9 +336,10 @@ export default function UploadPage() {
                     <button
                       type="button"
                       onClick={() => removeInstruction(i)}
-                      className="shrink-0 w-[36px] h-[36px] flex items-center justify-center rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors text-[18px] mt-1"
+                      aria-label={`Remove step ${i + 1}`}
+                      className="shrink-0 w-[36px] h-[36px] flex items-center justify-center rounded-full text-[var(--muted)] hover:bg-red-500/10 hover:text-red-500 transition-colors text-[18px] mt-1"
                     >
-                      x
+                      &times;
                     </button>
                   )}
                 </div>
@@ -390,7 +405,12 @@ export default function UploadPage() {
           </div>
           {/* Categories — toggle chips */}
           <div>
-            <label className={labelClass}>Categories</label>
+            <label className={labelClass}>
+              Categories{" "}
+              <span className="text-[var(--muted)] fred-light">
+                (pick at least one)
+              </span>
+            </label>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => {
                 const selected = selectedCategories.includes(cat);
@@ -398,10 +418,11 @@ export default function UploadPage() {
                   <button
                     key={cat}
                     type="button"
+                    aria-pressed={selected}
                     onClick={() => toggleCategory(cat)}
                     className={`px-3.5 py-2 rounded-full text-[13px] fred-med transition-colors duration-200 ${
                       selected
-                        ? "bg-[var(--secondary)] text-[var(--surface)]"
+                        ? "bg-[var(--secondary)] text-[var(--on-secondary)]"
                         : "bg-[var(--surface)] text-[var(--primary)]/60 md:border md:border-[var(--accent)] hover:bg-[var(--secondary)]/10"
                     }`}
                   >
@@ -415,7 +436,7 @@ export default function UploadPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 rounded-[10px] bg-[var(--secondary)] text-white fred-bold text-[15px] hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full py-3.5 rounded-[10px] bg-[var(--secondary)] text-[var(--on-secondary)] fred-bold text-[15px] hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {submitting ? "Uploading..." : "Upload Recipe"}
           </button>
