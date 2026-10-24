@@ -1179,6 +1179,248 @@ public class DataSeeder implements CommandLineRunner {
 
         recipeRepository.saveAll(List.of(chickenKorma, gajarHalwa, daalChawal, pakMacCheese));
 
+        // Eighth user
+        AppUser bilal = new AppUser("bilal@gmail.com", "Bilal", passwordEncoder.encode("mypassword"));
+        appUserRepository.save(bilal);
+
+        // 37. Mutton Karahi
+        Recipe muttonKarahi = new Recipe();
+        muttonKarahi.setAppUser(bilal);
+        muttonKarahi.setTitle("Mutton Karahi");
+        muttonKarahi.setDescription("Rich and tender mutton cooked in a karahi with tomatoes and green chilies.");
+        muttonKarahi.setInstructions(List.of("Heat oil in karahi.", "Add mutton and brown.", "Add tomatoes and spices.", "Cook on low until tender.", "Garnish with ginger and coriander."));
+        muttonKarahi.setPrepTime(15);
+        muttonKarahi.setCookTime(90);
+        muttonKarahi.setServingCount(5);
+        muttonKarahi.setCategories(List.of(mainCourse));
+        muttonKarahi.setCreatedAt(new Date());
+        muttonKarahi.setUpdatedAt(new Date());
+        muttonKarahi.setRating(4.9);
+        muttonKarahi.setIngredients(List.of(new Ingredient("mutton", "1", "kg", muttonKarahi), new Ingredient("tomatoes", "5", null, muttonKarahi), new Ingredient("green chilies", "6", null, muttonKarahi)));
+        muttonKarahi.setImages(List.of());
+
+        // 38. Achari Chicken
+        Recipe achariChicken = new Recipe();
+        achariChicken.setAppUser(bilal);
+        achariChicken.setTitle("Achari Chicken");
+        achariChicken.setDescription("Tangy chicken curry cooked with pickling spices for a bold flavor.");
+        achariChicken.setInstructions(List.of("Fry onions until golden.", "Add pickling spices and chicken.", "Add yogurt and cook on medium.", "Simmer until oil separates.", "Serve with roti."));
+        achariChicken.setPrepTime(20);
+        achariChicken.setCookTime(35);
+        achariChicken.setServingCount(4);
+        achariChicken.setCategories(List.of(mainCourse));
+        achariChicken.setCreatedAt(new Date());
+        achariChicken.setUpdatedAt(new Date());
+        achariChicken.setRating(4.6);
+        achariChicken.setIngredients(List.of(new Ingredient("chicken", "750", "grams", achariChicken), new Ingredient("pickling spices", "2", "tbsp", achariChicken), new Ingredient("yogurt", "1", "cup", achariChicken)));
+        achariChicken.setImages(List.of());
+
+        // 39. Sindhi Biryani
+        Recipe sindhiBiryani = new Recipe();
+        sindhiBiryani.setAppUser(bilal);
+        sindhiBiryani.setTitle("Sindhi Biryani");
+        sindhiBiryani.setDescription("Spicier biryani variant from Sindh with potatoes, plums, and extra heat.");
+        sindhiBiryani.setInstructions(List.of("Marinate chicken with yogurt and spices.", "Fry potatoes and set aside.", "Layer chicken, rice, potatoes, and plums.", "Cook on dum for 30 minutes.", "Serve with raita."));
+        sindhiBiryani.setPrepTime(40);
+        sindhiBiryani.setCookTime(55);
+        sindhiBiryani.setServingCount(6);
+        sindhiBiryani.setCategories(List.of(mainCourse));
+        sindhiBiryani.setCreatedAt(new Date());
+        sindhiBiryani.setUpdatedAt(new Date());
+        sindhiBiryani.setRating(4.7);
+        sindhiBiryani.setIngredients(List.of(new Ingredient("chicken", "1", "kg", sindhiBiryani), new Ingredient("basmati rice", "3", "cups", sindhiBiryani), new Ingredient("potatoes", "3", null, sindhiBiryani), new Ingredient("dried plums", "5", null, sindhiBiryani)));
+        sindhiBiryani.setImages(List.of());
+
+        // 40. Chicken Handi
+        Recipe chickenHandi = new Recipe();
+        chickenHandi.setAppUser(bilal);
+        chickenHandi.setTitle("Chicken Handi");
+        chickenHandi.setDescription("Creamy chicken curry cooked in a traditional clay pot with cream and butter.");
+        chickenHandi.setInstructions(List.of("Cook chicken with onions and tomatoes.", "Add spices and yogurt.", "Simmer on low heat.", "Add cream and butter at the end.", "Garnish with coriander."));
+        chickenHandi.setPrepTime(15);
+        chickenHandi.setCookTime(40);
+        chickenHandi.setServingCount(4);
+        chickenHandi.setCategories(List.of(mainCourse));
+        chickenHandi.setCreatedAt(new Date());
+        chickenHandi.setUpdatedAt(new Date());
+        chickenHandi.setRating(4.7);
+        chickenHandi.setIngredients(List.of(new Ingredient("chicken", "750", "grams", chickenHandi), new Ingredient("cream", "0.5", "cup", chickenHandi), new Ingredient("butter", "2", "tbsp", chickenHandi), new Ingredient("yogurt", "1", "cup", chickenHandi)));
+        chickenHandi.setImages(List.of());
+
+        // 41. Anda Paratha
+        Recipe andaParatha = new Recipe();
+        andaParatha.setAppUser(bilal);
+        andaParatha.setTitle("Anda Paratha");
+        andaParatha.setDescription("Crispy paratha topped with a fried egg, a classic street breakfast.");
+        andaParatha.setInstructions(List.of("Roll out paratha dough.", "Cook on tawa with oil.", "Crack egg on top and flip.", "Cook until egg is set and paratha is crispy.", "Serve with chutney."));
+        andaParatha.setPrepTime(10);
+        andaParatha.setCookTime(10);
+        andaParatha.setServingCount(2);
+        andaParatha.setCategories(List.of(breakfast, snack));
+        andaParatha.setCreatedAt(new Date());
+        andaParatha.setUpdatedAt(new Date());
+        andaParatha.setRating(4.3);
+        andaParatha.setIngredients(List.of(new Ingredient("flour", "1", "cup", andaParatha), new Ingredient("eggs", "2", null, andaParatha), new Ingredient("oil", "3", "tbsp", andaParatha)));
+        andaParatha.setImages(List.of());
+
+        // 42. Afghani Pulao
+        Recipe afghaniPulao = new Recipe();
+        afghaniPulao.setAppUser(bilal);
+        afghaniPulao.setTitle("Afghani Pulao");
+        afghaniPulao.setDescription("Fragrant rice dish with carrots, raisins, and tender lamb.");
+        afghaniPulao.setInstructions(List.of("Cook lamb until tender.", "Fry grated carrots and raisins.", "Cook rice with lamb broth.", "Layer everything together.", "Serve with salad."));
+        afghaniPulao.setPrepTime(30);
+        afghaniPulao.setCookTime(70);
+        afghaniPulao.setServingCount(6);
+        afghaniPulao.setCategories(List.of(mainCourse));
+        afghaniPulao.setCreatedAt(new Date());
+        afghaniPulao.setUpdatedAt(new Date());
+        afghaniPulao.setRating(4.5);
+        afghaniPulao.setIngredients(List.of(new Ingredient("lamb", "750", "grams", afghaniPulao), new Ingredient("basmati rice", "3", "cups", afghaniPulao), new Ingredient("carrots", "3", null, afghaniPulao), new Ingredient("raisins", "0.5", "cup", afghaniPulao)));
+        afghaniPulao.setImages(List.of());
+
+        recipeRepository.saveAll(List.of(muttonKarahi, achariChicken, sindhiBiryani, chickenHandi, andaParatha, afghaniPulao));
+
+        // Ninth user
+        AppUser nadia = new AppUser("nadia@gmail.com", "Nadia", passwordEncoder.encode("mypassword"));
+        appUserRepository.save(nadia);
+
+        // 43. Jalebi
+        Recipe jalebi = new Recipe();
+        jalebi.setAppUser(nadia);
+        jalebi.setTitle("Jalebi");
+        jalebi.setDescription("Crispy, syrup-soaked spirals of deep-fried fermented batter.");
+        jalebi.setInstructions(List.of("Mix flour, yogurt, and saffron into batter.", "Let ferment for a few hours.", "Pipe spirals into hot oil.", "Fry until crispy.", "Soak in sugar syrup.", "Serve warm."));
+        jalebi.setPrepTime(180);
+        jalebi.setCookTime(20);
+        jalebi.setServingCount(8);
+        jalebi.setCategories(List.of(dessert, snack));
+        jalebi.setCreatedAt(new Date());
+        jalebi.setUpdatedAt(new Date());
+        jalebi.setRating(4.6);
+        jalebi.setIngredients(List.of(new Ingredient("flour", "1", "cup", jalebi), new Ingredient("yogurt", "2", "tbsp", jalebi), new Ingredient("saffron", "1", "pinch", jalebi), new Ingredient("sugar", "2", "cups", jalebi)));
+        jalebi.setImages(List.of());
+
+        // 44. Rabri
+        Recipe rabri = new Recipe();
+        rabri.setAppUser(nadia);
+        rabri.setTitle("Rabri");
+        rabri.setDescription("Rich thickened milk dessert with layers of cream, cardamom, and nuts.");
+        rabri.setInstructions(List.of("Boil milk on low heat.", "Keep scraping cream from sides.", "Reduce to half.", "Add sugar and cardamom.", "Garnish with pistachios.", "Serve chilled."));
+        rabri.setPrepTime(5);
+        rabri.setCookTime(90);
+        rabri.setServingCount(4);
+        rabri.setCategories(List.of(dessert));
+        rabri.setCreatedAt(new Date());
+        rabri.setUpdatedAt(new Date());
+        rabri.setRating(4.4);
+        rabri.setIngredients(List.of(new Ingredient("milk", "6", "cups", rabri), new Ingredient("sugar", "0.5", "cup", rabri), new Ingredient("cardamom", "3", null, rabri), new Ingredient("pistachios", "10", null, rabri)));
+        rabri.setImages(List.of());
+
+        // 45. Lahori Chargha
+        Recipe chargha = new Recipe();
+        chargha.setAppUser(nadia);
+        chargha.setTitle("Lahori Chargha");
+        chargha.setDescription("Whole chicken marinated in spices and deep-fried until crispy golden.");
+        chargha.setInstructions(List.of("Marinate whole chicken with yogurt and spices overnight.", "Steam the chicken until tender.", "Deep fry until golden and crispy.", "Serve with naan and chutney."));
+        chargha.setPrepTime(480);
+        chargha.setCookTime(45);
+        chargha.setServingCount(6);
+        chargha.setCategories(List.of(mainCourse));
+        chargha.setCreatedAt(new Date());
+        chargha.setUpdatedAt(new Date());
+        chargha.setRating(4.9);
+        chargha.setIngredients(List.of(new Ingredient("whole chicken", "1", null, chargha), new Ingredient("yogurt", "1", "cup", chargha), new Ingredient("chargha masala", "3", "tbsp", chargha), new Ingredient("oil for frying", "4", "cups", chargha)));
+        chargha.setImages(List.of());
+
+        // 46. Meethi Lassi
+        Recipe meethiLassi = new Recipe();
+        meethiLassi.setAppUser(nadia);
+        meethiLassi.setTitle("Meethi Lassi");
+        meethiLassi.setDescription("Sweet yogurt drink blended with sugar and cardamom, served chilled.");
+        meethiLassi.setInstructions(List.of("Blend yogurt, sugar, and cardamom.", "Add ice and blend again.", "Pour into glasses.", "Top with cream if desired."));
+        meethiLassi.setPrepTime(5);
+        meethiLassi.setCookTime(0);
+        meethiLassi.setServingCount(2);
+        meethiLassi.setCategories(List.of(beverage));
+        meethiLassi.setCreatedAt(new Date());
+        meethiLassi.setUpdatedAt(new Date());
+        meethiLassi.setRating(4.3);
+        meethiLassi.setIngredients(List.of(new Ingredient("yogurt", "2", "cups", meethiLassi), new Ingredient("sugar", "3", "tbsp", meethiLassi), new Ingredient("cardamom", "2", null, meethiLassi)));
+        meethiLassi.setImages(List.of());
+
+        // 47. Bun Kebab
+        Recipe bunKebab = new Recipe();
+        bunKebab.setAppUser(nadia);
+        bunKebab.setTitle("Bun Kebab");
+        bunKebab.setDescription("Pakistani street burger with lentil patty, egg, and chutneys in a soft bun.");
+        bunKebab.setInstructions(List.of("Cook lentils and mash into patties.", "Shallow fry the patties.", "Fry an egg.", "Assemble in a bun with chutney and onions.", "Serve hot."));
+        bunKebab.setPrepTime(30);
+        bunKebab.setCookTime(20);
+        bunKebab.setServingCount(4);
+        bunKebab.setCategories(List.of(snack, mainCourse));
+        bunKebab.setCreatedAt(new Date());
+        bunKebab.setUpdatedAt(new Date());
+        bunKebab.setRating(4.5);
+        bunKebab.setIngredients(List.of(new Ingredient("chana dal", "1", "cup", bunKebab), new Ingredient("buns", "4", null, bunKebab), new Ingredient("eggs", "4", null, bunKebab), new Ingredient("tamarind chutney", "3", "tbsp", bunKebab)));
+        bunKebab.setImages(List.of());
+
+        // 48. Kashmiri Chai (Pink Tea)
+        Recipe kashmiriChai = new Recipe();
+        kashmiriChai.setAppUser(nadia);
+        kashmiriChai.setTitle("Kashmiri Chai");
+        kashmiriChai.setDescription("Pink tea made with special tea leaves, milk, and topped with crushed nuts.");
+        kashmiriChai.setInstructions(List.of("Boil tea leaves with baking soda and water.", "Add cold water to develop pink color.", "Add milk and sugar.", "Simmer until rich pink.", "Top with crushed pistachios and almonds."));
+        kashmiriChai.setPrepTime(10);
+        kashmiriChai.setCookTime(25);
+        kashmiriChai.setServingCount(4);
+        kashmiriChai.setCategories(List.of(beverage));
+        kashmiriChai.setCreatedAt(new Date());
+        kashmiriChai.setUpdatedAt(new Date());
+        kashmiriChai.setRating(4.8);
+        kashmiriChai.setIngredients(List.of(new Ingredient("kashmiri tea leaves", "2", "tbsp", kashmiriChai), new Ingredient("milk", "3", "cups", kashmiriChai), new Ingredient("baking soda", "0.25", "tsp", kashmiriChai), new Ingredient("pistachios", "10", null, kashmiriChai)));
+        kashmiriChai.setImages(List.of());
+
+        recipeRepository.saveAll(List.of(jalebi, rabri, chargha, meethiLassi, bunKebab, kashmiriChai));
+
+        // Tenth user
+        AppUser tariq = new AppUser("tariq@gmail.com", "Tariq", passwordEncoder.encode("mypassword"));
+        appUserRepository.save(tariq);
+
+        // 49. Mutton Pulao
+        Recipe muttonPulao = new Recipe();
+        muttonPulao.setAppUser(tariq);
+        muttonPulao.setTitle("Mutton Pulao");
+        muttonPulao.setDescription("Aromatic rice cooked in mutton broth with whole spices and caramelized onions.");
+        muttonPulao.setInstructions(List.of("Cook mutton until tender.", "Fry onions until golden.", "Cook rice in mutton broth with spices.", "Layer rice and mutton.", "Serve with raita."));
+        muttonPulao.setPrepTime(20);
+        muttonPulao.setCookTime(80);
+        muttonPulao.setServingCount(6);
+        muttonPulao.setCategories(List.of(mainCourse));
+        muttonPulao.setCreatedAt(new Date());
+        muttonPulao.setUpdatedAt(new Date());
+        muttonPulao.setRating(4.7);
+        muttonPulao.setIngredients(List.of(new Ingredient("mutton", "750", "grams", muttonPulao), new Ingredient("basmati rice", "3", "cups", muttonPulao), new Ingredient("onions", "3", null, muttonPulao), new Ingredient("whole spices", "1", "tbsp", muttonPulao)));
+        muttonPulao.setImages(List.of());
+
+        // 50. Rasmalai
+        Recipe rasmalai = new Recipe();
+        rasmalai.setAppUser(tariq);
+        rasmalai.setTitle("Rasmalai");
+        rasmalai.setDescription("Soft paneer balls soaked in creamy saffron-cardamom flavored milk.");
+        rasmalai.setInstructions(List.of("Make paneer from milk using lemon juice.", "Shape into balls and boil in sugar syrup.", "Reduce milk with saffron and cardamom.", "Soak paneer balls in the flavored milk.", "Chill and serve cold.", "Garnish with pistachios."));
+        rasmalai.setPrepTime(30);
+        rasmalai.setCookTime(60);
+        rasmalai.setServingCount(6);
+        rasmalai.setCategories(List.of(dessert));
+        rasmalai.setCreatedAt(new Date());
+        rasmalai.setUpdatedAt(new Date());
+        rasmalai.setRating(4.9);
+        rasmalai.setIngredients(List.of(new Ingredient("milk", "6", "cups", rasmalai), new Ingredient("lemon juice", "3", "tbsp", rasmalai), new Ingredient("sugar", "1.5", "cups", rasmalai), new Ingredient("saffron", "1", "pinch", rasmalai), new Ingredient("cardamom", "4", null, rasmalai)));
+        rasmalai.setImages(List.of());
+
+        recipeRepository.saveAll(List.of(muttonPulao, rasmalai));
+
         // Seed favourites — users favourite other users' recipes to create varied counts
         // Vishav's Chicken Karahi gets 5 favourites (most popular)
         amna.getFavourites().addAll(List.of(karahi, nihari, chapliKebab, biryani, seekhKebab));

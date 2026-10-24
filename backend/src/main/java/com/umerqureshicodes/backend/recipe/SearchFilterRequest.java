@@ -5,7 +5,7 @@ import java.util.List;
 // all the search, filter, and sort params in one request body
 public record SearchFilterRequest(
         String query,
-        List<String> categories,
+        List<RecipeCategory> categories,
         int minPrep,
         int maxPrep,
         int minCook,
@@ -14,7 +14,9 @@ public record SearchFilterRequest(
         double maxRating,
         int minServings,
         int maxServings,
-        String sortBy,       // "rating", "cook_time", "prep_time", or "created_at"
-        boolean ascending
+        SortBy sortBy,
+        boolean ascending,
+        int page,
+        int size
 ) {
 }

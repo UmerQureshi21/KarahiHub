@@ -1,8 +1,8 @@
 package com.umerqureshicodes.backend.rating;
 
 import com.umerqureshicodes.backend.auth.AppUser;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,5 +18,13 @@ public class RatingController {
     @PostMapping()
     public RatingResponse createRating(@RequestBody RatingRequest ratingRequest, @AuthenticationPrincipal AppUser user) {
         return ratingService.save(ratingRequest, user.getEmail());
+    }
+
+    // GET /api/ratings/mine?recipeId=5 — 200 with the user's rating, or 204 if they haven't rated it
+    @GetMapping("/mine")
+    public ResponseEntity<RatingResponse> getMyRating(@RequestParam Long recipeId, @AuthenticationPrincipal AppUser user) {
+        return ratingService.getMyRating(recipeId, user.getEmail())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 }

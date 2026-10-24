@@ -83,6 +83,16 @@ export type CategoryResponse = {
   names: string[];
 };
 
+// Matches the backend SortBy enum
+export type SortBy =
+  | "RATING"
+  | "PREP_TIME"
+  | "COOK_TIME"
+  | "CREATED_AT"
+  | "UPDATED_AT"
+  | "SERVING_COUNT"
+  | "FAVOURITE_COUNT";
+
 export type SearchFilterRequest = {
   query: string;
   categories: string[];
@@ -94,8 +104,21 @@ export type SearchFilterRequest = {
   maxRating: number;
   minServings: number;
   maxServings: number;
-  sortBy: "rating" | "prep_time" | "cook_time" | "created_at";
+  sortBy: SortBy;
   ascending: boolean;
+  page: number;
+  size: number;
+};
+
+// Matches Spring's Page<T> response
+export type PageResponse<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
 };
 
 export type RatingRequest = {

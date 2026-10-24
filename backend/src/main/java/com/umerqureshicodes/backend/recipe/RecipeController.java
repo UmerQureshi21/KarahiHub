@@ -2,6 +2,7 @@ package com.umerqureshicodes.backend.recipe;
 
 import com.umerqureshicodes.backend.auth.AppUser;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class RecipeController {
 
     // POST /api/recipes/search — search by title + filter by categories, time, rating, servings + sort
     @PostMapping("/search")
-    public List<RecipeResponse> searchAndFilter(@RequestBody SearchFilterRequest request) {
+    public Page<RecipeResponse> searchAndFilter(@RequestBody SearchFilterRequest request) {
         return recipeService.searchAndFilter(request);
     }
 

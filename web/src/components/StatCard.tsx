@@ -24,7 +24,7 @@ const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
         >
           {count}+
         </div>
-        <p className="fred-medium text-[16px] md:text-[18px] text-gray-600">
+        <p className="fred-med text-[16px] md:text-[18px] text-gray-600">
           {label}
         </p>
       </div>

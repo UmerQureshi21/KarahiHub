@@ -6,218 +6,108 @@ interface Props {
   recipes: Recipe[];
 }
 
+const IMAGE_GAP = 20;
+const CARD_SIZE = 250;
+// How many copies of the strip to add when the user nears either end
+const COPIES_PER_SIDE = 7;
+
+// Small-screen version of the top recipes: one strip of cards, slid left/right
+// with arrow buttons. Extra copies of the strip are added to whichever side the
+// user is approaching, so it never runs out.
 export default function TopFoodDisplay({ recipes }: Props) {
-  // STILL NEED TO ADD LINKS SO CLICKING ON EACH IMAGE WILL SEDN TO WEBSTIE
+  const [leftCopies, setLeftCopies] = useState<number[]>([1]); // descending, like 3,2,1
+  const [rightCopies, setRightCopies] = useState<number[]>([1]); // ascending, like 1,2,3
+  const [currentCard, setCurrentCard] = useState(3);
+  const [offset, setOffset] = useState(0); // how many cards the strip has slid
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  const IMAGE_GAP = 20;
-  const [resizePush, setResizePush] = useState<number>(1000);
-  let [leftPartners, setLeftPartners] = useState<number[]>([1]); // should be descending, like 3,2,1
-  let [rightPartners, setRightPartners] = useState<number[]>([1]); // should be ascending, like 1,2,3
-  let [imageDimension, setImageDimension] = useState<number>(250);
-  const partners: Recipe[] = recipes;
-  let partnerLinks: any = [];
-  let [partnersWidth, setPartnersWidth] = useState<number>(
-    imageDimension * partners.length + IMAGE_GAP * (partners.length - 1),
-  );
-  let [currPartner, setCurrPartner] = useState<number>(3);
-  let [clickCount, setClickCount] = useState<number>(0);
-  let [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const stripWidth =
+    CARD_SIZE * recipes.length + IMAGE_GAP * (recipes.length - 1);
+  // shifts the strip so its middle lines up with the middle of the screen
+  const centerShift = stripWidth / 2 - windowWidth / 2;
 
   useEffect(() => {
-    if (currPartner == 1 - 7 * (leftPartners.length - 1)) {
-      let newLeft = [leftPartners[0] + 1].concat(leftPartners);
-      setLeftPartners(newLeft);
-    } else if (
-      currPartner ==
-      partners.length - 2 + 7 * (rightPartners.length - 1)
-    ) {
-      let newRight = rightPartners.concat([
-        rightPartners[rightPartners.length - 1] + 1,
-      ]);
-      setRightPartners(newRight);
-    }
-  }, [currPartner]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    handleResize(); // initialize
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (windowWidth < 650) {
-      setImageDimension(250);
-    } else {
-      setImageDimension(250);
+  // Moving one card left/right; grows the strip before the user reaches an edge
+  function move(direction: -1 | 1) {
+    const next = currentCard + direction;
+    setCurrentCard(next);
+    setOffset((prev) => prev - direction);
+
+    if (next === 1 - COPIES_PER_SIDE * (leftCopies.length - 1)) {
+      setLeftCopies([leftCopies[0] + 1, ...leftCopies]);
+    } else if (
+      next ===
+      recipes.length - 2 + COPIES_PER_SIDE * (rightCopies.length - 1)
+    ) {
+      setRightCopies([...rightCopies, rightCopies[rightCopies.length - 1] + 1]);
     }
-  }, [windowWidth]);
+  }
 
-  useEffect(() => {
-    setPartnersWidth(
-      imageDimension * partners.length + IMAGE_GAP * (partners.length - 1),
-    );
-  }, [imageDimension]);
-
-  useEffect(() => {
-    setResizePush(partnersWidth / 2 - windowWidth / 2);
-  }, [partnersWidth, windowWidth]);
+  // One full copy of the recipe strip at a given left position
+  const strip = (key: string, left: number) => (
+    <div
+      key={key}
+      className="absolute top-0 flex transition duration-250 ease"
+      style={{ width: `${stripWidth}px`, left: `${left}px`, gap: `${IMAGE_GAP}px` }}
+    >
+      {recipes.map((recipe, index) => (
+        <div
+          key={index}
+          style={{ height: `${CARD_SIZE}px`, width: `${CARD_SIZE}px` }}
+        >
+          <TopRecipe recipe={recipe} />
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div
-      id="big-container"
-      className="relative pt-[100px] relative bg-cover bg-center bg-no-repeat overflow-hidden"
+      className="relative pt-[100px] bg-cover bg-center bg-no-repeat overflow-hidden"
       style={{ backgroundImage: "url('/paki-graphic.png')" }}
     >
-      <style>{`
-        #big-container::before {
-          position: absolute;
-          content: "";
-          left: ${
-            (windowWidth >= 650
-              ? windowWidth -
-                (windowWidth - (imageDimension + 2 * IMAGE_GAP)) / 2
-              : windowWidth - (windowWidth - (250 + 2 * IMAGE_GAP)) / 2) -
-            IMAGE_GAP
-          }px;
-          top: 0;
-          height: ${windowWidth >= 650 ? imageDimension : 250}px;
-          width: 100%;
-          background-color: ${windowWidth >= 650 ? "transparent" : "transparent"};
-          z-index: 52;
-        }
-      `}</style>
-      <style>{`
-        #big-container::after {
-          position: absolute;
-          content: "";
-          right: ${
-            (windowWidth >= 650
-              ? windowWidth -
-                (windowWidth - (imageDimension + 2 * IMAGE_GAP)) / 2
-              : windowWidth - (windowWidth - (250 + 2 * IMAGE_GAP)) / 2) -
-            IMAGE_GAP
-          }px;
-          top: 0;
-          height: ${windowWidth >= 650 ? imageDimension : 250}px;
-          width: 100%;
-          background-color: ${windowWidth >= 650 ? "transparent" : "transparent"};
-          z-index: 52;
-        }
-      `}</style>
-
       <div className="w-full flex flex-col">
         <div
-          id="image-div-container"
           className="relative transition duration-250 ease"
           style={{
-            transform: `translateX(${
-              clickCount * (imageDimension + IMAGE_GAP)
-            }px)`,
-            height: `${imageDimension}px`,
+            transform: `translateX(${offset * (CARD_SIZE + IMAGE_GAP)}px)`,
+            height: `${CARD_SIZE}px`,
           }}
         >
-          {leftPartners.map((count, index) => (
-            <div
-              key={`left partners ${index + 1}`}
-              className="absolute top-0  flex  transition duration-250 ease"
-              style={{
-                width: `${partnersWidth}px`,
-                left: `-${
-                  count * partnersWidth + count * IMAGE_GAP - -resizePush
-                }px`,
-                gap: `${IMAGE_GAP}px`,
-              }}
-            >
-              {partners.map((recipe, index) => (
-                <div
-                  key={`image small left ${index}`}
-                  onClick={() => {
-                    window.location.href = partnerLinks[index];
-                  }}
-                  style={{
-                    height: `${imageDimension}px`,
-                    width: `${imageDimension}px`,
-                  }}
-                >
-                  <TopRecipe recipe={recipe} />
-                </div>
-              ))}
-            </div>
-          ))}
-          <div
-            className="absolute top-0 flex items-center justify-center transition duration-250 ease"
-            style={{
-              width: `${partnersWidth}px`,
-              gap: `${IMAGE_GAP}px`,
-              left: `${0 - resizePush}px`,
-            }}
-          >
-            {partners.map((recipe, index) => (
-              <div
-                key={`image small ${index}`}
-                onClick={() => {
-                  window.location.href = partnerLinks[index];
-                }}
-                style={{
-                  height: `${imageDimension}px`,
-                  width: `${imageDimension}px`,
-                }}
-              >
-                <TopRecipe recipe={recipe} />
-              </div>
-            ))}
-          </div>
-          {rightPartners.map((count, index) => (
-            <div
-              key={`right partners ${index + 1}`}
-              className="absolute top-0  flex transition duration-250 ease"
-              style={{
-                width: `${partnersWidth}px`,
-                left: `${
-                  count * partnersWidth + count * IMAGE_GAP - resizePush
-                }px`,
-                gap: `${IMAGE_GAP}px`,
-              }}
-            >
-              {partners.map((recipe, index) => (
-                <div
-                  key={`image small right ${index}`}
-                  onClick={() => {
-                    window.location.href = partnerLinks[index];
-                  }}
-                  style={{
-                    height: `${imageDimension}px`,
-                    width: `${imageDimension}px`,
-                  }}
-                >
-                  <TopRecipe recipe={recipe} />
-                </div>
-              ))}
-            </div>
-          ))}
+          {leftCopies.map((count) =>
+            strip(
+              `left-${count}`,
+              -(count * (stripWidth + IMAGE_GAP) + centerShift),
+            ),
+          )}
+          {strip("center", -centerShift)}
+          {rightCopies.map((count) =>
+            strip(
+              `right-${count}`,
+              count * (stripWidth + IMAGE_GAP) - centerShift,
+            ),
+          )}
         </div>
         <div className="w-full flex justify-center mt-[25px]">
           <div className="w-[30%] flex justify-between mb-[25px]">
             <button
+              type="button"
+              aria-label="Previous recipe"
               className="bg-gray-200 p-[10px] rounded-[40px] w-[40px] h-[40px]"
-              onClick={() => {
-                setCurrPartner(--currPartner);
-                setClickCount(++clickCount);
-              }}
+              onClick={() => move(-1)}
             >
               <img src="/left-arrow-head.png" alt="" />
             </button>
             <button
+              type="button"
+              aria-label="Next recipe"
               className="bg-gray-200 p-[10px] rounded-[40px] w-[40px] h-[40px]"
-              onClick={() => {
-                setCurrPartner(++currPartner);
-                setClickCount(--clickCount);
-              }}
+              onClick={() => move(1)}
             >
               <img src="/right-arrow-head.png" alt="" />
             </button>

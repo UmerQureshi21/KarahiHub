@@ -1,29 +1,12 @@
-import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { ReactNode } from "react";
 import { setAuthListener, refresh } from "../services/userService";
-
-type AuthState = {
-  username: string | null;
-  email: string | null;
-};
-
-type AuthContextType = AuthState & {
-  setUser: (username: string | null, email: string | null) => void;
-  clearUser: () => void;
-};
-
-const AuthContext = createContext<AuthContextType | null>(null);
-
-// Hook for components to read and react to auth state changes.
-// Any component that calls this will re-render when setUser/clearUser is called.
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
-  return ctx;
-}
+import { AuthContext } from "./useAuth";
+import type { AuthState } from "./useAuth";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState>({ username: null, email: null });
+  const [initializing, setInitializing] = useState(true);
 
   const setUser = useCallback((username: string | null, email: string | null) => {
     setAuth({ username, email });
@@ -43,13 +26,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // On app startup (page refresh), try to restore the session from the
   // httpOnly refresh_token cookie. If it fails (no cookie / expired),
-  // the user stays logged out — no harm done.
+  // the user stays logged out. Protected routes wait for this to finish
+  // before deciding whether to redirect to /auth.
   useEffect(() => {
-    refresh().catch(() => {});
+    refresh()
+      .catch(() => {})
+      .finally(() => setInitializing(false));
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...auth, setUser, clearUser }}>
+    <AuthContext.Provider value={{ ...auth, initializing, setUser, clearUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,8 +1,13 @@
 package com.umerqureshicodes.backend.recipe;
+
+import com.umerqureshicodes.backend.auth.AppUser;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -10,60 +15,35 @@ import java.util.List;
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByAppUserEmail(String email);
 
-    // full search + filter + sort ascending
-    // CASE turns the sortBy param into the actual column to sort by,
-    // casting everything to DOUBLE PRECISION so all branches return the same type
-    @Query(value = "SELECT * FROM " +
-            "(SELECT * FROM recipe WHERE LOWER(title) LIKE LOWER(CONCAT('%', :query, '%'))) AS recipesMatchingTitle " +
-            "WHERE id IN (SELECT recipe_id FROM recipe_categories WHERE category_name IN (:categories)) " +
-            "AND prep_time BETWEEN :minPrep AND :maxPrep " +
-            "AND cook_time BETWEEN :minCook AND :maxCook " +
-            "AND rating BETWEEN :minRating AND :maxRating " +
-            "AND serving_count BETWEEN :minServings AND :maxServings " +
-            "ORDER BY CASE :sortBy " +
-            "WHEN 'rating' THEN CAST(rating AS DOUBLE PRECISION) " +
-            "WHEN 'cook_time' THEN CAST(cook_time AS DOUBLE PRECISION) " +
-            "WHEN 'prep_time' THEN CAST(prep_time AS DOUBLE PRECISION) " +
-            "WHEN 'created_at' THEN EXTRACT(EPOCH FROM created_at) " +
-            "WHEN 'favourite_count' THEN CAST((SELECT COUNT(*) FROM user_favourites WHERE recipe_id = recipesMatchingTitle.id) AS DOUBLE PRECISION) " +
-            "END ASC", nativeQuery = true)
-    List<Recipe> searchAndFilterAsc(
+    // Search + filter with pagination (Spring appends ORDER BY and LIMIT/OFFSET from Pageable)
+    // countQuery exists only to give the total count metadata that Page<T> returns
+    // DISTINCT because the categories join returns one row per matching category —
+    // without it a recipe in 2 categories fills 2 slots on a page and is counted twice
+    @Query(value = "SELECT DISTINCT r FROM Recipe r JOIN r.categories c " +
+            "WHERE LOWER(r.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "AND c.name IN :categories " +
+            "AND r.prepTime BETWEEN :minPrep AND :maxPrep " +
+            "AND r.cookTime BETWEEN :minCook AND :maxCook " +
+            "AND r.rating BETWEEN :minRating AND :maxRating " +
+            "AND r.servingCount BETWEEN :minServings AND :maxServings",
+            countQuery = "SELECT COUNT(DISTINCT r) FROM Recipe r JOIN r.categories c " +
+            "WHERE LOWER(r.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "AND c.name IN :categories " +
+            "AND r.prepTime BETWEEN :minPrep AND :maxPrep " +
+            "AND r.cookTime BETWEEN :minCook AND :maxCook " +
+            "AND r.rating BETWEEN :minRating AND :maxRating " +
+            "AND r.servingCount BETWEEN :minServings AND :maxServings")
+    Page<Recipe> searchAndFilter(
             @Param("query") String query,
-            @Param("categories") List<String> categories,
+            @Param("categories") List<RecipeCategory> categories,
             @Param("minPrep") int minPrep, @Param("maxPrep") int maxPrep,
             @Param("minCook") int minCook, @Param("maxCook") int maxCook,
             @Param("minRating") double minRating, @Param("maxRating") double maxRating,
             @Param("minServings") int minServings, @Param("maxServings") int maxServings,
-            @Param("sortBy") String sortBy
+            Pageable pageable
     );
 
-    // full search + filter + sort descending
-    @Query(value = "SELECT * FROM " +
-            "(SELECT * FROM recipe WHERE LOWER(title) LIKE LOWER(CONCAT('%', :query, '%'))) AS recipesMatchingTitle " +
-            "WHERE id IN (SELECT recipe_id FROM recipe_categories WHERE category_name IN (:categories)) " +
-            "AND prep_time BETWEEN :minPrep AND :maxPrep " +
-            "AND cook_time BETWEEN :minCook AND :maxCook " +
-            "AND rating BETWEEN :minRating AND :maxRating " +
-            "AND serving_count BETWEEN :minServings AND :maxServings " +
-            "ORDER BY CASE :sortBy " +
-            "WHEN 'rating' THEN CAST(rating AS DOUBLE PRECISION) " +
-            "WHEN 'cook_time' THEN CAST(cook_time AS DOUBLE PRECISION) " +
-            "WHEN 'prep_time' THEN CAST(prep_time AS DOUBLE PRECISION) " +
-            "WHEN 'created_at' THEN EXTRACT(EPOCH FROM created_at) " +
-            "WHEN 'favourite_count' THEN CAST((SELECT COUNT(*) FROM user_favourites WHERE recipe_id = recipesMatchingTitle.id) AS DOUBLE PRECISION) " +
-            "END DESC", nativeQuery = true)
-    List<Recipe> searchAndFilterDesc(
-            @Param("query") String query,
-            @Param("categories") List<String> categories,
-            @Param("minPrep") int minPrep, @Param("maxPrep") int maxPrep,
-            @Param("minCook") int minCook, @Param("maxCook") int maxCook,
-            @Param("minRating") double minRating, @Param("maxRating") double maxRating,
-            @Param("minServings") int minServings, @Param("maxServings") int maxServings,
-            @Param("sortBy") String sortBy
-    );
-
-    // Returns true if the given recipe is in the user's favourites join table
-    @Query(value = "SELECT EXISTS(SELECT 1 FROM user_favourites " +
-            "WHERE user_email = :email AND recipe_id = :recipeId)", nativeQuery = true)
+    // Returns true if the given recipe is in the user's favourites
+    @Query("SELECT COUNT(r) > 0 FROM AppUser u JOIN u.favourites r WHERE u.email = :email AND r.id = :recipeId")
     Boolean isSelectedInFavs(@Param("recipeId") Long recipeId, @Param("email") String email);
 }

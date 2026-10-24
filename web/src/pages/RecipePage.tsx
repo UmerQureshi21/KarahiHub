@@ -1,68 +1,146 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { ApiError } from "../types";
 import type { RecipeResponse } from "../types";
-import { favRecipe } from "../services/recipeService";
+import {
+  favRecipe,
+  getRecipeById,
+  inFavs,
+  isRecipeOwned,
+} from "../services/recipeService";
+import { formatCategory } from "../utils/recipes";
 import RatingSection from "../components/RatingSection";
+import Spinner from "../components/Spinner";
 
-interface ViewRecipePageProps {
-  recipe: RecipeResponse;
-  onBack: () => void;
-  isFav: boolean;
-  isUsersRecipe: boolean;
+// Route: /app/recipes/:id
+// Keyed by id so moving between recipes starts each one with fresh state.
+export default function RecipePage() {
+  const { id } = useParams();
+  return <RecipeView key={id} id={Number(id)} />;
 }
 
-// Formats "MAIN_COURSE" → "Main Course"
-const formatCategory = (cat: string) =>
-  cat.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+function RecipeView({ id }: { id: number }) {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-export default function ViewRecipePage({
-  recipe,
-  onBack,
-  isFav,
-  isUsersRecipe,
-}: ViewRecipePageProps) {
-  const totalTime = recipe.prepTime + recipe.cookTime;
-  const images = recipe.imageUrls.slice(0, 3);
-  const imageCount = images.length;
-
-  const [favCount, setFavCount] = useState(recipe.favouriteCount);
-  const [isFaved, setIsFaved] = useState(isFav);
+  // Cards pass the recipe in router state so we can draw the page immediately;
+  // on a direct visit / reload there's no state and we wait for the fetch.
+  const passedRecipe = (location.state as { recipe?: RecipeResponse } | null)
+    ?.recipe;
+  const [recipe, setRecipe] = useState<RecipeResponse | null>(
+    passedRecipe?.id === id ? passedRecipe : null,
+  );
+  // null until we know — the favourite button and rating section wait for these
+  const [isFaved, setIsFaved] = useState<boolean | null>(null);
+  const [isOwned, setIsOwned] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [animating, setAnimating] = useState(false);
 
+  // Always fetch the latest copy (fav count / rating may have changed since the list loaded)
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([getRecipeById(id), inFavs(id), isRecipeOwned(id)])
+      .then(([fresh, fav, owned]) => {
+        if (cancelled) return;
+        setRecipe(fresh);
+        setIsFaved(fav);
+        setIsOwned(owned);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("Error loading recipe:", err);
+        setError(
+          err instanceof ApiError && err.status === 404
+            ? "This recipe doesn't exist or has been removed."
+            : "Couldn't load this recipe. Please try again.",
+        );
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  // Go back to wherever the user came from (search results keep their filters/page);
+  // if they landed here directly there's no in-app history, so go to the dashboard.
+  function handleBack() {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/app/dashboard");
+  }
+
+  // Re-fetch after rating so the average shown at the top updates
+  function refreshRecipe() {
+    getRecipeById(id)
+      .then(setRecipe)
+      .catch((err) => console.error("Error refreshing recipe:", err));
+  }
 
   async function handleToggleFav() {
+    if (!recipe || isFaved === null) return;
     const wasFaved = isFaved;
 
     // Optimistic update — flip immediately so the UI feels instant
     setIsFaved(!wasFaved);
-    setFavCount((prev) => prev + (wasFaved ? -1 : 1));
+    setRecipe({
+      ...recipe,
+      favouriteCount: recipe.favouriteCount + (wasFaved ? -1 : 1),
+    });
 
     // Trigger the bounce animation
     setAnimating(true);
     setTimeout(() => setAnimating(false), 500);
 
     try {
-      const data = await favRecipe(recipe.id);
-      // Sync count with server in case of drift
-      setFavCount(data.favouriteCount);
-    } catch (error) {
+      // The server returns the updated recipe, which also corrects any count drift
+      setRecipe(await favRecipe(recipe.id));
+    } catch (err) {
       // Revert on failure
       setIsFaved(wasFaved);
-      setFavCount((prev) => prev + (wasFaved ? 1 : -1));
-      console.error("Error toggling favourite:", error);
+      setRecipe(recipe);
+      console.error("Error toggling favourite:", err);
     }
   }
 
+  const backButton = (
+    <div className="max-w-[900px] mx-auto px-6 pt-6">
+      <button
+        onClick={handleBack}
+        className="fred-med text-[14px] text-[var(--secondary)] hover:underline"
+      >
+        &larr; Back
+      </button>
+    </div>
+  );
+
+  if (!recipe) {
+    return (
+      <div className="bg-[var(--surface)] min-h-screen">
+        {backButton}
+        {error ? (
+          <div className="max-w-[900px] mx-auto px-6 py-16 text-center">
+            <p className="fred-med text-[16px] text-[var(--primary)] mb-4">
+              {error}
+            </p>
+            <Link
+              to="/app/search"
+              className="fred-med text-[14px] text-[var(--secondary)] hover:underline"
+            >
+              Search recipes
+            </Link>
+          </div>
+        ) : (
+          <Spinner label="Loading recipe..." />
+        )}
+      </div>
+    );
+  }
+
+  const totalTime = recipe.prepTime + recipe.cookTime;
+  const images = recipe.imageUrls.slice(0, 3);
+  const imageCount = images.length;
+
   return (
     <div className="bg-[var(--surface)] min-h-screen">
-      {/* Back button */}
-      <div className="max-w-[900px] mx-auto px-6 pt-6">
-        <button
-          onClick={onBack}
-          className="fred-med text-[14px] text-[var(--secondary)] hover:underline"
-        >
-          &larr; Back to results
-        </button>
-      </div>
+      {backButton}
 
       {/* Hero image section */}
       {imageCount > 0 && (
@@ -99,13 +177,17 @@ export default function ViewRecipePage({
               {recipe.title}
             </h1>
 
-            {/* Favourite button with heart fill + pop animation */}
+            {/* Favourite button with heart fill + pop animation.
+                Disabled until we know whether it's already a favourite. */}
             <button
               onClick={handleToggleFav}
-              className={`shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 cursor-pointer ${
+              disabled={isFaved === null}
+              aria-pressed={isFaved ?? false}
+              aria-label={isFaved ? "Remove from favourites" : "Add to favourites"}
+              className={`shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 cursor-pointer disabled:cursor-wait disabled:opacity-60 ${
                 isFaved
                   ? "border-[var(--secondary)] bg-[var(--secondary)]/10"
-                  : "border-gray-200 hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/5"
+                  : "border-[var(--border)] hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/5"
               }`}
             >
               {/* Heart icon with burst ring behind it */}
@@ -117,24 +199,24 @@ export default function ViewRecipePage({
                 {/* Heart glyph — pops on every click */}
                 <span
                   className={`text-[18px] transition-colors duration-300 ${animating ? "heart-pop" : ""}`}
-                  style={{ color: isFaved ? "var(--secondary)" : "#9ca3af" }}
+                  style={{ color: isFaved ? "var(--secondary)" : "var(--muted)" }}
                 >
-                  {isFaved ? "\u2665" : "\u2661"}
+                  {isFaved ? "♥" : "♡"}
                 </span>
               </span>
               <span className="fred-med text-[13px] text-[var(--primary)]">
-                {favCount}
+                {recipe.favouriteCount}
               </span>
             </button>
           </div>
 
-          <p className="fred-light text-[14px] text-gray-400">
+          <p className="fred-light text-[14px] text-[var(--muted)]">
             by {recipe.uploadedBy}
           </p>
         </div>
 
         {/* Description */}
-        <p className="fred-light text-[16px] text-gray-500 leading-relaxed">
+        <p className="fred-light text-[16px] text-[var(--muted)] leading-relaxed">
           {recipe.description}
         </p>
 
@@ -154,7 +236,7 @@ export default function ViewRecipePage({
               <p className="fred-bold text-[18px] text-[var(--primary)]">
                 {stat.value}
               </p>
-              <p className="fred-light text-[12px] text-gray-400 mt-0.5">
+              <p className="fred-light text-[12px] text-[var(--muted)] mt-0.5">
                 {stat.label}
               </p>
             </div>
@@ -164,9 +246,9 @@ export default function ViewRecipePage({
         {/* Categories */}
         {recipe.categories.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {recipe.categories.map((cat, idx) => (
+            {recipe.categories.map((cat) => (
               <span
-                key={idx}
+                key={cat}
                 className="text-[13px] bg-[var(--secondary)]/10 text-[var(--secondary)] fred-med px-3 py-1.5 rounded-full"
               >
                 {formatCategory(cat)}
@@ -193,7 +275,7 @@ export default function ViewRecipePage({
                   <span>
                     <span className="fred-med">{ing.quantity}</span>
                     {ing.unitOfMeasurement && (
-                      <span className="text-gray-400">
+                      <span className="text-[var(--muted)]">
                         {" "}
                         {ing.unitOfMeasurement}
                       </span>
@@ -214,7 +296,7 @@ export default function ViewRecipePage({
               {recipe.instructions.map((step, idx) => (
                 <li key={idx} className="flex gap-3">
                   {/* Step number circle */}
-                  <span className="shrink-0 w-[28px] h-[28px] rounded-full bg-[var(--secondary)] text-white fred-bold text-[13px] flex items-center justify-center mt-0.5">
+                  <span className="shrink-0 w-[28px] h-[28px] rounded-full bg-[var(--secondary)] text-[var(--on-secondary)] fred-bold text-[13px] flex items-center justify-center mt-0.5">
                     {idx + 1}
                   </span>
                   <p className="fred-light text-[14px] text-[var(--primary)] leading-relaxed pt-0.5">
@@ -226,8 +308,10 @@ export default function ViewRecipePage({
           </div>
         </div>
 
-        {/* Rating section — hidden if the user owns this recipe */}
-        {!isUsersRecipe && <RatingSection recipe={recipe} />}
+        {/* Rating section — only once we know the user doesn't own this recipe */}
+        {isOwned === false && (
+          <RatingSection recipeId={recipe.id} onRated={refreshRecipe} />
+        )}
       </div>
     </div>
   );
