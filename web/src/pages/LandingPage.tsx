@@ -231,7 +231,7 @@ export default function LandingPage() {
   }, [visibleStats]);
 
   return (
-    <div>
+    <div className="bg-white">
       <Hero />
       <About />
       <h1 className="fred-bold text-[80px] text-center text-[var(--primary)] mb-[100px]">

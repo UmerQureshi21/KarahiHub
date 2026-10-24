@@ -1178,5 +1178,17 @@ public class DataSeeder implements CommandLineRunner {
         pakMacCheese.setImages(List.of());
 
         recipeRepository.saveAll(List.of(chickenKorma, gajarHalwa, daalChawal, pakMacCheese));
+
+        // Seed favourites — users favourite other users' recipes to create varied counts
+        // Vishav's Chicken Karahi gets 5 favourites (most popular)
+        amna.getFavourites().addAll(List.of(karahi, nihari, chapliKebab, biryani, seekhKebab));
+        fatima.getFavourites().addAll(List.of(karahi, halwaPuri, mangoLassi, chai, shamiKebab));
+        hassan.getFavourites().addAll(List.of(karahi, nihari, dahiBhalle, alooParatha, chickenTikka, kheer));
+        zara.getFavourites().addAll(List.of(karahi, nihari, biryani, samosa, malaiBoti, qeemaNaan, chickenKorma));
+        ali.getFavourites().addAll(List.of(karahi, chapliKebab, halwaPuri, paya, biryani, palakPaneer, gajarHalwa));
+        sara.getFavourites().addAll(List.of(nihari, gulabJamun, seekhKebab, tandooriPizza, haleem, alooKeema));
+        vishav.getFavourites().addAll(List.of(halwaPuri, biryani, samosa, chickenTikka, malaiBoti, qeemaNaan, chickenKorma, gajarHalwa));
+
+        appUserRepository.saveAll(List.of(vishav, amna, fatima, hassan, zara, ali, sara));
     }
 }

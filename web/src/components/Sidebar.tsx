@@ -24,7 +24,7 @@ const IconChevronRight = ({ className }: { className?: string }) => (
 const IconHome = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
     <path
-      d="M3 11l9-7 9 7"
+      d="M3 10.5L12 3l9 7.5"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -32,7 +32,7 @@ const IconHome = ({ className }: { className?: string }) => (
       strokeLinejoin="round"
     />
     <path
-      d="M5 10v10h14V10"
+      d="M5 9.5V19a1 1 0 001 1h4v-5a1 1 0 011-1h2a1 1 0 011 1v5h4a1 1 0 001-1V9.5"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -45,14 +45,7 @@ const IconHome = ({ className }: { className?: string }) => (
 const IconUpload = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
     <path
-      d="M12 16V6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <path
-      d="M8 10l4-4 4 4"
+      d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -60,7 +53,15 @@ const IconUpload = ({ className }: { className?: string }) => (
       strokeLinejoin="round"
     />
     <path
-      d="M4 18h16"
+      d="M17 8l-5-5-5 5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 3v12"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -173,9 +174,7 @@ const IconSun = ({ className }: { className?: string }) => (
 export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
   const navigate = useNavigate();
   const [isDark, setIsDark] = useState(false);
-  const textClass = `text-[16px] font-medium text-[var(--primary)] transition-opacity duration-200 whitespace-nowrap ${
-    isClosed ? "opacity-0" : "opacity-100"
-  }`;
+  const textClass = `text-[16px] font-medium text-[var(--primary)] whitespace-nowrap`;
 
   function onDarkMode() {
     setIsDark((prev) => !prev);
@@ -192,19 +191,13 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
       } fred-bold p-[10px] px-[14px] bg-[var(--accent)] transition-all duration-500 z-20`}
     >
       <header className="relative h-[60px] flex items-center">
-        <div className="relative flex items-center w-full">
+        <div className="relative flex items-center w-full overflow-hidden">
           <span className="min-w-[60px] flex items-center shrink-0">
             <img src="/logo.png" alt="" className="w-[40px] rounded-[2px]" />
           </span>
-          <div
-            className={`absolute left-[60px] top-1/2 -translate-y-1/2 flex flex-col transition-opacity duration-200 ${
-              isClosed ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">
-              {name || "User"}
-            </span>
-          </div>
+          <span className="text-[16px] font-semibold text-[var(--primary)] whitespace-nowrap">
+            {name || "User"}
+          </span>
         </div>
         <button
           type="button"
@@ -222,7 +215,7 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
             <li className="h-[50px] mt-[10px] list-none flex items-center">
               <NavLink
                 to="/app/dashboard"
-                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
+                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)] overflow-hidden"
               >
                 <IconHome className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
@@ -235,7 +228,7 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
             <li className="h-[50px] mt-[10px] list-none flex items-center">
               <NavLink
                 to="/app/upload"
-                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
+                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)] overflow-hidden"
               >
                 <IconUpload className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
@@ -248,7 +241,7 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
             <li className="h-[50px] mt-[10px] list-none flex items-center">
               <NavLink
                 to="/app/search"
-                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
+                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)] overflow-hidden"
               >
                 <IconSearch className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
@@ -261,7 +254,7 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
             <li className="h-[50px] mt-[10px] list-none flex items-center">
               <NavLink
                 to="/app/favourites"
-                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
+                className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)] overflow-hidden"
               >
                 <IconFolder className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
                 <span
@@ -282,7 +275,7 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
                 await logout();
                 navigate("/auth");
               }}
-              className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)]"
+              className="group w-full h-full flex items-center rounded-[6px] transition-all duration-300 hover:bg-[var(--secondary)] overflow-hidden"
             >
               <IconLogout className="h-[20px] w-[20px] min-w-[60px] flex items-center justify-center text-[var(--primary)] transition-all duration-300 group-hover:text-white" />
               <span
@@ -293,13 +286,9 @@ export default function Sidebar({ isClosed, onToggle, name }: SidebarProps) {
             </button>
           </li>
 
-          <li className="h-[50px] mt-[10px] list-none flex items-center bg-[var(--surface)] relative rounded-[6px]">
-            <div
-              className={`absolute left-0 top-1/2 -translate-y-1/2 flex  items-center transition-opacity duration-200 ${
-                isClosed ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              <div className="relative h-[50px] w-[60px] flex items-center justify-center">
+          <li className="h-[50px] mt-[10px] list-none flex items-center bg-[var(--surface)] relative rounded-[6px] overflow-hidden">
+            <div className="flex items-center">
+              <div className="relative h-[50px] w-[60px] flex items-center justify-center shrink-0">
                 <IconMoon
                   className={`absolute h-[20px] w-[20px] text-[var(--primary)] transition-opacity duration-200 ${
                     isDark ? "opacity-0" : "opacity-100"
