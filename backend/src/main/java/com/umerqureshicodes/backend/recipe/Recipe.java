@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.umerqureshicodes.backend.auth.AppUser;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +53,8 @@ public class Recipe {
     // mappedBy = "favourites" points to the favourites field on AppUser.
     @ManyToMany(mappedBy = "favourites")
     private List<AppUser> favouritedBy = new ArrayList<>();
+    @Formula("(SELECT COUNT(*) FROM user_favourites uf WHERE uf.recipe_id = id)")
+    private int favouriteCount;
 
     public Recipe() {
     }
@@ -196,4 +199,10 @@ public class Recipe {
     public void setFavouritedBy(List<AppUser> favouritedBy) {
         this.favouritedBy = favouritedBy;
     }
+
+    // No setter — the value only ever comes from the @Formula query
+    public int getFavouriteCount() {
+        return favouriteCount;
+    }
+
 }
