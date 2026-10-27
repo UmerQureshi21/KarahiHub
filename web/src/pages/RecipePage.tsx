@@ -186,20 +186,20 @@ function RecipeView({ id }: { id: number }) {
               aria-label={isFaved ? "Remove from favourites" : "Add to favourites"}
               className={`shrink-0 mt-1 flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 cursor-pointer disabled:cursor-wait disabled:opacity-60 ${
                 isFaved
-                  ? "border-[var(--secondary)] bg-[var(--secondary)]/10"
-                  : "border-[var(--border)] hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/5"
+                  ? "border-[var(--heart)] bg-[var(--heart)]/10"
+                  : "border-[var(--border)] hover:border-[var(--heart)] hover:bg-[var(--heart)]/5"
               }`}
             >
               {/* Heart icon with burst ring behind it */}
               <span className="relative flex items-center justify-center w-[22px] h-[22px]">
                 {/* Burst ring — expands and fades on favourite */}
                 {animating && isFaved && (
-                  <span className="absolute inset-0 rounded-full border-2 border-[var(--secondary)] heart-burst" />
+                  <span className="absolute inset-0 rounded-full border-2 border-[var(--heart)] heart-burst" />
                 )}
                 {/* Heart glyph — pops on every click */}
                 <span
                   className={`text-[18px] transition-colors duration-300 ${animating ? "heart-pop" : ""}`}
-                  style={{ color: isFaved ? "var(--secondary)" : "var(--muted)" }}
+                  style={{ color: isFaved ? "var(--heart)" : "var(--muted)" }}
                 >
                   {isFaved ? "♥" : "♡"}
                 </span>

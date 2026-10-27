@@ -49,6 +49,11 @@
   --muted: #6b7280;
   /* hairlines and input borders */
   --border: #e5e7eb;
+  /* favourite hearts — one red that reads on both the light and dark surfaces,
+     so .dark doesn't override it */
+  --heart: #e5484d;
+  /* rating stars — classic gold, also the same in both themes */
+  --star: #f59e0b;
 }
 
 /* Applied by UserLayout to the app shell, so only the logged-in pages switch theme */

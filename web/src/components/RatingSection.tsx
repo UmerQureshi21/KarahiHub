@@ -83,7 +83,7 @@ export default function RatingSection({ recipeId, onRated }: RatingSectionProps)
             onClick={() => handleRate(star)}
             className="text-[32px] transition-colors cursor-pointer disabled:cursor-default"
             style={{
-              color: star <= filledUpTo ? "var(--secondary)" : "var(--border)",
+              color: star <= filledUpTo ? "var(--star)" : "var(--border)",
             }}
           >
             &#9733;
