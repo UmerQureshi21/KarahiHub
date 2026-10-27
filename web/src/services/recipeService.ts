@@ -53,6 +53,12 @@ export const rateRecipe = async (
 ): Promise<RatingResponse> =>
   (await api.post<RatingResponse>("/ratings", ratingRequest)).data;
 
+// Changes a rating the user already gave
+export const updateRating = async (
+  ratingRequest: RatingRequest,
+): Promise<RatingResponse> =>
+  (await api.put<RatingResponse>("/ratings", ratingRequest)).data;
+
 // The current user's rating for a recipe, or null if they haven't rated it (204)
 export const getMyRating = async (
   recipeId: number,

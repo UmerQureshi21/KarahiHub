@@ -1,6 +1,19 @@
-// Inline stroke icons shared by the Sidebar and Navbar.
+// Inline stroke icons shared across the app.
 // They use currentColor, so they take the text colour of whatever wraps them.
 type IconProps = { className?: string };
+
+export const IconPencil = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+    <path
+      d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19 3 20l1-4Z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export const IconChevronRight = ({ className }: IconProps) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
