@@ -22,9 +22,12 @@ public class RatingController {
 
     // GET /api/ratings/mine?recipeId=5 — 200 with the user's rating, or 204 if they haven't rated it
     @GetMapping("/mine")
-    public ResponseEntity<RatingResponse> getMyRating(@RequestParam Long recipeId, @AuthenticationPrincipal AppUser user) {
-        return ratingService.getMyRating(recipeId, user.getEmail())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
+    public RatingResponse getMyRating(@RequestParam Long recipeId, @AuthenticationPrincipal AppUser user) {
+        return ratingService.getMyRating(recipeId, user.getEmail());
+    }
+
+    @PutMapping
+    public RatingResponse updateRating(@RequestBody RatingRequest ratingRequest, @AuthenticationPrincipal AppUser user) {
+        return ratingService.updateRating(ratingRequest, user.getEmail());
     }
 }

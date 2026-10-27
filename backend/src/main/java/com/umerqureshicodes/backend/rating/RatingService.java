@@ -6,6 +6,7 @@ import com.umerqureshicodes.backend.exceptions.GeneralException;
 import com.umerqureshicodes.backend.recipe.Recipe;
 import com.umerqureshicodes.backend.recipe.RecipeRepository;
 import com.umerqureshicodes.backend.recipe.RecipeService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -56,9 +57,19 @@ public class RatingService {
     }
 
     // The current user's rating for a recipe, or empty if they haven't rated it yet
-    public Optional<RatingResponse> getMyRating(Long recipeId, String authorEmail) {
-        return ratingRepository.findById(new RatingId(authorEmail, recipeId)).map(Rating::toResponse);
+    public RatingResponse getMyRating(Long recipeId, String authorEmail){
+        AppUser author = appUserRepository.findByEmail(authorEmail).orElseThrow();
+        Optional<Rating> rating = ratingRepository.findById(new RatingId(authorEmail, recipeId));
+        return rating.map(Rating::toResponse).orElse(null);
     }
 
-    
+
+    @Transactional // don't need to return optional, updating a recipe means its always there
+    public RatingResponse updateRating(RatingRequest ratingRequest, String authorEmail) {
+        Rating rating = ratingRepository.findById(new RatingId(authorEmail, ratingRequest.recipeId())).orElseThrow();
+        Recipe recipe = recipeRepository.findById(ratingRequest.recipeId()).orElseThrow();
+        rating.setScore(ratingRequest.score());
+        recipe.setRating(ratingRepository.getAverageScore(ratingRequest.recipeId()));
+        return rating.toResponse();
+    }
 }
