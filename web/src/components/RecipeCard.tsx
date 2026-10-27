@@ -13,7 +13,8 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   const imageCount = images.length;
 
   return (
-    <div className="group h-full flex flex-col gap-[20px] bg-[var(--accent)] p-[10px] rounded-[20px] transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+    // The hover lift + shadow live on RecipeGrid's wrapper, so the favourite heart moves with the card
+    <div className="group h-full flex flex-col gap-[20px] bg-[var(--accent)] p-[10px] rounded-[20px]">
       {/* Image section — up to 3 photos in a grid, or a placeholder when there are none */}
       <div
         className={`relative z-10 grid gap-[3px] h-[190px] rounded-[14px] overflow-hidden shadow-md [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-105 ${
@@ -45,14 +46,30 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
 
       {/* Data section */}
       <div className="flex-1 bg-[var(--surface)] rounded-[14px] p-5 pt-6 flex flex-col gap-3 shadow-sm">
-        {/* Title + favourite count */}
+        {/* Title + rating and favourite count */}
         <div className="flex items-start justify-between gap-3">
           <h3 className="fred-bold text-[18px] text-[var(--primary)] leading-tight">
             {recipe.title}
           </h3>
-          <span className="shrink-0 text-[var(--secondary)] fred-bold text-[13px] px-2.5 py-1 rounded-full bg-[var(--secondary)]/10">
-            {recipe.favouriteCount} fav{recipe.favouriteCount !== 1 && "s"}
-          </span>
+          <div className="shrink-0 flex items-center gap-1.5">
+            {/* Rating — a recipe nobody has rated yet has rating 0, so show "New" instead of 0.0 */}
+            <span
+              className="flex items-center gap-1 fred-bold text-[13px] px-2.5 py-1 rounded-full bg-[var(--star)]/10 text-[var(--primary)]"
+              aria-label={
+                recipe.rating > 0
+                  ? `Rated ${recipe.rating.toFixed(1)} out of 5`
+                  : "Not rated yet"
+              }
+            >
+              <span className="text-[var(--star)]" aria-hidden="true">
+                &#9733;
+              </span>
+              {recipe.rating > 0 ? recipe.rating.toFixed(1) : "New"}
+            </span>
+            <span className="text-[var(--secondary)] fred-bold text-[13px] px-2.5 py-1 rounded-full bg-[var(--secondary)]/10">
+              {recipe.favouriteCount} fav{recipe.favouriteCount !== 1 && "s"}
+            </span>
+          </div>
         </div>
 
         {/* Description */}

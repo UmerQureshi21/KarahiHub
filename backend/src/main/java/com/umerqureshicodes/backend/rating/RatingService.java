@@ -6,8 +6,10 @@ import com.umerqureshicodes.backend.exceptions.GeneralException;
 import com.umerqureshicodes.backend.recipe.Recipe;
 import com.umerqureshicodes.backend.recipe.RecipeRepository;
 import com.umerqureshicodes.backend.recipe.RecipeService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,4 +60,5 @@ public class RatingService {
         return ratingRepository.findById(new RatingId(authorEmail, recipeId)).map(Rating::toResponse);
     }
 
+    
 }

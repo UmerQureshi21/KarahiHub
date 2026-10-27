@@ -1,15 +1,20 @@
 package com.umerqureshicodes.backend.auth;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final String REFRESH_COOKIE = "refresh_token";
+    // matches the refresh token expiration
+    private static final Duration REFRESH_COOKIE_MAX_AGE = Duration.ofDays(7);
 
     private final AuthService authService;
 
@@ -21,28 +26,20 @@ public class AuthController {
     // Takes { email, username, password }, returns { accessToken, email, username }
     // Also sets a refresh_token HTTP-only cookie.
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(
-            @Valid @RequestBody RegisterRequest request,
-            HttpServletResponse response // this is how we get access to the raw HTTP response object so we can add the refresh token cookie to it.
-    ) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse authResponse = authService.register(request);
         String refreshToken = authService.generateRefreshToken(request.email());
-        addRefreshTokenCookie(response, refreshToken);
-        return ResponseEntity.ok(authResponse);
+        return withRefreshCookie(authResponse, refreshToken);
     }
 
     // POST /api/auth/login
     // Takes { email, password }, returns { accessToken, email, username }
     // Also sets a refresh_token HTTP-only cookie.
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(
-            @Valid @RequestBody LoginRequest request,
-            HttpServletResponse response
-    ) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse authResponse = authService.login(request);
         String refreshToken = authService.generateRefreshToken(request.email());
-        addRefreshTokenCookie(response, refreshToken);
-        return ResponseEntity.ok(authResponse);
+        return withRefreshCookie(authResponse, refreshToken);
     }
 
     // POST /api/auth/refresh
@@ -51,11 +48,10 @@ public class AuthController {
     // Returns a new access token + rotates the refresh token cookie.
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(
-            HttpServletRequest request,
-            HttpServletResponse response
+            // @CookieValue pulls the cookie out of the request for us;
+            // required = false so a missing cookie gives null instead of a 400
+            @CookieValue(name = REFRESH_COOKIE, required = false) String refreshToken
     ) {
-        // Extract the refresh token from cookies
-        String refreshToken = extractRefreshTokenFromCookies(request);
         if (refreshToken == null) {
             return ResponseEntity.status(401).build();
         }
@@ -65,45 +61,39 @@ public class AuthController {
 
         // Rotate: issue a new refresh token cookie (old one is replaced)
         String newRefreshToken = authService.generateRefreshToken(authResponse.email());
-        addRefreshTokenCookie(response, newRefreshToken);
-
-        return ResponseEntity.ok(authResponse);
+        return withRefreshCookie(authResponse, newRefreshToken);
     }
 
     // POST /api/auth/logout
-    // Clears the refresh_token cookie by setting maxAge to 0.
+    // Clears the refresh_token cookie by sending an empty one with maxAge 0,
+    // which tells the browser to delete it.
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("refresh_token", "");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/api/auth");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie("", Duration.ZERO).toString())
+                .build();
     }
 
-    // Sets the refresh token as an HTTP-only cookie.
+    // 200 OK with the auth body, plus a Set-Cookie header carrying the refresh token
+    private ResponseEntity<AuthResponse> withRefreshCookie(AuthResponse body, String refreshToken) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie(refreshToken, REFRESH_COOKIE_MAX_AGE).toString())
+                .body(body);
+    }
+
+    // Builds the refresh token cookie. Used both to set it and (with maxAge 0) to clear it,
+    // so the two always match — a browser only deletes a cookie when the name and path match.
     // - HttpOnly: JavaScript cannot access it (XSS protection)
     // - Path=/api/auth: only sent to auth endpoints, not every request
-    // - MaxAge=7 days: matches the refresh token expiration
+    // - SameSite=Lax: what browsers already assume by default, now stated explicitly
     // - Secure=false: set to true in production (requires HTTPS)
-    private void addRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/api/auth");
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-        response.addCookie(cookie);
-    }
-
-    private String extractRefreshTokenFromCookies(HttpServletRequest request) {
-        if (request.getCookies() == null) return null;
-        for (Cookie cookie : request.getCookies()) {
-            if ("refresh_token".equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-        return null;
+    private ResponseCookie refreshCookie(String value, Duration maxAge) {
+        return ResponseCookie.from(REFRESH_COOKIE, value)
+                .httpOnly(true)
+                .secure(false)
+                .path("/api/auth")
+                .sameSite("Lax")
+                .maxAge(maxAge)
+                .build();
     }
 }
